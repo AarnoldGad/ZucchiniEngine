@@ -4,47 +4,36 @@
 
 namespace ze
 {
-   MemoryManager::MemoryManager() noexcept
-   : m_blocks{} {}
-
-   void* MemoryManager::allocate(size_t size, char const* file, int line)
+   MemoryManager& MemoryManager::Instance()
    {
-      void* allocatedMemory = std::malloc(size);
-
-      BlockInfo info{size, file, line, false};
-      m_blocks[allocatedMemory] = info;
-
-      return allocatedMemory;
+      static MemoryManager instance;
+      return instance;
    }
 
-   void* MemoryManager::allocateArray(size_t size, char const* file, int line)
+   void* MemoryManager::allocate(size_t size)
    {
-      void* allocatedMemory = std::malloc(size);
+      return std::malloc(size);
+   }
 
-      BlockInfo info{size, file, line, true};
-      m_blocks[allocatedMemory] = info;
+   void* MemoryManager::allocate(size_t size, char const* file, unsigned int line)
+   {
+      void* allocated = std::malloc(size);
 
-      return allocatedMemory;
+      // TODO Log
+
+      m_blocks[allocated] = {size, file, line};
+
+      return allocated;
    }
 
    void MemoryManager::release(void* pointer) noexcept
    {
-      auto blockData = m_blocks.find(pointer);
-      if (blockData != m_blocks.end())
+      auto it = m_blocks.find(pointer);
+      if (it != m_blocks.end())
       {
-         m_blocks.erase(pointer);
-         // TODO Logging
-      }
+         // TODO Log
 
-      std::free(pointer);
-   }
-
-   void MemoryManager::releaseArray(void* pointer) noexcept
-   {
-      if (m_blocks.find(pointer) != m_blocks.end())
-      {
          m_blocks.erase(pointer);
-         // TODO Logging
       }
 
       std::free(pointer);
@@ -52,15 +41,17 @@ namespace ze
 
    void MemoryManager::logMemoryLeaks() noexcept
    {
-      // TODO Core Logger
+      LOG_TRACE("------ ", m_blocks.size(), " Unhandled memory leaks registered ! ------");
+      std::for_each(m_blocks.begin(), m_blocks.end(), [](std::pair<void*, BlockInfo> leak)
+      {
+         LOG_TRACE("   address : ", std::hex, leak.first, std::dec, " (size ", leak.second.size, "B)");
+         LOG_TRACE("   at ", leak.second.file, ":", leak.second.line, "\n");
+      });
    }
 
    MemoryManager::~MemoryManager() noexcept
    {
       if (!m_blocks.empty())
-      {
-         // TODO Core Logger
          logMemoryLeaks();
-      }
    }
 }

@@ -35,30 +35,29 @@
 
 namespace ze
 {
-   class ZE_API MemoryManager : public Singleton<MemoryManager>
+   // TODO Compute allocations per frame
+   class ZE_API MemoryManager
    {
-      friend class Singleton<MemoryManager>;
-
    public:
-      void* allocate(size_t size, char const* file, int line);
-      void* allocateArray(size_t size, char const* file, int line);
+      static MemoryManager& Instance();
+
+      void* allocate(size_t size);
+      void* allocate(size_t size, char const* file, unsigned int line);
 
       void release(void* pointer) noexcept;
-      void releaseArray(void* pointer) noexcept;
 
    private:
+      MemoryManager() noexcept = default;
+      ~MemoryManager() noexcept;
+
       struct BlockInfo
       {
          size_t size;
          char const* file;
-         int line;
-         bool isArray;
+         unsigned int line;
       };
 
       void logMemoryLeaks() noexcept;
-
-      MemoryManager() noexcept;
-      ~MemoryManager() noexcept;
 
       std::map<void*, BlockInfo> m_blocks;
    };

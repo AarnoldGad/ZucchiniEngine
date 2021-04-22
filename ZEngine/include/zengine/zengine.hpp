@@ -39,6 +39,7 @@
 #include <zengine/Debug/Assert.hpp>
 #include <zengine/Debug/Logger.hpp>
 #include <zengine/Debug/Tee.hpp>
+#include <zengine/Memory/Memory.hpp>
 
 // Event System
 #include <zengine/Event/Event.hpp>
@@ -51,6 +52,7 @@
 
 // Misc Managers
 #include <zengine/Resource/ResourceManager.hpp>
+#include <zengine/Memory/MemoryManager.hpp>
 
 // Time management
 #include <zengine/Time/Chrono.hpp>
