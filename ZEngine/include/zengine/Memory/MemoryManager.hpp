@@ -26,7 +26,7 @@
 #ifndef ZE_MEMORYMANAGER
 #define ZE_MEMORYMANAGER
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Abstract/Singleton.hpp"
 

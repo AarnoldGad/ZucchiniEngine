@@ -26,7 +26,7 @@
 #ifndef ZE_STATE
 #define ZE_STATE
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Time/Time.hpp"
 #include "zengine/Event/Event.hpp"

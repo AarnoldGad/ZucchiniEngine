@@ -26,7 +26,7 @@
 #ifndef ZE_EVENT
 #define ZE_EVENT
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Time/Date.hpp"
 
@@ -56,6 +56,6 @@ namespace ze
    };
 }
 
-#include "inline/Event/Event.inl"
+#include "Event.inl"
 
 #endif // ZE_EVENT

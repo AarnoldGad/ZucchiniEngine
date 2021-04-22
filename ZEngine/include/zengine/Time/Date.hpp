@@ -26,7 +26,7 @@
 #ifndef ZE_DATE
 #define ZE_DATE
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Math/RangedNumeric.hpp"
 
@@ -109,6 +109,6 @@ namespace ze
    Date::WeekDay& operator--(Date::WeekDay& day) noexcept;
 }
 
-#include "inline/Time/Date.inl"
+#include "Date.inl"
 
 #endif // ZE_DATE

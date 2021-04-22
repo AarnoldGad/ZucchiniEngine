@@ -34,6 +34,6 @@ namespace ze
    constexpr CharType const* StringLiteral(char const* str, wchar_t const* wstr, char16_t const* ustr, char32_t const* Ustr);
 }
 
-#include "inline/Util/StringUtils.inl"
+#include "StringUtils.inl"
 
 #endif // ZE_STRINGUTILS

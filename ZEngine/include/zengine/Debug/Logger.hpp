@@ -26,7 +26,7 @@
 #ifndef ZE_LOGGER
 #define ZE_LOGGER
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include <iostream>
 #include <string>
@@ -161,6 +161,6 @@ namespace ze
    };
 }
 
-#include "inline/Debug/Logger.inl"
+#include "Logger.inl"
 
 #endif // ZE_LOGGER

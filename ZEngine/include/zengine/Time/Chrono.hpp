@@ -26,7 +26,7 @@
 #ifndef ZE_CHRONO
 #define ZE_CHRONO
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Time/Time.hpp"
 
@@ -51,6 +51,6 @@ namespace ze
    };
 }
 
-#include "inline/Time/Chrono.inl"
+#include "Chrono.inl"
 
 #endif // ZE_CHRONO

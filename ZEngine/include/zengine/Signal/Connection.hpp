@@ -26,7 +26,7 @@
 #ifndef ZE_CONNECTION
 #define ZE_CONNECTION
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include <functional>
 
@@ -72,6 +72,6 @@ namespace ze
    };
 }
 
-#include "inline/Signal/Connection.inl"
+#include "Connection.inl"
 
 #endif // ZE_CONNECTION

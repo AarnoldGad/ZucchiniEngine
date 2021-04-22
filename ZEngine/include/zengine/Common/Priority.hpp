@@ -26,7 +26,7 @@
 #ifndef ZE_PRIORITY
 #define ZE_PRIORITY
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 namespace ze
 {

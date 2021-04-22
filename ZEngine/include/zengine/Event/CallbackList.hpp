@@ -26,7 +26,7 @@
 #ifndef ZE_CALLBACKLIST
 #define ZE_CALLBACKLIST
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Common/Priority.hpp"
 #include "zengine/Event/Event.hpp"
@@ -66,6 +66,6 @@ namespace ze
    };
 }
 
-#include "inline/Event/CallbackList.inl"
+#include "CallbackList.inl"
 
 #endif // ZE_CALLBACKLIST

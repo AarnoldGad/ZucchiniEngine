@@ -26,7 +26,7 @@
 #ifndef ZE_RESOURCEMANAGER
 #define ZE_RESOURCEMANAGER
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include <unordered_map>
 #include <string>
@@ -59,6 +59,6 @@ namespace ze
    };
 }
 
-#include "inline/Resource/ResourceManager.inl"
+#include "ResourceManager.inl"
 
 #endif // ZE_RESOURCEMANAGER

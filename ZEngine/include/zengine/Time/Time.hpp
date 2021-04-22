@@ -26,7 +26,7 @@
 #ifndef ZE_TIME
 #define ZE_TIME
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include <chrono>
 
@@ -90,6 +90,6 @@ namespace ze
    void Sleep(Time time); // TODO Program wide equivalent (Currently pause calling thread)
 }
 
-#include "inline/Time/Time.inl"
+#include "Time.inl"
 
 #endif // ZE_TIME

@@ -26,7 +26,7 @@
 #ifndef ZENGINE
 #define ZENGINE
 
-#include <zemacros.hpp>
+#include <zengine/zemacros.hpp>
 
 // Abstract design
 #include <zengine/Abstract/Singleton.hpp>

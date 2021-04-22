@@ -26,7 +26,7 @@
 #ifndef ZE_EVENTDISPATCHER
 #define ZE_EVENTDISPATCHER
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Event/Event.hpp"
 #include "zengine/Common/TypeTraits.hpp"
@@ -52,6 +52,6 @@ namespace ze
    };
 }
 
-#include "inline/Event/EventDispatcher.inl"
+#include "EventDispatcher.inl"
 
 #endif // ZE_EVENTDISPATCHER

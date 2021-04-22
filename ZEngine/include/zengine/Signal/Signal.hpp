@@ -26,7 +26,7 @@
 #ifndef ZE_SIGNAL
 #define ZE_SIGNAL
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Signal/Connection.hpp"
 
@@ -70,6 +70,6 @@ namespace ze
    };
 }
 
-#include "inline/Signal/Signal.inl"
+#include "Signal.inl"
 
 #endif // ZE_SIGNAL

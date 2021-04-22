@@ -26,7 +26,7 @@
 #ifndef ZE_SUBSCRIBER
 #define ZE_SUBSCRIBER
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Common/Priority.hpp"
 #include "zengine/Event/EventHandler.hpp"
@@ -62,6 +62,6 @@ namespace ze
    };
 }
 
-#include "inline/Event/Subscriber.inl"
+#include "Subscriber.inl"
 
 #endif // ZE_SUBSCRIBER

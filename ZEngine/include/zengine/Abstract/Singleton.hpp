@@ -26,7 +26,7 @@
 #ifndef ZE_SINGLETON
 #define ZE_SINGLETON
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 namespace ze
 {
@@ -51,6 +51,6 @@ namespace ze
    };
 }
 
-#include "inline/Abstract/Singleton.inl"
+#include "Singleton.inl"
 
 #endif // ZE_SINGLETON

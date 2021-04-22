@@ -26,7 +26,7 @@
 #ifndef ZE_RANGEDNUMERIC
 #define ZE_RANGEDNUMERIC
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Common/TypeTraits.hpp"
 
@@ -48,6 +48,6 @@ namespace ze
    };
 }
 
-#include "inline/Math/RangedNumeric.inl"
+#include "RangedNumeric.inl"
 
 #endif // ZE_RANGEDNUMERIC

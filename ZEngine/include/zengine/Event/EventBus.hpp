@@ -26,7 +26,7 @@
 #ifndef ZE_EVENTBUS
 #define ZE_EVENTBUS
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Common/Priority.hpp"
 #include "zengine/Event/Event.hpp"
@@ -70,6 +70,6 @@ namespace ze
    };
 }
 
-#include "inline/Event/EventBus.inl"
+#include "EventBus.inl"
 
 #endif // ZE_EVENTBUS

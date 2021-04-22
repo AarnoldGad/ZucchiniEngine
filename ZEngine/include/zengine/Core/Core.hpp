@@ -26,7 +26,7 @@
 #ifndef ZE_CORE
 #define ZE_CORE
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Abstract/Singleton.hpp"
 #include "zengine/Debug/Logger.hpp"
@@ -110,6 +110,6 @@ namespace ze
    };
 }
 
-#include "inline/Core/Core.inl"
+#include "Core.inl"
 
 #endif // ZE_CORE

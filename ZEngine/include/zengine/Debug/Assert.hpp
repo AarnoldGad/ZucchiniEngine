@@ -26,7 +26,7 @@
 #ifndef ZE_ASSERT
 #define ZE_ASSERT
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include <string>
 

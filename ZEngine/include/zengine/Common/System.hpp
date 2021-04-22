@@ -26,7 +26,7 @@
 #ifndef ZE_SYSTEM
 #define ZE_SYSTEM
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 namespace ze
 {

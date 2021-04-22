@@ -26,7 +26,7 @@
 #ifndef ZE_EVENTHANDLER
 #define ZE_EVENTHANDLER
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Event/Event.hpp"
 #include "zengine/Event/Callback.hpp"
@@ -55,6 +55,6 @@ namespace ze
    };
 }
 
-#include "inline/Event/EventHandler.inl"
+#include "EventHandler.inl"
 
 #endif // ZE_EVENTHANDLER

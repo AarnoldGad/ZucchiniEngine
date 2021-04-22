@@ -26,7 +26,7 @@
 #ifndef ZE_TYPETRAITS
 #define ZE_TYPETRAITS
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include <iostream>
 #include <type_traits>

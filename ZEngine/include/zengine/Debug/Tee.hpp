@@ -47,7 +47,7 @@
 #ifndef ZE_TEEDEBUG
 #define ZE_TEEDEBUG
 
-#include "zemacros.hpp"
+#include "zengine/zemacros.hpp"
 
 #include "zengine/Common/TypeTraits.hpp"
 
@@ -132,6 +132,6 @@ decltype(auto) stee(Value&& value, std::basic_ostream<CharType>& output);
 template<typename Value>
 decltype(auto) ftee(Value&& value, std::filesystem::path const& outputFile, std::ios_base::openmode mode = std::ios_base::out);
 
-#include "inline/Debug/Tee.inl"
+#include "Tee.inl"
 
 #endif // ZE_TEEDEBUG
