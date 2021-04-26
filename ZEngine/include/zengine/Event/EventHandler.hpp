@@ -43,7 +43,7 @@ namespace ze
    public:
       using CallbackType = std::function<void (EventType&)>;
 
-      EventHandler() noexcept = default;
+      EventHandler() = default;
       explicit EventHandler(CallbackType callback) noexcept;
 
       virtual void operator()(Event& event) override;

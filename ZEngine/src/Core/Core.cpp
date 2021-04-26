@@ -53,7 +53,7 @@ namespace ze
       ZE_LOG_INFO("------  * Running on ", sysInfo.os.name, " v", sysInfo.os.versionString);
       ZE_LOG_INFO("------      * ", cpuInfo.model);
       ZE_LOG_INFO("------      * ", ::ze::ArchToString(cpuInfo.arch), ", ", cpuInfo.cores.physical, " cores ", cpuInfo.cores.logical, " threads");
-      ZE_LOG_INFO("------      * ", memInfo.total, "kB physical memory");
+      ZE_LOG_INFO("------      * ", memInfo.total, "B physical memory");
       ZE_LOG_INFO("------  * Creating new application ", getApplicationName());
 
       // Init Sub-Systems

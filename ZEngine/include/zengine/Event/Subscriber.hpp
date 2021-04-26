@@ -30,7 +30,6 @@
 
 #include "zengine/Common/Priority.hpp"
 #include "zengine/Event/EventHandler.hpp"
-#include "zengine/Event/CallbackList.hpp"
 #include "zengine/Common/TypeTraits.hpp"
 
 #include <map>
@@ -43,6 +42,7 @@ namespace ze
    class Subscriber
    {
    public:
+      using CallbackList = std::map<Priority, std::set<Callback<Event&>*>, std::greater<Priority> >;
       using CallbackType = std::function<void(EventType&)>;
       using SubscriberType = Subscriber<EventType>;
 
@@ -53,7 +53,11 @@ namespace ze
       EventHandler<EventType>& getHandler() noexcept;
 
       Subscriber(CallbackList& list, CallbackType callback, Priority priority = Priority::NORMAL);
+      Subscriber(SubscriberType const& other);
       Subscriber() noexcept;
+      ~Subscriber();
+
+      SubscriberType& operator=(SubscriberType const& other);
 
    private:
       Priority m_priority;

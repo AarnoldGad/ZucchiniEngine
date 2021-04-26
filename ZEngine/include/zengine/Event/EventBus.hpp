@@ -44,6 +44,8 @@ namespace ze
    class ZE_API EventBus
    {
    public:
+      using Callbacks = std::map<Priority, std::set<Callback<Event&>*>, std::greater<Priority> >;
+
       template<typename EventType, typename... Args>
       void pushEvent(Args&&... args);
 
@@ -59,14 +61,14 @@ namespace ze
       void unsubscribe(Callback<Event&>& callback, Priority priority);
 
       void dispatchEvents();
-      void fireEvent(Event&& event);
+      void fireEvent(Event& event);
 
-      EventBus() noexcept = default;
-      ~EventBus() noexcept = default;
+      EventBus() = default;
+      ~EventBus() = default;
 
    private:
-      std::vector<std::unique_ptr<Event> > m_events;
-      CallbackList m_callbacks;
+      std::vector<std::shared_ptr<Event> > m_events;
+      Callbacks m_callbacks;
    };
 }
 

@@ -7,21 +7,21 @@ namespace ze
 {
    void EventBus::subscribe(Callback<Event&>& callback, Priority priority)
    {
-      m_callbacks.subscribe(callback, priority);
+      m_callbacks[priority].insert(&callback);
    }
 
    void EventBus::unsubscribe(Callback<Event&>& callback, Priority priority)
    {
-      m_callbacks.unsubscribe(callback, priority);
+      m_callbacks[priority].erase(&callback);
    }
 
    void EventBus::dispatchEvents()
    {
       for (auto& event : std::exchange(m_events, {}))
-         fireEvent(std::move(*event));
+         fireEvent(*event);
    }
 
-   void EventBus::fireEvent(Event&& event)
+   void EventBus::fireEvent(Event& event)
    {
       for (auto& callbackStack : m_callbacks)
       {
