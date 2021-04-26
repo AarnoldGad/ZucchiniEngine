@@ -33,7 +33,7 @@
 
 namespace ze
 {
-   class Engine
+   class ZE_API Engine
    {
    public:
       virtual void initialise() = 0;

@@ -258,6 +258,7 @@ namespace ze
       #elif defined(_WIN32)
 
       // TODO
+      return {};
 
       #endif
    }

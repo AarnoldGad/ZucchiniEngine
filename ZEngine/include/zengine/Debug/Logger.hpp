@@ -35,6 +35,8 @@
    #include <Windows.h>
 #endif
 
+#define LOGGERNAME_MAXSIZE 16
+
 namespace ze
 {
    // TODO Print thread name / Print stacktrace / Check output stream validity
@@ -62,7 +64,7 @@ namespace ze
          INFO     = FLAG(0),
          DEBUG    = FLAG(1),
          WARN     = FLAG(2),
-         ERROR    = FLAG(3),
+         ERR    = FLAG(3),
          CRITICAL = FLAG(4)
       };
 
@@ -74,9 +76,8 @@ namespace ze
       void logLine(Level logLevel, Messages&&... messages);
 
       template<typename... Args>
-      void logFormatedLine(Level logLevel, std::string const& unformattedLine, Args&&... args);
+      void logFormatedLine(Level logLevel, std::string_view unformattedLine, Args&&... args);
 
-      void setName(std::string const& name) noexcept;
       std::string getName() const noexcept;
 
       void setOutput(std::ostream& output);
@@ -122,17 +123,17 @@ namespace ze
       //static Logger& stacktrace(Logger& logger);
 
       // Constructors/Destructor
-      Logger(std::string const& name, std::ostream& output, bool outputToConsole = false, unsigned int logMask = 0xFF);
-      explicit Logger(std::string const& name = "", std::streambuf* = nullptr, bool outputToConsole = false, unsigned int logMask = 0xFF);
+      Logger(std::string_view name, std::ostream& output, bool outputToConsole = false, unsigned int logMask = 0xFF);
+      explicit Logger(std::string_view name = "UNDEFINED", std::streambuf* = nullptr, bool outputToConsole = false, unsigned int logMask = 0xFF);
       ~Logger();
 
    private:
       void printLineDetails();
 
       template<unsigned int N = 1, typename Head, typename... Tail>
-      std::string formatLine(std::string const& unformattedLine, Head const& head, Tail&&... tail);
+      std::string formatLine(std::string_view unformattedLine, Head const& head, Tail&&... tail);
       template<unsigned int N = 1, typename Arg>
-      std::string formatLine(std::string const& unformattedLine, Arg const& arg);
+      std::string formatLine(std::string_view unformattedLine, Arg const& arg);
 
       void setConsoleColor() const;
       void resetConsoleColor() const;
@@ -150,9 +151,9 @@ namespace ze
       template<typename Message>
       void logToConsole(Message const& message);
 
-      static std::string levelToString(Level logLevel) noexcept;
+      static char const* levelToString(Level logLevel) noexcept;
 
-      std::string m_name;
+      char m_name[LOGGERNAME_MAXSIZE];
       std::ostream m_output;
       bool m_outputToConsole;
       unsigned int m_logMask; // Members of Level enum to be ORed together

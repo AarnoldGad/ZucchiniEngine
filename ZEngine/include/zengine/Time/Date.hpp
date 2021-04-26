@@ -81,6 +81,8 @@ namespace ze
       int getYear() const noexcept;
       bool isDST() const noexcept;
 
+      std::tm getTm() const noexcept;
+
       std::string format(std::string const& formatString) const;
 
       explicit Date(int year, Month month, RangedNumeric<int, 1, 31> day,

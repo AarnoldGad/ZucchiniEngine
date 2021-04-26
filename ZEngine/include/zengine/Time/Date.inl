@@ -22,6 +22,11 @@ inline bool ze::Date::is30DayMonth() const noexcept
           getMonth() == Month::NOVEMBER;
 }
 
+inline std::tm ze::Date::getTm() const noexcept
+{
+   return m_date;
+}
+
 inline int ze::Date::getSeconds() const noexcept
 {
    return m_date.tm_sec;

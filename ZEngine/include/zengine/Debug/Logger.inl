@@ -13,7 +13,7 @@ void ze::Logger::logLine(Level logLevel, Messages&&... messages)
 }
 
 template<typename... Args>
-void ze::Logger::logFormatedLine(Level logLevel, std::string const& unformattedLine, Args&&... args)
+void ze::Logger::logFormatedLine(Level logLevel, std::string_view unformattedLine, Args&&... args)
 {
    logLine(logLevel, formatLine(unformattedLine, std::forward<Args>(args)...));
 }
@@ -56,13 +56,13 @@ ze::Logger& ze::Logger::operator<<(Message const& message)
 }
 
 template<unsigned int N, typename Head, typename... Tail>
-std::string ze::Logger::formatLine(std::string const& unformattedLine, Head const& head, Tail&&... tail)
+std::string ze::Logger::formatLine(std::string_view unformattedLine, Head const& head, Tail&&... tail)
 {
    return formatLine<N + 1>(formatLine<N>(unformattedLine, head), std::forward<Tail>(tail)...);
 }
 
 template<unsigned int N, typename Arg>
-std::string ze::Logger::formatLine(std::string const& unformattedLine, Arg const& arg)
+std::string ze::Logger::formatLine(std::string_view unformattedLine, Arg const& arg)
 {
    std::stringstream ss;
 

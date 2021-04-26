@@ -6,7 +6,7 @@
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 21
 #define ZE_VERSION_PATCH 4
-#define ZE_VERSION_REV 11
+#define ZE_VERSION_REV 26
 
 #define FLAG(shift) 1 << shift
 #define MACRO_TO_STRING(x) TO_STRING(x)
