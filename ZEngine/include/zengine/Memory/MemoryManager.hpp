@@ -28,38 +28,27 @@
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Abstract/Singleton.hpp"
-
 #include <cstdlib>
 #include <map>
 
 namespace ze
 {
-   // TODO Compute allocations per frame
    class ZE_API MemoryManager
    {
    public:
-      static MemoryManager& Instance();
+      static void* Allocate(size_t size, char const* file = nullptr, unsigned int line = 0);
 
-      void* allocate(size_t size);
-      void* allocate(size_t size, char const* file, unsigned int line);
+      static void NextRelease(char const* file, unsigned int line) noexcept;
+      static void Release(void* pointer) noexcept;
 
-      void release(void* pointer) noexcept;
+      static size_t GetTotalMemoryAllocated() noexcept;
 
    private:
-      MemoryManager() noexcept = default;
-      ~MemoryManager() noexcept;
+      MemoryManager() = default;
+      ~MemoryManager();
 
-      struct BlockInfo
-      {
-         size_t size;
-         char const* file;
-         unsigned int line;
-      };
-
-      void logMemoryLeaks() noexcept;
-
-      std::map<void*, BlockInfo> m_blocks;
+      static void Initialise();
+      static void Terminate();
    };
 }
 

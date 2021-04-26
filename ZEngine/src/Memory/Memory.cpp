@@ -3,52 +3,49 @@
 #include "zengine/Memory/MemoryManager.hpp"
 #include "zengine/Memory/Memory.hpp"
 
-void* operator new(size_t size)
+void* operator new(size_t size) // Sufficient to handle all standard allocations (No new[] needed)
 {
-   return ze::MemoryManager::Instance().allocate(size);
-}
-
-void* operator new[](size_t size)
-{
-   return ze::MemoryManager::Instance().allocate(size);
+   return ze::MemoryManager::Allocate(size);
 }
 
 void* operator new(size_t size, char const* file, unsigned int line)
 {
-   return ze::MemoryManager::Instance().allocate(size, file, line);
+   return ze::MemoryManager::Allocate(size, file, line);
 }
 
 void* operator new[](size_t size, char const* file, unsigned int line)
 {
-   return ze::MemoryManager::Instance().allocate(size, file, line);
+   return ze::MemoryManager::Allocate(size, file, line);
 }
 
 void operator delete(void* pointer) noexcept
 {
-   ze::MemoryManager::Instance().release(pointer);
+   ze::MemoryManager::Release(pointer);
 }
 
 void operator delete[](void* pointer) noexcept
 {
-   ze::MemoryManager::Instance().release(pointer);
+   ze::MemoryManager::Release(pointer);
 }
 
 void operator delete(void* pointer, [[maybe_unused]] size_t size) noexcept
 {
-   ze::MemoryManager::Instance().release(pointer);
+   ze::MemoryManager::Release(pointer);
 }
 
 void operator delete[](void* pointer, [[maybe_unused]] size_t size) noexcept
 {
-   ze::MemoryManager::Instance().release(pointer);
+   ze::MemoryManager::Release(pointer);
 }
 
-void operator delete(void* pointer, [[maybe_unused]] char const* file, [[maybe_unused]] unsigned int line) noexcept
+void operator delete(void* pointer, char const* file, unsigned int line) noexcept
 {
-   ze::MemoryManager::Instance().release(pointer);
+   ze::MemoryManager::NextRelease(file, line);
+   ze::MemoryManager::Release(pointer);
 }
 
-void operator delete[](void* pointer, [[maybe_unused]] char const* file, [[maybe_unused]] unsigned int line) noexcept
+void operator delete[](void* pointer, char const* file, unsigned int line) noexcept
 {
-   ze::MemoryManager::Instance().release(pointer);
+   ze::MemoryManager::NextRelease(file, line);
+   ze::MemoryManager::Release(pointer);
 }
