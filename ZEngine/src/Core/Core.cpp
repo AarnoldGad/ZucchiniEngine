@@ -5,6 +5,8 @@
 
 #include <cstdlib>
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    Core* Core::s_app = nullptr;
@@ -74,7 +76,7 @@ namespace ze
       if (hasBeenInserted)
          engine.initialise();
       else
-         LOG_TRACE("Trying to connect engine multiple times !");
+         LOG_TRACE("Trying to connect same engine multiple times !");
    }
 
    void Core::disconnectEngine(Engine& engine)

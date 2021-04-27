@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<>
 constexpr char const* ze::StringLiteral(char const* str, [[maybe_unused]] wchar_t const* wstr, [[maybe_unused]] char16_t const* ustr, [[maybe_unused]] char32_t const* Ustr)
 {
@@ -21,3 +23,5 @@ constexpr char32_t const* ze::StringLiteral([[maybe_unused]] char const* str, [[
 {
    return Ustr;
 }
+
+#include "zengine/Memory/NewOff.hpp"

@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename EventType, typename E>
 ze::Subscriber<EventType, E>::Subscriber() noexcept
    : m_priority(Priority::NORMAL), m_list(nullptr) {}
@@ -59,3 +61,5 @@ ze::Subscriber<EventType, E>::~Subscriber()
 {
    unsubscribe();
 }
+
+#include "zengine/Memory/NewOff.hpp"

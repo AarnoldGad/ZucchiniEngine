@@ -2,6 +2,8 @@
 
 #include "zengine/Time/Date.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    Date Date::CurrentDate()

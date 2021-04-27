@@ -2,6 +2,8 @@
 
 #include "zengine/Common/Random.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    std::default_random_engine Random::s_engine;

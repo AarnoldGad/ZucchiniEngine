@@ -2,6 +2,8 @@
 
 #include "zengine/Event/Event.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    Event::Event() noexcept

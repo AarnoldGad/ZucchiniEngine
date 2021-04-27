@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename EventType, typename... Args>
 void ze::EventBus::pushEvent(Args&&... args)
 {
@@ -17,3 +19,5 @@ inline ze::Subscriber<EventType> ze::EventBus::subscribe(void (Receiver::*callba
 {
    return Subscriber<EventType>(m_callbacks, std::bind(callback, receiver, std::placeholders::_1), priority);
 }
+
+#include "zengine/Memory/NewOff.hpp"

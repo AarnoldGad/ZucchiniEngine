@@ -2,6 +2,8 @@
 
 #include "zengine/Time/Chrono.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    Chrono::Chrono() noexcept

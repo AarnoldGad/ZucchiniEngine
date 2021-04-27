@@ -29,7 +29,6 @@
 #include "zengine/zemacros.hpp"
 
 #include <cstdlib>
-#include <map>
 
 namespace ze
 {
@@ -41,6 +40,7 @@ namespace ze
       static void NextRelease(char const* file, unsigned int line) noexcept;
       static void Release(void* pointer) noexcept;
 
+      static size_t GetTotalAllocations() noexcept;
       static size_t GetTotalMemoryAllocated() noexcept;
 
    private:

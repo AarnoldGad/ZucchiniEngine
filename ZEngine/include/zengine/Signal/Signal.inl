@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename ReturnType, typename... Args>
 ze::Signal<ReturnType(Args...)>::Signal() noexcept
    : m_connections{} {}
@@ -49,3 +51,5 @@ ze::Signal<ReturnType(Args...)>::~Signal() noexcept
 {
    clearConnections();
 }
+
+#include "zengine/Memory/NewOff.hpp"

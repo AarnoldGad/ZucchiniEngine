@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 inline bool ze::Date::isLeapYear() const noexcept
 {
    return !(getYear() % 4);
@@ -80,3 +82,5 @@ inline std::string ze::Date::format(std::string const& formatString) const
 
    return formatted.str();
 }
+
+#include "zengine/Memory/NewOff.hpp"

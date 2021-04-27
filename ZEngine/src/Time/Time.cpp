@@ -2,6 +2,8 @@
 
 #include "zengine/Time/Time.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    Time const Time::Zero = Time(std::chrono::nanoseconds::zero());

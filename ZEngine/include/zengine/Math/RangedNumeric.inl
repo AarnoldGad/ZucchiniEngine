@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename NumericType, std::intmax_t MinValue, std::intmax_t MaxValue, typename E>
 ze::RangedNumeric<NumericType, MinValue, MaxValue, E>::RangedNumeric()
    : m_value(MinValue) {}
@@ -22,3 +24,5 @@ ze::RangedNumeric<NumericType, MinValue, MaxValue>& ze::RangedNumeric<NumericTyp
    zassert(m_value >= static_cast<NumericType>(MinValue) && m_value <= static_cast<NumericType>(MaxValue), "Value outside of range");
    return *this;
 }
+
+#include "zengine/Memory/NewOff.hpp"

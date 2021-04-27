@@ -10,6 +10,8 @@
    #include <unistd.h>
 #endif
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    std::string GetSystemName()

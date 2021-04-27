@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename ResourceType>
 std::unordered_map<std::string, std::shared_ptr<ResourceType> > ze::ResourceManager<ResourceType>::m_resources{};
 
@@ -31,3 +33,5 @@ void ze::ResourceManager<ResourceType>::releaseAll() noexcept
 {
    m_resources.clear();
 }
+
+#include "zengine/Memory/NewOff.hpp"

@@ -2,6 +2,8 @@
 
 #include "zengine/Core/State.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    State::State(std::string const& name) noexcept

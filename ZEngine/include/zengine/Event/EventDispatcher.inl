@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename EventType, typename>
 void ze::EventDispatcher::dispatch(std::function<void (EventType&)> handler)
 {
@@ -16,3 +18,5 @@ inline bool ze::EventDispatcher::isEventReceivable(Event& event) const
 {
    return dynamic_cast<EventType*>(&event); // C++ RTTI, returns nullptr if "event" is not convertible to EventType (i.e is not of polymorphic type EventType)
 }
+
+#include "zengine/Memory/NewOff.hpp"

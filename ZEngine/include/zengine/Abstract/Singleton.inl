@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename ObjectType>
 ObjectType* ze::Singleton<ObjectType>::s_instance = nullptr;
 
@@ -18,3 +20,5 @@ void ze::Singleton<ObjectType>::Reset()
 
    s_instance = nullptr;
 }
+
+#include "zengine/Memory/NewOff.hpp"

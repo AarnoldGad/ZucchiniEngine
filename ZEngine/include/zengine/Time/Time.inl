@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename Rep, typename Period>
 ze::Time::Time(std::chrono::duration<Rep, Period> time) noexcept
    : m_time(std::chrono::duration_cast<std::chrono::nanoseconds>(time)) {}
@@ -26,3 +28,5 @@ inline int64_t ze::Time::asNanoseconds() const noexcept
 {
    return m_time.count();
 }
+
+#include "zengine/Memory/NewOff.hpp"

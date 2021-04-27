@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename PrintFn>
 Tee<PrintFn, ze::if_is_invocable<PrintFn> >::Tee(PrintFn fn) noexcept
    : m_print(fn) {}
@@ -76,3 +78,5 @@ decltype(auto) ftee(Value&& value, std::filesystem::path const& outputFile, std:
 
    return std::forward<Value>(value);
 }
+
+#include "zengine/Memory/NewOff.hpp"

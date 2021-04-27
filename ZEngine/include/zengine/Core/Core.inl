@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename StateType, typename... Args>
 void ze::Core::pushState(Args&&... args)
 {
@@ -38,3 +40,5 @@ inline unsigned int ze::Core::getTickRate() const noexcept
 {
    return m_tickRate;
 }
+
+#include "zengine/Memory/NewOff.hpp"

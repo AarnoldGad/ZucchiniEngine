@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename ReturnType, typename... Args>
 ze::Connection<ReturnType(Args...)>::Connection() noexcept
    : m_signal(nullptr), m_receiver() {}
@@ -85,3 +87,5 @@ ze::Connection<ReturnType(Args...)>::~Connection() noexcept
 {
    disconnect();
 }
+
+#include "zengine/Memory/NewOff.hpp"

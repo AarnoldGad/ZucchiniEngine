@@ -3,6 +3,8 @@
 #include "zengine/Event/EventBus.hpp"
 #include "zengine/Event/Callback.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    void EventBus::subscribe(Callback<Event&>& callback, Priority priority)

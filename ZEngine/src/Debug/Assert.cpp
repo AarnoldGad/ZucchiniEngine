@@ -2,6 +2,8 @@
 
 #include "zengine/Debug/Assert.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 #ifdef ZE_DEBUG
    namespace ze
    {

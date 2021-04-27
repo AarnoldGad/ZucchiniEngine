@@ -1,26 +1,25 @@
 #include "zepch.hpp"
 
+#include "zengine/Log/Logger.hpp"
 #include "zengine/Memory/MemoryManager.hpp"
-#include "zengine/Debug/Logger.hpp"
 
 #include <fstream>
-#include <list>
 
 namespace ze
 {
    namespace
    {
-      std::ofstream s_memoryLog;
-      Logger s_memoryLogger("MEMORY", nullptr, true);
+      std::ofstream s_memoryLogFile;
+      Logger s_memoryLogger("MEMORY", nullptr, true); // Allocation functions should be "heap allocation free". Don't use Logger::logFormattedLine as it uses std::strings !
 
       char const* s_nextFile = nullptr;
       unsigned int s_nextLine = 0;
 
-      unsigned int s_allocations = 0;
+      unsigned int s_totalAllocations = 0;
       size_t s_sizeAllocated = 0;
 
-      const unsigned int s_allocationHash = 0xA110CA73;
-      const unsigned int s_releaseHash = 0xF533D;
+      const unsigned int s_allocationHash = 0xA110CA73; // Identify a block allocated with this manager
+      const unsigned int s_releaseHash = 0xF533D; // Identify a block freed
 
       bool s_isInitialised = false;
 
@@ -29,7 +28,7 @@ namespace ze
          size_t size;
          char const* file;
          unsigned int line;
-         unsigned int guardHash;
+         unsigned int guardHash; // c.f s_allocationHash / s_releaseHash
 
          Block* previous;
          Block* next;
@@ -47,11 +46,11 @@ namespace ze
       static MemoryManager instance;
 
       // TODO File Utils
-      s_memoryLog.open("memory.log");
-      if (!s_memoryLog.is_open())
+      s_memoryLogFile.open("memory.log");
+      if (!s_memoryLogFile.is_open())
          LOG_TRACE("Unable to open memory log !");
       else
-         s_memoryLogger.setOutput(s_memoryLog);
+         s_memoryLogger.setOutput(s_memoryLogFile);
 
       s_memoryLogger.info() << "------ Memory Tracker Started ------" << Logger::newLine;
 
@@ -85,7 +84,7 @@ namespace ze
       s_blockList.previous->next = allocated;
       s_blockList.previous = allocated;
 
-      ++s_allocations;
+      ++s_totalAllocations;
       s_sizeAllocated += size;
 
       #if _DEBUG
@@ -124,13 +123,26 @@ namespace ze
       allocated->previous->next = allocated->next;
       allocated->next->previous = allocated->previous;
 
-      --s_allocations;
+      --s_totalAllocations;
       s_sizeAllocated -= allocated->size;
+
+      #if _DEBUG
+      s_memoryLogger.logLine(Logger::DEBUG, "Deallocating 0x", std::hex, (size_t)(pointer), std::dec);
+      if (s_nextFile)
+         s_memoryLogger.logLine(Logger::DEBUG, "   at ", s_nextFile, ":", s_nextLine);
+      else
+         s_memoryLogger.logLine(Logger::DEBUG, "   at undefined position");
+      #endif
 
       std::free(allocated);
       
       s_nextFile = nullptr;
       s_nextLine = 0;
+   }
+
+   size_t MemoryManager::GetTotalAllocations() noexcept
+   {
+      return s_totalAllocations;
    }
 
    size_t MemoryManager::GetTotalMemoryAllocated() noexcept
@@ -140,11 +152,11 @@ namespace ze
 
    void MemoryManager::Terminate()
    {
-      if (s_allocations == 0)
+      if (s_totalAllocations == 0)
          s_memoryLogger.info() << "------ Memory Tracker Ended with no leak ------" << Logger::newLine;
       else
       {
-         s_memoryLogger.logLine(Logger::ERR, "--- Memory Tracker registered ", s_allocations, " leaks ! ------");
+         s_memoryLogger.logLine(Logger::ERR, "--- Memory Tracker registered ", GetTotalAllocations(), " leaks ! ------");
          s_memoryLogger.logLine(Logger::ERR, "--- ", s_sizeAllocated, " bytes leaked");
          s_memoryLogger.logLine(Logger::ERR, "--- Leaks trace");
          
@@ -153,9 +165,9 @@ namespace ze
          {
             s_memoryLogger.logLine(Logger::ERR, "--- ", pointer->size, " bytes");
             if (pointer->file)
-               s_memoryLogger.logLine(Logger::ERR, "---    at 0x", pointer + sizeof(Block), " ", pointer->file, ":", pointer->line);
+               s_memoryLogger.logLine(Logger::ERR, "---    at 0x", std::hex, (size_t)(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)), std::dec, " ", pointer->file, ":", pointer->line);
             else
-               s_memoryLogger.logLine(Logger::ERR, "---    at 0x", pointer + sizeof(Block));
+               s_memoryLogger.logLine(Logger::ERR, "---    at 0x", std::hex, (size_t)(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)), std::dec);
 
             void* leak = pointer;
             pointer = pointer->next;
