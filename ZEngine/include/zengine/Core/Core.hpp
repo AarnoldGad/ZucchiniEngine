@@ -29,7 +29,7 @@
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Abstract/Singleton.hpp"
-#include "zengine/Debug/Logger.hpp"
+#include "zengine/Log/Logger.hpp"
 #include "zengine/Event/EventBus.hpp"
 #include "zengine/Event/Subscriber.hpp"
 #include "zengine/Time/Chrono.hpp"

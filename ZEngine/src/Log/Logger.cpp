@@ -1,7 +1,9 @@
 #include "zepch.hpp"
 
-#include "zengine/Debug/Logger.hpp"
+#include "zengine/Log/Logger.hpp"
 #include "zengine/Time/Date.hpp"
+
+#include "zengine/Memory/New.hpp"
 
 namespace ze
 {

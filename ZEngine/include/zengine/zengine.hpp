@@ -36,8 +36,8 @@
 #include <zengine/Core/State.hpp>
 
 // Debug
+#include <zengine/Log/Logger.hpp>
 #include <zengine/Debug/Assert.hpp>
-#include <zengine/Debug/Logger.hpp>
 #include <zengine/Debug/Tee.hpp>
 #include <zengine/Memory/Memory.hpp>
 

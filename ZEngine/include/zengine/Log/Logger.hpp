@@ -35,7 +35,7 @@
    #include <Windows.h>
 #endif
 
-#define LOGGERNAME_MAXSIZE 16
+#define LOGGERNAME_MAXSIZE 15
 
 namespace ze
 {
@@ -153,7 +153,7 @@ namespace ze
 
       static char const* levelToString(Level logLevel) noexcept;
 
-      char m_name[LOGGERNAME_MAXSIZE];
+      char m_name[LOGGERNAME_MAXSIZE + 1];
       std::ostream m_output;
       bool m_outputToConsole;
       unsigned int m_logMask; // Members of Level enum to be ORed together

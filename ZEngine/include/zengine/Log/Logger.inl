@@ -1,3 +1,5 @@
+#include "zengine/Memory/New.hpp"
+
 template<typename Message>
 void ze::Logger::log(Level logLevel, Message const& message)
 {
@@ -123,3 +125,5 @@ void ze::Logger::logToConsole(Message const& message)
 
    resetConsoleColor();
 }
+
+#include "zengine/Memory/NewOff.hpp"
