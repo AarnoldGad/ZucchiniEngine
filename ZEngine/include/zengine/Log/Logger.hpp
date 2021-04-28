@@ -23,15 +23,15 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_LOGGER
-#define ZE_LOGGER
+#ifndef ZE_LOGGER_HPP
+#define ZE_LOGGER_HPP
 
 #include "zengine/zemacros.hpp"
 
 #include <iostream>
 #include <string>
 
-#ifdef ZE_BUILD_WINDOWS
+#ifdef ZE_PLATFORM_WINDOWS
    #include <Windows.h>
 #endif
 
@@ -164,4 +164,4 @@ namespace ze
 
 #include "Logger.inl"
 
-#endif // ZE_LOGGER
+#endif // ZE_LOGGER_HPP

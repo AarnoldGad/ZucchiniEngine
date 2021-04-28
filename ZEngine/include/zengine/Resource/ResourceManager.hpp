@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_RESOURCEMANAGER
-#define ZE_RESOURCEMANAGER
+#ifndef ZE_RESOURCEMANAGER_HPP
+#define ZE_RESOURCEMANAGER_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -61,4 +61,4 @@ namespace ze
 
 #include "ResourceManager.inl"
 
-#endif // ZE_RESOURCEMANAGER
+#endif // ZE_RESOURCEMANAGER_HPP

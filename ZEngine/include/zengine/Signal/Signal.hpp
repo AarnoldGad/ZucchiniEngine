@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_SIGNAL
-#define ZE_SIGNAL
+#ifndef ZE_SIGNAL_HPP
+#define ZE_SIGNAL_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -72,4 +72,4 @@ namespace ze
 
 #include "Signal.inl"
 
-#endif // ZE_SIGNAL
+#endif // ZE_SIGNAL_HPP

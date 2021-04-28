@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_STRINGUTILS
-#define ZE_STRINGUTILS
+#ifndef ZE_STRINGUTILS_HPP
+#define ZE_STRINGUTILS_HPP
 
 namespace ze
 {
@@ -36,4 +36,4 @@ namespace ze
 
 #include "StringUtils.inl"
 
-#endif // ZE_STRINGUTILS
+#endif // ZE_STRINGUTILS_HPP

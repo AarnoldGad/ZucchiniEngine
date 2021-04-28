@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZENGINE
-#define ZENGINE
+#ifndef ZENGINE_HPP
+#define ZENGINE_HPP
 
 #include <zengine/zemacros.hpp>
 
@@ -68,4 +68,4 @@
 #include <zengine/Common/TypeTraits.hpp>
 #include <zengine/Util/StringUtils.hpp>
 
-#endif // ZENGINE
+#endif // ZENGINE_HPP

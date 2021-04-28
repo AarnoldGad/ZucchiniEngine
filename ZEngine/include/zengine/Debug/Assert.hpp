@@ -23,22 +23,26 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_ASSERT
-#define ZE_ASSERT
+#ifndef ZE_ASSERT_HPP
+#define ZE_ASSERT_HPP
 
 #include "zengine/zemacros.hpp"
 
 #include <string>
 
 #ifdef ZE_DEBUG
+
    #define zassert(condition, message) ze::Assert((condition), __FILENAME__, __FUNCTION__, __LINE__, #condition , message)
 
    namespace ze
    {
       void ZE_API Assert(bool const condition, std::string const& file, std::string const& function, unsigned int line, std::string const& conditionAsString, std::string const& message);
    }
+
 #else
+
    #define zassert(condition, message)
+
 #endif
 
-#endif // ZE_ASSERT
+#endif // ZE_ASSERT_HPP

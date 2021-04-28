@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_DATE
-#define ZE_DATE
+#ifndef ZE_DATE_HPP
+#define ZE_DATE_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -113,4 +113,4 @@ namespace ze
 
 #include "Date.inl"
 
-#endif // ZE_DATE
+#endif // ZE_DATE_HPP

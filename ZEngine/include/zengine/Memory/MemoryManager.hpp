@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_MEMORYMANAGER
-#define ZE_MEMORYMANAGER
+#ifndef ZE_MEMORYMANAGER_HPP
+#define ZE_MEMORYMANAGER_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -52,4 +52,4 @@ namespace ze
    };
 }
 
-#endif // ZE_MEMORYMANAGER
+#endif // ZE_MEMORYMANAGER_HPP

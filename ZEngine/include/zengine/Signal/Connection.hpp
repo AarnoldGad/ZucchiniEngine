@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CONNECTION
-#define ZE_CONNECTION
+#ifndef ZE_CONNECTION_HPP
+#define ZE_CONNECTION_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -74,4 +74,4 @@ namespace ze
 
 #include "Connection.inl"
 
-#endif // ZE_CONNECTION
+#endif // ZE_CONNECTION_HPP

@@ -1,21 +1,21 @@
-#ifndef ZE_MACROS
-#define ZE_MACROS
+#ifndef ZE_MACROS_HPP
+#define ZE_MACROS_HPP
 
-#include "zebuild.hpp"
+#include "zeplatform.hpp"
+
+#include <cstring>
+#include <iostream>
 
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 21
 #define ZE_VERSION_PATCH 4
-#define ZE_VERSION_REV 26
+#define ZE_VERSION_REV 27
 
 #define FLAG(shift) 1 << shift
 #define MACRO_TO_STRING(x) TO_STRING(x)
 #define TO_STRING(str) #str
 
-#include <cstring>
-#include <iostream>
-
-#ifdef ZE_BUILD_WINDOWS
+#ifdef ZE_PLATFORM_WINDOWS
    #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
@@ -52,4 +52,4 @@
 #include "zengine/Debug/Assert.hpp"
 #include "zengine/Debug/Tee.hpp"
 
-#endif // ZE_MACROS
+#endif // ZE_MACROS_HPP

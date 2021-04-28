@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_TIME
-#define ZE_TIME
+#ifndef ZE_TIME_HPP
+#define ZE_TIME_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -92,4 +92,4 @@ namespace ze
 
 #include "Time.inl"
 
-#endif // ZE_TIME
+#endif // ZE_TIME_HPP

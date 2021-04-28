@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_EVENTHANDLER
-#define ZE_EVENTHANDLER
+#ifndef ZE_EVENTHANDLER_HPP
+#define ZE_EVENTHANDLER_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -57,4 +57,4 @@ namespace ze
 
 #include "EventHandler.inl"
 
-#endif // ZE_EVENTHANDLER
+#endif // ZE_EVENTHANDLER_HPP

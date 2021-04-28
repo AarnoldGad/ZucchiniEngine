@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_PRIORITY
-#define ZE_PRIORITY
+#ifndef ZE_PRIORITY_HPP
+#define ZE_PRIORITY_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -40,4 +40,4 @@ namespace ze
    };
 }
 
-#endif // ZE_PRIORITY
+#endif // ZE_PRIORITY_HPP

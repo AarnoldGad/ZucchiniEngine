@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_SYSTEM
-#define ZE_SYSTEM
+#ifndef ZE_SYSTEM_HPP
+#define ZE_SYSTEM_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -87,4 +87,4 @@ namespace ze
    ZE_API std::string ArchToString(Architecture arch);
 }
 
-#endif // ZE_SYSTEM
+#endif // ZE_SYSTEM_HPP

@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_SUBSCRIBER
-#define ZE_SUBSCRIBER
+#ifndef ZE_SUBSCRIBER_HPP
+#define ZE_SUBSCRIBER_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -68,4 +68,4 @@ namespace ze
 
 #include "Subscriber.inl"
 
-#endif // ZE_SUBSCRIBER
+#endif // ZE_SUBSCRIBER_HPP

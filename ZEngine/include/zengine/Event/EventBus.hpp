@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_EVENTBUS
-#define ZE_EVENTBUS
+#ifndef ZE_EVENTBUS_HPP
+#define ZE_EVENTBUS_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -74,4 +74,4 @@ namespace ze
 
 #include "EventBus.inl"
 
-#endif // ZE_EVENTBUS
+#endif // ZE_EVENTBUS_HPP

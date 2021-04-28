@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_MEMORY
-#define ZE_MEMORY
+#ifndef ZE_MEMORY_HPP
+#define ZE_MEMORY_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -87,4 +87,4 @@ inline void operator delete[](void* pointer, char const* file, unsigned int line
    #pragma warning(default:4595)
 #endif
 
-#endif // ZE_MEMORY
+#endif // ZE_MEMORY_HPP

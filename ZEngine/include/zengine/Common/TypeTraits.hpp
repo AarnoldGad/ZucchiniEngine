@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_TYPETRAITS
-#define ZE_TYPETRAITS
+#ifndef ZE_TYPETRAITS_HPP
+#define ZE_TYPETRAITS_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -48,4 +48,4 @@ namespace ze
    using if_is_arithmetic = std::enable_if_t<std::is_arithmetic_v<Numeric>, Type>;
 }
 
-#endif // ZE_TYPETRAITS
+#endif // ZE_TYPETRAITS_HPP

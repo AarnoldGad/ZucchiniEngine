@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_STATE
-#define ZE_STATE
+#ifndef ZE_STATE_HPP
+#define ZE_STATE_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -55,4 +55,4 @@ namespace ze
    };
 }
 
-#endif // ZE_STATE
+#endif // ZE_STATE_HPP

@@ -23,10 +23,10 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_PCH
-#define ZE_PCH
+#ifndef ZE_PCH_HPP
+#define ZE_PCH_HPP
 
-#include "zengine/zebuild.hpp"
+#include "zengine/zeplatform.hpp"
 
 // Streams
 #include <iostream>
@@ -60,13 +60,13 @@
 #include <cstdlib>
 
 // Platform specific
-#if defined(ZE_BUILD_WINDOWS)
+#if defined(ZE_PLATFORM_WINDOWS)
    #include <Windows.h>
 
    #undef min
    #undef max
-#elif defined(ZE_BUILD_LINUX)
+#elif defined(ZE_PLATFORM_LINUX)
    #include <sys/utsname.h>
 #endif
 
-#endif // ZE_PCH
+#endif // ZE_PCH_HPP

@@ -44,8 +44,8 @@
  *                Debugging
  *
  */
-#ifndef ZE_TEEDEBUG
-#define ZE_TEEDEBUG
+#ifndef ZE_TEEDEBUG_HPP
+#define ZE_TEEDEBUG_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -134,4 +134,4 @@ decltype(auto) ftee(Value&& value, std::filesystem::path const& outputFile, std:
 
 #include "Tee.inl"
 
-#endif // ZE_TEEDEBUG
+#endif // ZE_TEEDEBUG_HPP

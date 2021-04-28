@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CHRONO
-#define ZE_CHRONO
+#ifndef ZE_CHRONO_HPP
+#define ZE_CHRONO_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -53,4 +53,4 @@ namespace ze
 
 #include "Chrono.inl"
 
-#endif // ZE_CHRONO
+#endif // ZE_CHRONO_HPP

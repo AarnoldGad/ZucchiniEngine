@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_EVENTDISPATCHER
-#define ZE_EVENTDISPATCHER
+#ifndef ZE_EVENTDISPATCHER_HPP
+#define ZE_EVENTDISPATCHER_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -54,4 +54,4 @@ namespace ze
 
 #include "EventDispatcher.inl"
 
-#endif // ZE_EVENTDISPATCHER
+#endif // ZE_EVENTDISPATCHER_HPP

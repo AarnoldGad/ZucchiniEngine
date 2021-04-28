@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_RANGEDNUMERIC
-#define ZE_RANGEDNUMERIC
+#ifndef ZE_RANGEDNUMERIC_HPP
+#define ZE_RANGEDNUMERIC_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -50,4 +50,4 @@ namespace ze
 
 #include "RangedNumeric.inl"
 
-#endif // ZE_RANGEDNUMERIC
+#endif // ZE_RANGEDNUMERIC_HPP

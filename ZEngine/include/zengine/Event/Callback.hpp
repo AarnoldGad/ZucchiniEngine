@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CALLBACK
-#define ZE_CALLBACK
+#ifndef ZE_CALLBACK_HPP
+#define ZE_CALLBACK_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -40,4 +40,4 @@ namespace ze
    };
 }
 
-#endif // ZE_CALLBACK
+#endif // ZE_CALLBACK_HPP

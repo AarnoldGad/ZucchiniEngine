@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CORE
-#define ZE_CORE
+#ifndef ZE_CORE_HPP
+#define ZE_CORE_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -112,4 +112,4 @@ namespace ze
 
 #include "Core.inl"
 
-#endif // ZE_CORE
+#endif // ZE_CORE_HPP

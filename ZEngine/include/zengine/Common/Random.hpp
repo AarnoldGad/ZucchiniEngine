@@ -23,14 +23,14 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_RANDOM
-#define ZE_RANDOM
+#ifndef ZE_RANDOM_HPP
+#define ZE_RANDOM_HPP
 
 #include "zengine/zemacros.hpp"
 
 #include <random>
 
-#ifdef ZE_BUILD_WINDOWS
+#ifdef ZE_PLATFORM_WINDOWS
    #undef min
    #undef max
 #endif
@@ -54,4 +54,4 @@ namespace ze
    };
 }
 
-#endif // ZE_RANDOM
+#endif // ZE_RANDOM_HPP

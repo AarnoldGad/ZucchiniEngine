@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_SINGLETON
-#define ZE_SINGLETON
+#ifndef ZE_SINGLETON_HPP
+#define ZE_SINGLETON_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -53,4 +53,4 @@ namespace ze
 
 #include "Singleton.inl"
 
-#endif // ZE_SINGLETON
+#endif // ZE_SINGLETON_HPP

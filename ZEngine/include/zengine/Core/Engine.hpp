@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_ENGINE
-#define ZE_ENGINE
+#ifndef ZE_ENGINE_HPP
+#define ZE_ENGINE_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -46,4 +46,4 @@ namespace ze
    };
 }
 
-#endif // ZE_ENGINE
+#endif // ZE_ENGINE_HPP
