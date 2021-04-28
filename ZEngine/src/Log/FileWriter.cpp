@@ -1,0 +1,32 @@
+#include "zepch.hpp"
+
+#include "zengine/Log/FileWriter.hpp"
+#include "zengine/Time/Date.hpp"
+
+#include <array>
+
+namespace ze
+{
+   FileWriter::FileWriter(std::string_view path)
+      : m_path(path.data()), m_lineStart(true) {}
+
+   void FileWriter::write(std::string_view name, Level level, std::string_view line)
+   {
+      std::ofstream file;
+      file.open(name, std::ios::out | std::ios::app);
+
+      if (m_lineStart)
+      {
+         Date date = Date::CurrentDate();
+         file << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << LevelToString(level) << "] <" << name << "> ";
+         m_lineStart = false;
+      }
+
+      file << line;
+   }
+
+   void FileWriter::flush()
+   {
+      m_lineStart = true;
+   }
+}

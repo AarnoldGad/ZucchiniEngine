@@ -1,33 +1,77 @@
 #include "zengine/Memory/New.hpp"
 
-template<typename Message>
-void ze::Logger::log(Level logLevel, Message const& message)
+template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> >
+void ze::Logger::log(Message message)
 {
-   setLogLevel(logLevel);
-   write(message);
+   log(getLogLevel(), std::string_view(message));
 }
 
-template<typename... Messages>
-void ze::Logger::logLine(Level logLevel, Messages&&... messages)
+template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int>>
+void ze::Logger::log(Message message)
 {
-   startNewLineAs(logLevel);
-   write(std::forward<Messages>(messages)...);
+   // Cast arithmetic type to char array to avoid heap allocation
+   std::array<char, 25> buf{0};
+   auto [end, err] = std::to_chars(buf.data(), buf.data() + buf.size(), message);
+
+   log(getLogLevel(), std::string_view(buf.data(), end - buf.data()));
+}
+
+template<typename Message>
+void ze::Logger::log(Level logLevel, Message&& message)
+{
+   setLogLevel(logLevel);
+   write(std::forward<Message>(message));
 }
 
 template<typename... Args>
-void ze::Logger::logFormatedLine(Level logLevel, std::string_view unformattedLine, Args&&... args)
+void ze::Logger::logLine(std::string_view format, Args&&... args)
 {
-   logLine(logLevel, formatLine(unformattedLine, std::forward<Args>(args)...));
+   logLine(getLogLevel(), std::forward<Args>(args)...);
 }
 
-inline std::string ze::Logger::getName() const noexcept
+template<typename... Args>
+void ze::Logger::logLine(Level logLevel, std::string_view format, Args&&... args)
+{
+   startNewLineAs(logLevel);
+   write(format, std::forward<Args>(args)...);
+}
+
+template<typename Message>
+ze::Logger& ze::Logger::operator<<(Message&& message)
+{
+   log(std::forward<Message>(message));
+   return *this;
+}
+
+template<typename... Args>
+void ze::Logger::write(std::string_view format, Args&&... args)
+{
+   std::array<char, LOGGERLINE_MAXLENGTH> line{0};
+   int written = std::snprintf(line.data(), line.size(), format.data(), std::forward<Args>(args)...);
+   if (written < 0)
+   {
+      LOG_TRACE("An error occured whilst logging");
+      return; // TODO Error handling
+   }
+   else if (written >= line.size())
+      LOG_TRACE("Warning : Insufficient buffer size"); // TODO Too
+
+   write(std::string_view(line.data(), written));
+}
+
+inline bool ze::Logger::canLog() const noexcept
+{
+   return (static_cast<uint8_t>(getLogLevel()) & getLogMask()) && getWriter();
+}
+
+inline char const* ze::Logger::getName() const noexcept
 {
    return m_name;
 }
 
-inline std::ostream& ze::Logger::getOutput() noexcept
+inline ze::Writer* ze::Logger::getWriter() const noexcept
 {
-   return m_output;
+   return m_writer;
 }
 
 inline unsigned int ze::Logger::getLogMask() const noexcept
@@ -35,95 +79,9 @@ inline unsigned int ze::Logger::getLogMask() const noexcept
    return m_logMask;
 }
 
-inline bool ze::Logger::canLog() const noexcept
+inline ze::Level ze::Logger::getLogLevel() const noexcept
 {
-   return m_logLevel & m_logMask && m_output.rdbuf();
-}
-
-inline bool ze::Logger::isConsole() const noexcept
-{
-   return m_output.rdbuf() == std::cout.rdbuf() || m_output.rdbuf() == std::cerr.rdbuf() || m_output.rdbuf() == std::clog.rdbuf();
-}
-
-inline bool ze::Logger::canLogToConsole() const noexcept
-{
-   return m_logLevel & m_logMask && m_outputToConsole;
-}
-
-template<typename Message>
-ze::Logger& ze::Logger::operator<<(Message const& message)
-{
-   write(message);
-   return *this;
-}
-
-template<unsigned int N, typename Head, typename... Tail>
-std::string ze::Logger::formatLine(std::string_view unformattedLine, Head const& head, Tail&&... tail)
-{
-   return formatLine<N + 1>(formatLine<N>(unformattedLine, head), std::forward<Tail>(tail)...);
-}
-
-template<unsigned int N, typename Arg>
-std::string ze::Logger::formatLine(std::string_view unformattedLine, Arg const& arg)
-{
-   std::stringstream ss;
-
-   size_t start = 0;
-   size_t charPos = unformattedLine.find("{" + std::to_string(N) + "}");
-   while (charPos != std::string::npos)
-   {
-      ss << unformattedLine.substr(start, charPos - start) << arg;
-
-      start = charPos + 3;
-      charPos = unformattedLine.find("{" + std::to_string(N) + "}", start);
-   }
-
-   ss << unformattedLine.substr(start);
-   return ss.str();
-}
-
-template<typename Head, typename... Tail>
-void ze::Logger::write(Head const& head, Tail&&... tail)
-{
-   write(head);
-   write(std::forward<Tail>(tail)...);
-}
-
-template<typename Message>
-void ze::Logger::write(Message const& message)
-{
-   if (canLog())
-   {
-      if (isConsole())
-         setConsoleColor();
-
-      printLineDetails();
-      m_output << message;
-
-      if (isConsole())
-         resetConsoleColor();
-   }
-
-   if (canLogToConsole() && !isConsole()) // Printing to console twice is useless wtf
-   {
-      setConsoleColor();
-
-      printLineDetails();
-      logToConsole(message);
-
-      resetConsoleColor();
-   }
-}
-
-
-template<typename Message>
-void ze::Logger::logToConsole(Message const& message)
-{
-   setConsoleColor();
-
-   std::cout << message;
-
-   resetConsoleColor();
+   return m_logLevel;
 }
 
 #include "zengine/Memory/NewOff.hpp"

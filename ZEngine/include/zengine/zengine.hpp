@@ -35,8 +35,14 @@
 #include <zengine/Core/Core.hpp>
 #include <zengine/Core/State.hpp>
 
-// Debug
+// Logger
+#include <zengine/Log/LogLevels.hpp>
 #include <zengine/Log/Logger.hpp>
+#include <zengine/Log/Writer.hpp>
+#include <zengine/Log/ConsoleColors.hpp>
+#include <zengine/Log/ConsoleWriter.hpp>
+
+// Debug
 #include <zengine/Debug/Assert.hpp>
 #include <zengine/Debug/Tee.hpp>
 #include <zengine/Memory/Memory.hpp>

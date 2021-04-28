@@ -28,75 +28,50 @@
 
 #include "zengine/zemacros.hpp"
 
+#include "zengine/Log/LogLevels.hpp"
+#include "zengine/Log/Writer.hpp"
+
 #include <iostream>
 #include <string>
+#include <charconv>
+#include <array>
 
 #ifdef ZE_PLATFORM_WINDOWS
    #include <Windows.h>
 #endif
 
-#define LOGGERNAME_MAXSIZE 15
+#define LOGGERLINE_MAXLENGTH 150
+#define LOGGERNAME_MAXLENGTH 15
 
 namespace ze
 {
+   class Writer;
+
    // TODO Print thread name / Print stacktrace / Check output stream validity
    class ZE_API Logger
    {
    public:
-      #if defined(ZE_BUILD_WINDOWS)
-         enum class TextColor : unsigned short
-         {
-            Black = 0, Blue,        Green,       Aqua,
-            Red,       Purple,      Yellow,      White,
-            Gray,      LightBlue,   LightGreen,  LightAqua,
-            LightRed,  LightPurple, LightYellow, BrightWhite
-         };
-      #elif defined(ZE_BUILD_LINUX)
-         enum class TextColor : unsigned short // Actual ANSI colors are limited due to compatibility of interface between platforms
-         {
-            Black = 0, Red = 0b001, Green = 0b010, Yellow = 0b011, Blue = 0b100, LightPurple = 0b101, LightAqua = 0b110, White = 0b111,
-            LightRed = 0b10001, LightGreen = 0b10010, LightYellow = 0b10011, LightBlue = 0b10100, Purple = 0b10101, Aqua = 0b10110, Gray = 0b100000, BrightWhite = 0b100111
-         };
-      #endif
+      
+   // Logging functions
+      template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> = 0>
+      void log(Message message);
 
-      enum Level
-      {
-         INFO     = FLAG(0),
-         DEBUG    = FLAG(1),
-         WARN     = FLAG(2),
-         ERR    = FLAG(3),
-         CRITICAL = FLAG(4)
-      };
+      template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> = 0>
+      void log(Message message);
 
-   // Member functions
       template<typename Message>
-      void log(Level logLevel, Message const& message);
-
-      template<typename... Messages>
-      void logLine(Level logLevel, Messages&&... messages);
+      void log(ze::Level logLevel, Message&& message);
 
       template<typename... Args>
-      void logFormatedLine(Level logLevel, std::string_view unformattedLine, Args&&... args);
+      void logLine(std::string_view format, Args&&... args);
 
-      std::string getName() const noexcept;
-
-      void setOutput(std::ostream& output);
-      void setOutput(std::streambuf* output);
-      std::ostream& getOutput() noexcept;
-
-      void setLogToConsole(bool logToConsole) noexcept;
-
-      void setLogMask(unsigned int mask) noexcept;
-      unsigned int getLogMask() const noexcept;
-
-      bool canLog() const noexcept;
-      bool isConsole() const noexcept;
-      bool canLogToConsole() const noexcept;
+      template<typename... Args>
+      void logLine(ze::Level logLevel, std::string_view format, Args&&... args);
 
    // Operators
       template<typename Message>
-      Logger& operator<<(Message const& message);
-      Logger& operator<<(std::ostream& (*manip)(std::ostream&));
+      Logger& operator<<(Message&& message);
+      //Logger& operator<<(std::ostream& (*manip)(std::ostream&));
       Logger& operator<<(Logger& (*manip)(Logger&));
 
    // Manipulators
@@ -122,43 +97,37 @@ namespace ze
       //Logger& stacktrace();
       //static Logger& stacktrace(Logger& logger);
 
-      // Constructors/Destructor
-      Logger(std::string_view name, std::ostream& output, bool outputToConsole = false, unsigned int logMask = 0xFF);
-      explicit Logger(std::string_view name = "UNDEFINED", std::streambuf* = nullptr, bool outputToConsole = false, unsigned int logMask = 0xFF);
+   // Accessors
+      char const* getName() const noexcept;
+
+      void setWriter(Writer* writer);
+      Writer* getWriter() const noexcept;
+
+      void setLogMask(uint8_t mask) noexcept;
+      unsigned int getLogMask() const noexcept;
+
+      bool canLog() const noexcept;
+
+   // Constructors/Destructor
+      explicit Logger(std::string_view name = "UNDEFINED", Writer* = nullptr, unsigned int logMask = 0xFF);
       ~Logger();
 
    private:
-      void printLineDetails();
+      template<typename... Args>
+      void write(std::string_view format, Args&&... args);
 
-      template<unsigned int N = 1, typename Head, typename... Tail>
-      std::string formatLine(std::string_view unformattedLine, Head const& head, Tail&&... tail);
-      template<unsigned int N = 1, typename Arg>
-      std::string formatLine(std::string_view unformattedLine, Arg const& arg);
+      void write(std::string_view message);
 
-      void setConsoleColor() const;
-      void resetConsoleColor() const;
-      TextColor getCorrespondingTextColor() const noexcept;
+      void setLogLevel(ze::Level logLevel) noexcept;
+      Level getLogLevel() const noexcept;
 
-      void setLogLevel(Level logLevel) noexcept;
-      Logger& startNewLineAs(Level logLevel);
+      Logger& startNewLineAs(ze::Level logLevel);
 
-      template<typename Head, typename... Tail>
-      void write(Head const& head, Tail&&... tail);
+      char m_name[LOGGERNAME_MAXLENGTH + 1];
+      Writer* m_writer;
 
-      template<typename Message>
-      void write(Message const& message);
-
-      template<typename Message>
-      void logToConsole(Message const& message);
-
-      static char const* levelToString(Level logLevel) noexcept;
-
-      char m_name[LOGGERNAME_MAXSIZE + 1];
-      std::ostream m_output;
-      bool m_outputToConsole;
-      unsigned int m_logMask; // Members of Level enum to be ORed together
-      bool m_lineStart;
-      Level m_logLevel;
+      uint8_t m_logMask; // Members of Level enum to be ORed together
+      ze::Level m_logLevel;
    };
 }
 

@@ -7,219 +7,157 @@
 
 namespace ze
 {
-   ze::Logger::Logger(std::string_view name, std::streambuf* output, bool outputToConsole, unsigned int logMask)
-      : m_name{0}, m_output(output), m_outputToConsole(outputToConsole), m_logMask(logMask), m_lineStart(true), m_logLevel(Level::INFO)
+
+   Logger::Logger(std::string_view name, Writer* writer, unsigned int logMask)
+      : m_name{0}, m_writer(writer), m_logMask(logMask), m_logLevel(Level::Info)
    {
-      name.copy(m_name, std::min<size_t>(LOGGERNAME_MAXSIZE - 1, name.length()));
+      name.copy(m_name, std::min<size_t>(LOGGERNAME_MAXLENGTH - 1, name.length()));
    }
 
-   ze::Logger::Logger(std::string_view name, std::ostream& output, bool outputToConsole, unsigned int logMask)
-      : m_name{0}, m_output(output.rdbuf()), m_outputToConsole(outputToConsole), m_logMask(logMask), m_lineStart(true), m_logLevel(Level::INFO)
+   void Logger::setWriter(Writer* writer)
    {
-      name.copy(m_name, std::min<size_t>(LOGGERNAME_MAXSIZE - 1, name.length()));
+      m_writer = writer;
    }
 
-   void ze::Logger::setOutput(std::ostream& output)
-   {
-      m_output.rdbuf(output.rdbuf());
-   }
-
-   void ze::Logger::setOutput(std::streambuf* output)
-   {
-      m_output.rdbuf(output);
-   }
-
-   void ze::Logger::setLogToConsole(bool logToConsole) noexcept
-   {
-      m_outputToConsole = logToConsole;
-   }
-
-   void ze::Logger::setLogMask(unsigned int mask) noexcept
-   {
-      m_logMask = mask;
-   }
-
-   ze::Logger& ze::Logger::operator<<(std::ostream& (*manip)(std::ostream&))
-   {
-      write(manip);
-      return *this;
-   }
-
-   ze::Logger& ze::Logger::operator<<(Logger& (*manip)(Logger&))
+   Logger& Logger::operator<<(Logger& (*manip)(Logger&))
    {
       return manip(*this);
    }
 
-   ze::Logger& ze::Logger::info()
+   Logger& Logger::info()
    {
-      if (m_logLevel == Level::INFO)
+      if (getLogLevel() == Level::Info)
          return *this;
 
-      return startNewLineAs(Level::INFO);
+      return startNewLineAs(Level::Info);
    }
 
-   ze::Logger& ze::Logger::info(Logger& logger)
+   Logger& Logger::info(Logger& logger)
    {
       return logger.info();
    }
 
-   ze::Logger& ze::Logger::debug()
+   Logger& Logger::debug()
    {
-      if (m_logLevel == Level::DEBUG)
+      if (getLogLevel() == Level::Debug)
          return *this;
 
-      return startNewLineAs(Level::DEBUG);
+      return startNewLineAs(Level::Debug);
    }
 
-   ze::Logger& ze::Logger::debug(Logger& logger)
+   Logger& Logger::debug(Logger& logger)
    {
       return logger.debug();
    }
 
-   ze::Logger& ze::Logger::warn()
+   Logger& Logger::warn()
    {
-      if (m_logLevel == Level::WARN)
+      if (getLogLevel() == Level::Warn)
          return *this;
 
-      return startNewLineAs(Level::WARN);
+      return startNewLineAs(Level::Warn);
    }
 
-   ze::Logger& ze::Logger::warn(Logger& logger)
+   Logger& Logger::warn(Logger& logger)
    {
       return logger.warn();
    }
 
-   ze::Logger& ze::Logger::error()
+   Logger& Logger::error()
    {
-      if (m_logLevel == Level::ERR)
+      if (getLogLevel() == Level::Error)
          return *this;
 
-      return startNewLineAs(Level::ERR);
+      return startNewLineAs(Level::Error);
    }
 
-   ze::Logger& ze::Logger::error(Logger& logger)
+   Logger& Logger::error(Logger& logger)
    {
       return logger.error();
    }
 
-   ze::Logger& ze::Logger::critical()
+   Logger& Logger::critical()
    {
-      if (m_logLevel == Level::CRITICAL)
+      if (getLogLevel() == Level::Critical)
          return *this;
 
-      return startNewLineAs(Level::CRITICAL);
+      return startNewLineAs(Level::Critical);
    }
 
-   ze::Logger& ze::Logger::critical(Logger& logger)
+   Logger& Logger::critical(Logger& logger)
    {
       return logger.critical();
    }
 
-   ze::Logger& ze::Logger::newLine()
+   Logger& Logger::newLine()
    {
-      if (!m_lineStart)
+      if (canLog())
       {
-         *this << std::endl;
-         m_lineStart = true;
+         getWriter()->write(getName(), getLogLevel(), "\n");
+         getWriter()->flush();
       }
 
       return *this;
    }
 
-   ze::Logger& ze::Logger::newLine(Logger& logger)
+   Logger& Logger::newLine(Logger& logger)
    {
       return logger.newLine();
    }
 
-   void ze::Logger::printLineDetails()
+   void Logger::write(std::string_view message)
    {
-      if (m_lineStart)
-      {
-         Date date = Date::CurrentDate();
-
-         if (canLog())
-            m_output << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << levelToString(m_logLevel) << "] <" << m_name << "> ";
-
-         if (canLogToConsole() && !isConsole())
-            std::cout << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << levelToString(m_logLevel) << "] <" << m_name << "> ";
-
-         m_lineStart = false;
-      }
+      if (canLog())
+         getWriter()->write(getName(), getLogLevel(), message);
    }
 
-   void ze::Logger::setConsoleColor() const
-   {
-      #if defined(ZE_BUILD_WINDOWS)
-      HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-      SetConsoleTextAttribute(console, static_cast<unsigned short>(getCorrespondingTextColor()));
-      #elif defined(ZE_BUILD_LINUX)
-      unsigned short color = static_cast<unsigned short>(getCorrespondingTextColor());
-      std::cout << "\033[" << (color >> 4) << ";" << (color & 0b1111) + 30 << "m";
-      #endif
-   }
+   // TODO
+   //Logger& Logger::stacktrace()
+   //{
 
-   void ze::Logger::resetConsoleColor() const
-   {
-      #if defined(ZE_BUILD_WINDOWS)
-      HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-      SetConsoleTextAttribute(console, static_cast<unsigned short>(TextColor::White));
-      #elif defined(ZE_BUILD_LINUX)
-      std::cout << "\033[0m";
-      #endif
-   }
+   //   return *this;
+   //}
 
-   ze::Logger::TextColor ze::Logger::getCorrespondingTextColor() const noexcept
-   {
-      switch (m_logLevel)
-      {
-         case Level::INFO:
-            return TextColor::White;
-         case Level::DEBUG:
-            return TextColor::LightGreen;
-         case Level::WARN:
-            return TextColor::LightYellow;
-         case Level::ERR:
-            return TextColor::Red;
-         case Level::CRITICAL:
-            return TextColor::LightRed;
-         default:
-            return TextColor::White;
-      }
-   }
+   //Logger& Logger::stacktrace(Logger& logger)
+   //{
+   //   return logger.stacktrace();
+   //}
 
-   void ze::Logger::setLogLevel(Level logLevel) noexcept
+   //void Logger::printLineDetails()
+   //{
+   //   if (m_lineStart)
+   //   {
+   //      Date date = Date::CurrentDate();
+
+   //      if (canLog())
+   //         m_output << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << levelToString(m_logLevel) << "] <" << m_name << "> ";
+
+   //      if (canLogToConsole() && !isConsole())
+   //         std::cout << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << levelToString(m_logLevel) << "] <" << m_name << "> ";
+
+   //      m_lineStart = false;
+   //   }
+   //}
+
+   void Logger::setLogLevel(Level logLevel) noexcept
    {
       m_logLevel = logLevel;
    }
 
-   ze::Logger& ze::Logger::startNewLineAs(Level logLevel)
+   void Logger::setLogMask(uint8_t mask) noexcept
+   {
+      m_logMask = mask;
+   }
+
+   Logger& Logger::startNewLineAs(Level logLevel)
    {
       setLogLevel(logLevel);
-      newLine();
-      return *this;
+
+      return newLine();
    }
 
-   char const* ze::Logger::levelToString(Level logLevel) noexcept
+   Logger::~Logger()
    {
-      switch (logLevel)
-      {
-         case Level::INFO:
-            return "Info";
-         case Level::DEBUG:
-            return "Debug";
-         case Level::WARN:
-            return "Warn";
-         case Level::ERR:
-            return "Error";
-         case Level::CRITICAL:
-            return "Critical";
-         default:
-            return "None";
-      }
-   }
-
-   ze::Logger::~Logger()
-   {
-      newLine(); // Insert new line at end of stream
+      if (getWriter()) getWriter()->flush(); // Flush output
    }
 }
