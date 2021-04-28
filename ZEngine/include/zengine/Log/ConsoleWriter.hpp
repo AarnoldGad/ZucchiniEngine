@@ -29,7 +29,6 @@
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Log/Writer.hpp"
-#include "zengine/Log/Logger.hpp"
 
 #include <iostream>
 

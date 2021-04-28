@@ -1,6 +1,6 @@
 #include "zepch.hpp"
 
-#include "zengine/Log/ConsoleWriter.hpp"
+#include "zengine/Log/DebugFileWriter.hpp"
 #include "zengine/Log/ConsoleColors.hpp"
 #include "zengine/Time/Date.hpp"
 
@@ -8,11 +8,13 @@
 
 namespace ze
 {
-   ConsoleWriter::ConsoleWriter(std::ostream& console)
-      : m_console(console), m_lineStart(true) {}
+   DebugFileWriter::DebugFileWriter(std::string_view path, std::ostream& console)
+      : FileWriter(path), m_console(console) {}
 
-   void ConsoleWriter::write(std::string_view name, Level level, std::string_view line)
+   void DebugFileWriter::write(std::string_view name, Level level, std::string_view line)
    {
+      FileWriter::write(name, level, line);
+
       ze::SetConsoleColor(ze::GetLevelColor(level));
 
       if (m_lineStart)
@@ -27,9 +29,11 @@ namespace ze
       ze::ResetConsoleColor();
    }
 
-   void ConsoleWriter::flush()
+   void DebugFileWriter::flush()
    {
+      FileWriter::flush();
       m_console.flush();
+
       m_lineStart = true;
    }
 }

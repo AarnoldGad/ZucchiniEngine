@@ -18,7 +18,9 @@ namespace ze
    }
 
    Core::Core(std::string const& appName)
-      : m_appName(appName), m_isInitialised(false), m_coreLogger("CORE"), m_clientLogger(getApplicationName()), m_running(false), m_tickRate{}
+      : m_appName(appName), m_isInitialised(false), m_coreWriter("zengine.log"),
+        m_clientWriter(getApplicationName()), m_coreLogger("CORE"), m_clientLogger(getApplicationName()),
+        m_running(false), m_tickRate{}
    {
       s_app = this;
    }
@@ -30,20 +32,8 @@ namespace ze
       zassert(m_isInitialised == false, "Engine has already been initialised !");
 
       // Init loggers
-      m_coreLogger.setLogToConsole(true);
-      m_clientLogger.setLogToConsole(true);
-
-      m_coreLog.open("zengine.log");
-      if (m_coreLog)
-         m_coreLogger.setOutput(m_coreLog);
-      else
-         LOG_TRACE("Unable to open core log file !");
-
-      m_clientLog.open(getApplicationName() + ".log");
-      if (m_clientLog)
-         m_clientLogger.setOutput(m_clientLog);
-      else
-         LOG_TRACE("Unable to open client log file !");
+      m_coreLogger.setWriter(&m_coreWriter);
+      m_clientLogger.setWriter(&m_clientWriter);
 
       // Print system informations
       System sysInfo = ::ze::GetSystemInfo();

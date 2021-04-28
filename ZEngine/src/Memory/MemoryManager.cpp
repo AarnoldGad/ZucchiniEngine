@@ -3,15 +3,53 @@
 #include "zengine/Log/Logger.hpp"
 #include "zengine/Log/ConsoleWriter.hpp"
 #include "zengine/Memory/MemoryManager.hpp"
+#include "zengine/Time/Date.hpp"
 
 #include <fstream>
+
+#define MEMORYLOGGER_FILENAME "memtrack.log"
 
 namespace ze
 {
    namespace
    {
-      ConsoleWriter writer;
-      Logger s_memoryLogger("MEMORY", &writer); // Allocation functions should be "heap allocation free". Don't use Logger::logFormattedLine as it uses std::strings !
+      class MemoryWriter : public ConsoleWriter
+      {
+      public:
+         void write(std::string_view name, Level level, std::string_view line) override
+         {
+            #if defined(ZE_DEBUG)
+               ConsoleWriter::write(name, level, line);
+            #endif
+
+            std::ofstream file;
+            file.open(MEMORYLOGGER_FILENAME, std::ios::out | std::ios::app);
+
+            if (m_lineStart)
+            {
+               Date date = Date::CurrentDate();
+               file << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << LevelToString(level) << "] <" << name << "> ";
+               m_lineStart = false;
+            }
+
+            file << line;
+         }
+
+         void flush() override
+         {
+            ConsoleWriter::flush();
+            m_lineStart = true;
+         }
+
+         MemoryWriter()
+            : ConsoleWriter(std::cout), m_lineStart(true) {}
+
+      private:
+         bool m_lineStart;
+      };
+      
+      MemoryWriter memWriter; // Custom writer to avoid heap allocation
+      Logger s_memoryLogger("MEMORY");
 
       char const* s_nextFile = nullptr;
       unsigned int s_nextLine = 0;
@@ -46,6 +84,7 @@ namespace ze
    {
       static MemoryManager instance;
 
+      s_memoryLogger.setWriter(&memWriter);
       s_memoryLogger.info() << "------ Memory Tracker Started ------" << Logger::newLine;
 
       s_isInitialised = true;

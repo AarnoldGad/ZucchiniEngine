@@ -2,6 +2,8 @@
 
 #include "zengine/Log/ConsoleColors.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    void ResetConsoleColor()

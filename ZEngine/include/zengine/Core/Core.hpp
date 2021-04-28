@@ -28,8 +28,8 @@
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Abstract/Singleton.hpp"
 #include "zengine/Log/Logger.hpp"
+#include "zengine/Log/DebugFileWriter.hpp"
 #include "zengine/Event/EventBus.hpp"
 #include "zengine/Event/Subscriber.hpp"
 #include "zengine/Time/Chrono.hpp"
@@ -93,10 +93,16 @@ namespace ze
       std::string m_appName;
       bool m_isInitialised;
 
+      #if defined(ZE_DEBUG)
+         DebugFileWriter m_coreWriter;
+         DebugFileWriter m_clientWriter;
+      #else
+         ConsoleWriter m_coreWriter;
+         ConsoleWriter m_clientWriter;
+      #endif
+
       Logger m_coreLogger;
-      std::ofstream m_coreLog; // TODO File System
       Logger m_clientLogger;
-      std::ofstream m_clientLog; // TODO File System
 
       EventBus m_eventBus;
       std::vector<State*> m_states;

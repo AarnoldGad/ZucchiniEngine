@@ -1,6 +1,6 @@
 /**
- * FileWriter.hpp
- * 27 Apr 2021
+ * DebugFileWriter.hpp
+ * 28 Apr 2021
  * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
@@ -23,32 +23,28 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_FILEWRITER_HPP
-#define ZE_FILEWRITER_HPP
+#ifndef ZE_DEBUGFILEWRITER_HPP
+#define ZE_DEBUGFILEWRITER_HPP
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Log/Writer.hpp"
+#include "zengine/Log/FileWriter.hpp"
 
 namespace ze
 {
-   class ZE_API FileWriter : public Writer
+   // TODO Rework design to avoid this kind of class combination
+   class ZE_API DebugFileWriter : public FileWriter
    {
    public:
       void write(std::string_view name, Level level, std::string_view line) override;
       void flush() override;
 
-      void setFilePath(std::filesystem::path const& path) noexcept;
-      std::filesystem::path getFilePath() const noexcept;
-
-      FileWriter(std::filesystem::path const& path);
+      DebugFileWriter(std::string_view path, std::ostream& console = std::cout);
 
    private:
-      std::filesystem::path m_path;
       bool m_lineStart;
+      std::ostream& m_console;
    };
 }
 
-#include "FileWriter.inl"
-
-#endif // ZE_FILEWRITER_HPP
+#endif // ZE_DEBUGFILEWRITER_HPP

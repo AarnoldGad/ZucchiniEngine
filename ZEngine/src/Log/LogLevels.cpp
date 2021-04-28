@@ -2,6 +2,8 @@
 
 #include "zengine/Log/LogLevels.hpp"
 
+#include "zengine/Memory/New.hpp"
+
 namespace ze
 {
    char const* LevelToString(Level level) noexcept
