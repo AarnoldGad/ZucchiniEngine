@@ -30,6 +30,16 @@
 
 namespace ze
 {
+   enum class Architecture
+   {
+      x86, x64, ARM, ARM64, IA64, UNKNOWN
+   };
+
+   enum class Endianess
+   {
+      LITTLE, BIG
+   };
+
    struct System
    {
       std::string systemName;
@@ -48,16 +58,6 @@ namespace ze
             unsigned int rev;
          } version;
       } os;
-   };
-
-   enum class Architecture
-   {
-      x86, x64, ARM, ARM64, IA64, UNKNOWN
-   };
-
-   enum class Endianess
-   {
-      LITTLE, BIG
    };
 
    struct Processor

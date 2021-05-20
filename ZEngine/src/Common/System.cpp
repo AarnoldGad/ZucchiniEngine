@@ -21,10 +21,10 @@ namespace ze
       const size_t hostNameSize = sysconf(_SC_HOST_NAME_MAX) + 1;
       std::string name;
       name.resize(hostNameSize);
-      if (!gethostname(&name[0], hostNameSize))
-         return name;
 
-      return "";
+      if (gethostname(&name[0], hostNameSize)) return "";
+
+      return name;
 
       #elif defined(_WIN32)
 
@@ -45,10 +45,9 @@ namespace ze
       size_t loginNameSize = sysconf(_SC_LOGIN_NAME_MAX) + 1;
       std::string name;
       name.resize(loginNameSize);
-      if (!getlogin_r(&name[0], loginNameSize))
-         return name;
+      if (getlogin_r(&name[0], loginNameSize)) return "";
 
-      return "";
+      return name; 
 
       #elif defined(_WIN32)
 
@@ -259,8 +258,16 @@ namespace ze
 
       #elif defined(_WIN32)
 
-      // TODO
-      return {};
+      HKEY hkey;
+      if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
+         return {};
+
+      char model[64];
+      DWORD size = sizeof(model);
+      if (RegQueryValueExA(hkey, "ProcessorNameString", nullptr, nullptr, static_cast<LPBYTE>(static_cast<void*>(&model[0])), &size))
+         return {};
+
+      return model;
 
       #endif
    }
