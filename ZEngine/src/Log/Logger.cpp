@@ -11,7 +11,10 @@ namespace ze
    Logger::Logger(std::string_view name, Writer* writer, unsigned int logMask)
       : m_name{0}, m_writer(writer), m_logMask(logMask), m_logLevel(Level::Info)
    {
-      name.copy(m_name, std::min<size_t>(LOGGERNAME_MAXLENGTH - 1, name.length()));
+      name.copy(m_name, std::min<size_t>(LOGGERNAME_MAXLENGTH, name.length()));
+      // Make the name upper case
+      for (size_t i = 0; i < LOGGERNAME_MAXLENGTH; ++i)
+         m_name[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(m_name[i]))); // TODO String utils
    }
 
    void Logger::setWriter(Writer* writer)
@@ -121,22 +124,6 @@ namespace ze
    //Logger& Logger::stacktrace(Logger& logger)
    //{
    //   return logger.stacktrace();
-   //}
-
-   //void Logger::printLineDetails()
-   //{
-   //   if (m_lineStart)
-   //   {
-   //      Date date = Date::CurrentDate();
-
-   //      if (canLog())
-   //         m_output << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << levelToString(m_logLevel) << "] <" << m_name << "> ";
-
-   //      if (canLogToConsole() && !isConsole())
-   //         std::cout << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << levelToString(m_logLevel) << "] <" << m_name << "> ";
-
-   //      m_lineStart = false;
-   //   }
    //}
 
    void Logger::setLogLevel(Level logLevel) noexcept
