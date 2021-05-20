@@ -46,6 +46,7 @@ namespace ze
    private:
       std::filesystem::path m_path;
       bool m_lineStart;
+      bool m_firstWrite;
    };
 }
 

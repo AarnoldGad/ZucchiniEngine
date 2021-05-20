@@ -23,7 +23,14 @@ namespace ze
             #endif
 
             std::ofstream file;
-            file.open(MEMORYLOGGER_FILENAME, std::ios::out | std::ios::app);
+            
+            if (m_firstWrite)
+            {
+               file.open(MEMORYLOGGER_FILENAME);
+               m_firstWrite = false;
+            }
+            else
+               file.open(MEMORYLOGGER_FILENAME, std::ios::out | std::ios::app);
 
             if (m_lineStart)
             {
@@ -42,10 +49,11 @@ namespace ze
          }
 
          MemoryWriter()
-            : ConsoleWriter(std::cout), m_lineStart(true) {}
+            : ConsoleWriter(std::cout), m_lineStart(true), m_firstWrite(true) {}
 
       private:
          bool m_lineStart;
+         bool m_firstWrite;
       };
       
       MemoryWriter memWriter; // Custom writer to avoid heap allocation

@@ -10,12 +10,19 @@
 namespace ze
 {
    FileWriter::FileWriter(std::filesystem::path const& path)
-      : m_path(path), m_lineStart(true) {}
+      : m_path(path), m_lineStart(true), m_firstWrite(true) {}
 
    void FileWriter::write(std::string_view name, Level level, std::string_view line)
    {
       std::ofstream file;
-      file.open(m_path, std::ios::out | std::ios::app);
+
+      if (m_firstWrite)
+      {
+         file.open(m_path);
+         m_firstWrite = false;
+      }
+      else
+         file.open(m_path, std::ios::out | std::ios::app);
 
       if (m_lineStart)
       {

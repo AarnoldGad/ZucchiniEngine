@@ -9,7 +9,7 @@
 namespace ze
 {
    DebugFileWriter::DebugFileWriter(std::string_view path, std::ostream& console)
-      : FileWriter(path), m_console(console) {}
+      : FileWriter(path), m_lineStart(true), m_console(console) {}
 
    void DebugFileWriter::write(std::string_view name, Level level, std::string_view line)
    {
