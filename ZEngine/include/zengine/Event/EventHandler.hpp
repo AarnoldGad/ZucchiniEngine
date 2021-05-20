@@ -49,8 +49,6 @@ namespace ze
       virtual void operator()(Event& event) override;
 
    private:
-      bool isEventReceivable(Event& event) const noexcept;
-
       CallbackType m_callback;
    };
 }

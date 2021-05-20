@@ -7,5 +7,5 @@
 namespace ze
 {
    EventDispatcher::EventDispatcher(Event& event) noexcept
-      : m_event(event) {}
+      : m_event(&event) {}
 }

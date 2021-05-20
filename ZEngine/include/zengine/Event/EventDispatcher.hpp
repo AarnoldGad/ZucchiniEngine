@@ -45,10 +45,7 @@ namespace ze
       explicit EventDispatcher(Event& event) noexcept;
 
    private:
-      template<typename EventType>
-      bool isEventReceivable(Event& event) const;
-
-      Event& m_event;
+      Event* m_event;
    };
 }
 
