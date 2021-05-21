@@ -25,5 +25,5 @@
  **/
 #include "zengine/Memory/Memory.hpp"
 
-#define new new(__FILE__, __LINE__)
-#define delete ze::MemoryManager::NextRelease(__FILE__, __LINE__), delete
+#define new new(__FILENAME__, __LINE__)
+#define delete ze::MemoryManager::NextRelease(__FILENAME__, __LINE__), delete

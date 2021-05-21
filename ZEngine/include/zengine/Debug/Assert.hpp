@@ -30,7 +30,7 @@
 
 #include <string>
 
-#ifdef ZE_DEBUG
+#ifdef _DEBUG
 
    #define zassert(condition, message) ze::Assert((condition), __FILENAME__, __FUNCTION__, __LINE__, #condition , message)
 

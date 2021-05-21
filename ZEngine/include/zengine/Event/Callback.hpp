@@ -36,7 +36,7 @@ namespace ze
    public:
       virtual void operator()(CallbackParameters...) = 0;
 
-      virtual ~Callback() noexcept = default;
+      virtual ~Callback() = default;
    };
 }
 

@@ -18,7 +18,7 @@ namespace ze
       public:
          void write(std::string_view name, Level level, std::string_view line) override
          {
-            #if defined(ZE_DEBUG)
+            #if defined(_DEBUG)
                ConsoleWriter::write(name, level, line);
             #endif
 

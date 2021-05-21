@@ -4,7 +4,7 @@
 
 #include "zengine/Memory/New.hpp"
 
-#ifdef ZE_DEBUG
+#ifdef _DEBUG
    namespace ze
    {
       void Assert(bool const condition, std::string const& file, std::string const& function, unsigned int line, std::string const& conditionAsString, std::string const& message)

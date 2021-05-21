@@ -32,7 +32,6 @@
 
 namespace ze
 {
-   // TODO Lots of functions marked as noexcept. std::chrono functions aren't supposed to throw exceptions, right ?
    class ZE_API Time
    {
    public:

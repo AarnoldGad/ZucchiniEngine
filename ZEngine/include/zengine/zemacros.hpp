@@ -8,8 +8,8 @@
 
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 21
-#define ZE_VERSION_PATCH 4
-#define ZE_VERSION_REV 27
+#define ZE_VERSION_PATCH 5
+#define ZE_VERSION_REV 21
 
 #define FLAG(shift) 1 << shift
 #define MACRO_TO_STRING(x) TO_STRING(x)
@@ -22,12 +22,6 @@
 #endif
 
 #if defined(_DEBUG)
-   #define ZE_DEBUG
-#elif defined(NDEBUG)
-   #define ZE_NDEBUG
-#endif
-
-#if defined(ZE_DEBUG)
    template<typename... Args>
    inline void LOG_TRACE(Args... args)
    {

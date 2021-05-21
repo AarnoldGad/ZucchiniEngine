@@ -30,7 +30,7 @@
 
 namespace ze
 {
-   enum class Priority : unsigned char
+   enum class Priority : uint8_t
    {
       VERY_LOW = FLAG(0),
       LOW = FLAG(1),

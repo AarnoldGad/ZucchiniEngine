@@ -38,8 +38,8 @@ namespace ze
       static void Reset();
 
    protected:
-      Singleton() noexcept = default;
-      virtual ~Singleton() noexcept = default;
+      Singleton() = default;
+      virtual ~Singleton() = default;
 
    private:
       Singleton(Singleton<ObjectType> const&) = delete;

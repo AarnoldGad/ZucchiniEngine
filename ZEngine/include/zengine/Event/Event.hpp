@@ -48,7 +48,7 @@ namespace ze
       virtual std::string toString() const = 0;
 
       Event() noexcept;
-      virtual ~Event() noexcept = default;
+      virtual ~Event() = default;
 
    private:
       bool m_canceled;
