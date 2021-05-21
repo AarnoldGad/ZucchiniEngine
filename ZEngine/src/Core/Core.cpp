@@ -2,6 +2,7 @@
 
 #include "zengine/Core/Core.hpp"
 #include "zengine/Common/System.hpp"
+#include "zengine/Event/EventDispatcher.hpp"
 
 #include <cstdlib>
 
@@ -18,18 +19,19 @@ namespace ze
    }
 
    Core::Core(std::string const& appName)
-      : m_appName(appName), m_isInitialised(false), m_coreWriter("zengine.log"),
-        m_clientWriter(getApplicationName()), m_coreLogger("CORE"), m_clientLogger(getApplicationName()),
-        m_running(false), m_tickRate{}
+      : m_appName(appName), m_isInitialised(false), m_coreWriter(ZENGINE_CORELOGGER_FILENAME),
+        m_clientWriter(getApplicationName() + ".log"), m_coreLogger(ZENGINE_CORELOGGER_NAME), m_clientLogger(getApplicationName()),
+        m_shouldPop(false), m_running(false), m_tickRate{}
    {
       s_app = this;
    }
 
    void Core::initialise()
    {
-      ze::Chrono initTime;
       // Debug guard
       zassert(m_isInitialised == false, "Engine has already been initialised !");
+
+      ze::Chrono initTime;
 
       // Init loggers
       m_coreLogger.setWriter(&m_coreWriter);
@@ -40,30 +42,35 @@ namespace ze
       Processor cpuInfo = ::ze::GetProcessorInfo();
       Memory memInfo = ::ze::GetMemoryInfo();
 
-      ZE_LOG_INFO("------ Initialising ZEngine ------");
-      ZE_LOG_INFO("------  * ZEngine version ", ZE_VERSION_MAJOR, "-", ZE_VERSION_MINOR, ".", ZE_VERSION_PATCH, ".", ZE_VERSION_REV);
-      ZE_LOG_INFO("------  * Running on ", sysInfo.os.name, " v", sysInfo.os.versionString);
-      ZE_LOG_INFO("------      * ", cpuInfo.model);
-      ZE_LOG_INFO("------      * ", ::ze::ArchToString(cpuInfo.arch), ", ", cpuInfo.cores.physical, " cores ", cpuInfo.cores.logical, " threads");
-      ZE_LOG_INFO("------      * ", memInfo.total, "B physical memory");
-      ZE_LOG_INFO("------  * Creating new application ", getApplicationName());
+      uint64_t totalMemory = memInfo.total;
+      int memorySizeOrder = 0;
+      while (totalMemory > 1024)
+      {
+         totalMemory /= 1024;
+         ++memorySizeOrder;
+      }
 
-      // Init Sub-Systems
-      m_eventSubscriber = useEventBusTo().subscribe<Event>(&Core::handleEvent, this, Priority::VERY_HIGH);
+      ZE_LOG_INFO("------ Initialising ZEngine ------");
+      ZE_LOG_INFO("------  * ZEngine version %u-%u.%u.%u", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_PATCH, ZE_VERSION_REV);
+      ZE_LOG_INFO("------  * Running on %s v%s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
+      ZE_LOG_INFO("------      * %s", cpuInfo.model.c_str());
+      ZE_LOG_INFO("------      * %s, %u cores %u thread", ::ze::ArchToString(cpuInfo.arch).c_str(), cpuInfo.cores.physical, cpuInfo.cores.logical);
+      ZE_LOG_INFO("------      * %u%s physical memory installed", totalMemory, (memorySizeOrder == 0 ? "B" : (memorySizeOrder == 1 ? "KB" : "GB")));
+      ZE_LOG_INFO("------  * Creating new application %s", getApplicationName().c_str());
+
+      m_eventSubscriber = useEventBusTo().subscribe(&Core::handleEvent, this);
 
       m_isInitialised = true;
 
-      ZE_LOG_INFO("------ Initialised in ", initTime.elapsed().asMilliseconds(), "ms !");
+      ZE_LOG_INFO("------ Initialised in %d ms !", initTime.elapsed().asMilliseconds());
       ZE_LOG_INFO("");
    }
 
    void Core::connectEngine(Engine& engine)
    {
-      zassert(&engine == static_cast<Engine*>(this), "Can't connect Core engine to itself !");
+      bool wasInserted = m_engines.insert(&engine).second;
 
-      bool hasBeenInserted = m_engines.insert(&engine).second;
-
-      if (hasBeenInserted)
+      if (wasInserted)
          engine.initialise();
       else
          LOG_TRACE("Trying to connect same engine multiple times !");
@@ -71,9 +78,9 @@ namespace ze
 
    void Core::disconnectEngine(Engine& engine)
    {
-      bool hasBeenErased = m_engines.erase(&engine);
+      bool wasErased = m_engines.erase(&engine);
 
-      if (hasBeenErased)
+      if (wasErased)
          engine.terminate();
       else
          LOG_TRACE("Trying to disconnect unknown engine !");
@@ -86,15 +93,15 @@ namespace ze
 
    void Core::popState()
    {
-      if (m_states.size() == 0) return;
-
-      m_states.back()->onDisconnection();
-      m_states.pop_back();
+      m_shouldPop = true;
    }
 
    void Core::run()
    {
+      if (isRunning()) return;
+
       m_running = true;
+      m_shouldPop = false;
       m_runTime.restart();
 
       try
@@ -103,7 +110,7 @@ namespace ze
       }
       catch (std::exception const& e)
       {
-         useCoreLogger().critical() << "Unhandled exception : " << e.what();
+         ZE_LOG_CRITICAL("Unhandled exception : %s", e.what());
          std::exit(-1);
       }
    }
@@ -117,11 +124,15 @@ namespace ze
       {
          deltaTime = loopTime.restart();
 
-         auto states = m_states;
-         tick(states, deltaTime);
+         popRegisteredState();
 
          tickEngines(deltaTime);
-         tickStates(deltaTime);
+
+         if (hasState())
+         {
+            State& state = *(m_states.back());
+            state.tick(deltaTime);
+         }
 
          useEventBusTo().dispatchEvents();
 
@@ -129,32 +140,32 @@ namespace ze
       }
    }
 
-   void Core::tickEngines(Time deltaTime)
+   void Core::popRegisteredState()
    {
-      auto states = m_states;
+      if (m_shouldPop && hasState())
+      {
+         State* state = m_states.back();
+         m_states.pop_back();
 
-      for (Engine* engine : m_engines)
-         engine->tick(states, deltaTime);
+         state->onDisconnection();
+         delete state;
+      }
+
+      m_shouldPop = false;
    }
 
-   void Core::tickStates(Time deltaTime)
+   void Core::tickEngines(Time deltaTime)
    {
-      auto states = m_states;
-
-      // Tick states in reverse order (top state first)
-      for (auto stateIt = states.rbegin(); stateIt != states.rend(); ++stateIt)
-         if ((*stateIt)->tick(deltaTime) != State::SPREAD)
-            break;
+      for (Engine* engine : m_engines)
+         engine->tick(deltaTime);
    }
 
    void Core::handleEvent(Event& event)
    {
-      auto states = m_states;
+      EventDispatcher dispatcher(event);
 
-      // Handle event in reverse order (top state first)
-      for (auto stateIt = states.rbegin(); stateIt != states.rend(); ++stateIt)
-         if ((*stateIt)->handleEvent(event) != State::SPREAD)
-            break;
+      if (hasState())
+         dispatcher.dispatch(&State::handleEvent, m_states.back());
    }
 
    void Core::capTickRate(Chrono loopTime)
@@ -170,17 +181,19 @@ namespace ze
    void Core::clearStates()
    {
       for (State* state : m_states)
+      {
+         state->onDisconnection();
          delete state;
+      }
 
       m_states.clear();
    }
 
    void Core::stop() noexcept
    {
-      m_runTime.pause();
       m_running = false;
       clearStates();
-      ZE_LOG_INFO("------ Application ", getApplicationName(), " ran for ", getRunTime().asMilliseconds(), "ms !");
+      ZE_LOG_INFO("------ Application %s ran for %d ms !", getApplicationName().c_str(), getRunTime().asMilliseconds());
    }
 
    void Core::terminate()
@@ -192,5 +205,7 @@ namespace ze
    {
       if (isRunning())
          stop();
+
+      clearStates();
    }
 }

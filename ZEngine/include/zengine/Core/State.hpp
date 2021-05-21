@@ -36,16 +36,11 @@ namespace ze
    class ZE_API State
    {
    public:
-      enum Spread
-      {
-         DONT_SPREAD = 0, SPREAD
-      };
-
       virtual void onConnection() = 0;
       virtual void onDisconnection() = 0;
 
-      virtual Spread tick(Time deltaTime) = 0;
-      virtual Spread handleEvent(Event& event) = 0;
+      virtual void tick(Time deltaTime) = 0;
+      virtual void handleEvent(Event& event) = 0;
 
       explicit State(std::string const& name) noexcept;
       virtual ~State() noexcept = default;

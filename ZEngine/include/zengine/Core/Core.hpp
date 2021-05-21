@@ -36,13 +36,17 @@
 #include "zengine/Core/Engine.hpp"
 
 #include <unordered_set>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 
+#define ZENGINE_CORELOGGER_NAME "Core"
+#define ZENGINE_CORELOGGER_FILENAME "zengine.log"
+
 namespace ze
 {
-   class ZE_API Core : public Engine
+   class ZE_API Core
    {
    public:
       static Core& GetApplication();
@@ -82,8 +86,10 @@ namespace ze
    private:
       void mainLoop();
 
+      void popRegisteredState();
+      bool hasState() const noexcept;
+
       void tickEngines(Time deltaTime);
-      void tickStates(Time deltaTime);
       void handleEvent(Event& event);
 
       void capTickRate(Chrono loopTime);
@@ -93,7 +99,7 @@ namespace ze
       std::string m_appName;
       bool m_isInitialised;
 
-      #if defined(ZE_DEBUG)
+      #if defined(_DEBUG)
          DebugFileWriter m_coreWriter;
          DebugFileWriter m_clientWriter;
       #else
@@ -103,9 +109,10 @@ namespace ze
 
       Logger m_coreLogger;
       Logger m_clientLogger;
-
       EventBus m_eventBus;
+
       std::vector<State*> m_states;
+      bool m_shouldPop;
 
       bool m_running;
       Chrono m_runTime; // Starts when application is constructed and run till its destruction

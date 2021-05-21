@@ -4,6 +4,7 @@ template<typename StateType, typename... Args>
 void ze::Core::pushState(Args&&... args)
 {
    m_states.push_back(new StateType(std::forward<Args>(args)...));
+   m_states.back()->onConnection();
 }
 
 inline std::string ze::Core::getApplicationName() const noexcept
@@ -39,6 +40,11 @@ inline ze::Time ze::Core::getRunTime() const noexcept
 inline unsigned int ze::Core::getTickRate() const noexcept
 {
    return m_tickRate;
+}
+
+inline bool ze::Core::hasState() const noexcept
+{
+   return m_states.size();
 }
 
 #include "zengine/Memory/NewOff.hpp"
