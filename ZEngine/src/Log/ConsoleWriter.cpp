@@ -15,10 +15,11 @@ namespace ze
    {
       ze::SetConsoleColor(ze::GetLevelColor(level));
 
-      if (m_lineStart)
+      if (isAtLineBegin())
       {
          Date date = Date::CurrentDate();
-         m_console << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << LevelToString(level) << "] <" << name << "> ";
+         std::tm tm = date.getTm();
+         m_console << "[" << std::put_time(&tm, "%H:%M:%S") << "] [" << LevelToString(level) << "] <" << name << "> ";
          m_lineStart = false;
       }
 

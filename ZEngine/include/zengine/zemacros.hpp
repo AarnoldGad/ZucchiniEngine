@@ -8,8 +8,8 @@
 
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 21
-#define ZE_VERSION_PATCH 5
-#define ZE_VERSION_REV 21
+#define ZE_VERSION_PATCH 6
+#define ZE_VERSION_REV 9
 
 #define FLAG(shift) 1 << shift
 #define MACRO_TO_STRING(x) TO_STRING(x)
@@ -31,17 +31,17 @@
    #define LOG_TRACE(...)
 #endif
 
-#define ZE_LOG_INFO(format, ...)     ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Info     , format, __VA_ARGS__)
-#define ZE_LOG_DEBUG(format, ...)    ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Debug    , format, __VA_ARGS__)
-#define ZE_LOG_WARN(format, ...)     ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Warn     , format, __VA_ARGS__)
-#define ZE_LOG_ERROR(format, ...)    ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Error    , format, __VA_ARGS__)
-#define ZE_LOG_CRITICAL(format, ...) ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Critical , format, __VA_ARGS__)
+#define ZE_LOG_INFO(...)     ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Info    , __VA_ARGS__)
+#define ZE_LOG_DEBUG(...)    ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Debug   , __VA_ARGS__)
+#define ZE_LOG_WARN(...)     ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Warn    , __VA_ARGS__)
+#define ZE_LOG_ERROR(...)    ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Error   , __VA_ARGS__)
+#define ZE_LOG_CRITICAL(...) ::ze::Core::GetApplication().useCoreLogger().logLine(::ze::Level::Critical, __VA_ARGS__)
 
-#define APP_LOG_INFO(format, ...)     ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Info     , format, __VA_ARGS__)
-#define APP_LOG_DEBUG(format, ...)    ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Debug    , format, __VA_ARGS__)
-#define APP_LOG_WARN(format, ...)     ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Warn     , format, __VA_ARGS__)
-#define APP_LOG_ERROR(format, ...)    ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Error    , format, __VA_ARGS__)
-#define APP_LOG_CRITICAL(format, ...) ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Critical , format, __VA_ARGS__)
+#define APP_LOG_INFO(...)     ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Info    , __VA_ARGS__)
+#define APP_LOG_DEBUG(...)    ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Debug   , __VA_ARGS__)
+#define APP_LOG_WARN(...)     ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Warn    , __VA_ARGS__)
+#define APP_LOG_ERROR(...)    ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Error   , __VA_ARGS__)
+#define APP_LOG_CRITICAL(...) ::ze::Core::GetApplication().useClientLogger().logLine(::ze::Level::Critical, __VA_ARGS__)
 
 #include "zengine/Debug/Assert.hpp"
 #include "zengine/Debug/Tee.hpp"

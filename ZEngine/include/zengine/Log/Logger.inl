@@ -26,7 +26,7 @@ void ze::Logger::log(Level logLevel, Message&& message)
 template<typename... Args>
 void ze::Logger::logLine(std::string_view format, Args&&... args)
 {
-   logLine(getLogLevel(), std::forward<Args>(args)...);
+   logLine(getLogLevel(), format, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
@@ -53,7 +53,7 @@ void ze::Logger::write(std::string_view format, Args&&... args)
       LOG_TRACE("An error occured whilst logging");
       return; // TODO Error handling
    }
-   else if (written >= line.size())
+   else if (static_cast<size_t>(written) >= line.size())
       LOG_TRACE("Warning : Insufficient buffer size"); // TODO Too
 
    write(std::string_view(line.data(), written));
@@ -61,7 +61,7 @@ void ze::Logger::write(std::string_view format, Args&&... args)
 
 inline bool ze::Logger::canLog() const noexcept
 {
-   return (static_cast<uint8_t>(getLogLevel()) & getLogMask()) && getWriter();
+   return (static_cast<unsigned int>(getLogLevel()) & getLogMask()) && getWriter();
 }
 
 inline char const* ze::Logger::getName() const noexcept

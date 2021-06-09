@@ -19,7 +19,7 @@ namespace ze
    }
 
    Core::Core(std::string const& appName)
-      : m_appName(appName), m_isInitialised(false), m_coreWriter(ZENGINE_CORELOGGER_FILENAME),
+       : m_appName(appName), m_isInitialised(false), m_coreWriter(ZENGINE_CORELOGGER_FILENAME),
         m_clientWriter(getApplicationName() + ".log"), m_coreLogger(ZENGINE_CORELOGGER_NAME), m_clientLogger(getApplicationName()),
         m_shouldPop(false), m_running(false), m_tickRate{}
    {
@@ -42,12 +42,12 @@ namespace ze
       Processor cpuInfo = ::ze::GetProcessorInfo();
       Memory memInfo = ::ze::GetMemoryInfo();
 
-      uint64_t totalMemory = memInfo.total;
-      int memorySizeOrder = 0;
-      while (totalMemory > 1024)
+      double totalMemory = static_cast<double>(memInfo.total);
+      int memoryOrder = 0;
+      while (totalMemory > 1024.)
       {
-         totalMemory /= 1024;
-         ++memorySizeOrder;
+         totalMemory /= 1024.;
+         ++memoryOrder;
       }
 
       ZE_LOG_INFO("------ Initialising ZEngine ------");
@@ -55,7 +55,7 @@ namespace ze
       ZE_LOG_INFO("------  * Running on %s v%s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
       ZE_LOG_INFO("------      * %s", cpuInfo.model.c_str());
       ZE_LOG_INFO("------      * %s, %u cores %u thread", ::ze::ArchToString(cpuInfo.arch).c_str(), cpuInfo.cores.physical, cpuInfo.cores.logical);
-      ZE_LOG_INFO("------      * %u%s physical memory installed", totalMemory, (memorySizeOrder == 0 ? "B" : (memorySizeOrder == 1 ? "KB" : "GB")));
+      ZE_LOG_INFO("------      * %f.1%s physical memory installed", totalMemory, (memoryOrder == 0 ? "B" : (memoryOrder == 1 ? "KB" : "GB")));
       ZE_LOG_INFO("------  * Creating new application %s", getApplicationName().c_str());
 
       m_eventSubscriber = useEventBusTo().subscribe(&Core::handleEvent, this);

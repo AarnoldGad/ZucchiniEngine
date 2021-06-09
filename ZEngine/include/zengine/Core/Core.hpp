@@ -30,6 +30,7 @@
 
 #include "zengine/Log/Logger.hpp"
 #include "zengine/Log/DebugFileWriter.hpp"
+#include "zengine/Log/FileWriter.hpp"
 #include "zengine/Event/EventBus.hpp"
 #include "zengine/Event/Subscriber.hpp"
 #include "zengine/Time/Chrono.hpp"
@@ -103,8 +104,8 @@ namespace ze
          DebugFileWriter m_coreWriter;
          DebugFileWriter m_clientWriter;
       #else
-         ConsoleWriter m_coreWriter;
-         ConsoleWriter m_clientWriter;
+         FileWriter m_coreWriter;
+         FileWriter m_clientWriter;
       #endif
 
       Logger m_coreLogger;

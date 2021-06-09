@@ -43,9 +43,13 @@ namespace ze
       explicit ConsoleWriter(std::ostream& console = std::cout);
 
    private:
+      bool isAtLineBegin() const noexcept;
+
       std::ostream& m_console;
       bool m_lineStart;
    };
 }
+
+#include "ConsoleWriter.inl"
 
 #endif // ZE_CONSOLEWRITER_HPP

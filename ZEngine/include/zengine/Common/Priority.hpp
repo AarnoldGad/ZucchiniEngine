@@ -32,11 +32,11 @@ namespace ze
 {
    enum class Priority : uint8_t
    {
-      VERY_LOW = FLAG(0),
-      LOW = FLAG(1),
-      NORMAL = FLAG(2),
-      HIGH = FLAG(3),
-      VERY_HIGH = FLAG(4)
+      VeryLow = FLAG(0),
+      Low = FLAG(1),
+      Normal = FLAG(2),
+      High = FLAG(3),
+      VeryHigh = FLAG(4)
    };
 }
 

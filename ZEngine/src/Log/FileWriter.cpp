@@ -10,37 +10,39 @@
 namespace ze
 {
    FileWriter::FileWriter(std::filesystem::path const& path)
-      : m_path(path), m_lineStart(true), m_firstWrite(true) {}
+      : m_path(path), m_lineStart(true)
+   {
+      // Empty potential existing file before use
+      FILE* file = std::fopen(m_path.c_str(), "w+");
+
+      // TODO Error handling
+
+      std::fclose(file);
+   }
 
    void FileWriter::write(std::string_view name, Level level, std::string_view line)
    {
-      std::ofstream file;
+      // C Style file opening for performance
+      FILE* file = std::fopen(m_path.c_str(), "a");
 
-      if (m_firstWrite)
-      {
-         file.open(m_path);
-         m_firstWrite = false;
-      }
-      else
-         file.open(m_path, std::ios::out | std::ios::app);
-
-      if (m_lineStart)
+      if (isAtLineBegin())
       {
          Date date = Date::CurrentDate();
-         file << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << LevelToString(level) << "] <" << name << "> ";
+         std::tm tm = date.getTm();
+         char timeString[9];
+         std::strftime(timeString, 9, "%H:%M:%S", &tm);
+         std::fprintf(file, "[%s] [%s] <%s>", timeString, LevelToString(level), name.data());
+
          m_lineStart = false;
       }
 
-      file << line;
+      std::fputs(line.data(), file);
+
+      std::fclose(file);
    }
 
    void FileWriter::flush()
    {
       m_lineStart = true;
-   }
-
-   void FileWriter::setFilePath(std::filesystem::path const& path) noexcept
-   {
-      m_path = path;
    }
 }

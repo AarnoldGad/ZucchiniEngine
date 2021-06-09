@@ -51,13 +51,13 @@ namespace ze
 
       template<typename EventType>
       [[nodiscard]]
-      Subscriber<EventType> subscribe(std::function<void (EventType&)> callback, Priority priotity = Priority::NORMAL);
+      Subscriber<EventType> subscribe(std::function<void (EventType&)> callback, Priority priotity = Priority::Normal);
 
       template<typename EventType, typename Receiver>
       [[nodiscard]]
-      Subscriber<EventType> subscribe(void (Receiver::*callback)(EventType&), Receiver* receiver, Priority priotity = Priority::NORMAL);
+      Subscriber<EventType> subscribe(void (Receiver::*callback)(EventType&), Receiver* receiver, Priority priotity = Priority::Normal);
 
-      void subscribe(Callback<Event&>& callback, Priority priority = Priority::NORMAL);
+      void subscribe(Callback<Event&>& callback, Priority priority = Priority::Normal);
       void unsubscribe(Callback<Event&>& callback, Priority priority);
 
       void dispatchEvents();

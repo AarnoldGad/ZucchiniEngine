@@ -38,15 +38,15 @@ namespace ze
       void write(std::string_view name, Level level, std::string_view line) override;
       void flush() override;
 
-      void setFilePath(std::filesystem::path const& path) noexcept;
       std::filesystem::path getFilePath() const noexcept;
 
       FileWriter(std::filesystem::path const& path);
 
    private:
+      bool isAtLineBegin() const noexcept;
+
       std::filesystem::path m_path;
       bool m_lineStart;
-      bool m_firstWrite;
    };
 }
 

@@ -22,24 +22,21 @@ namespace ze
                ConsoleWriter::write(name, level, line);
             #endif
 
-            std::ofstream file;
-            
-            if (m_firstWrite)
-            {
-               file.open(MEMORYLOGGER_FILENAME);
-               m_firstWrite = false;
-            }
-            else
-               file.open(MEMORYLOGGER_FILENAME, std::ios::out | std::ios::app);
+            FILE* file = std::fopen(MEMORYLOGGER_FILENAME, "a");
 
-            if (m_lineStart)
+            if (isAtLineBegin())
             {
                Date date = Date::CurrentDate();
-               file << "[" << std::put_time(&date.getTm(), "%H:%M:%S") << "] [" << LevelToString(level) << "] <" << name << "> ";
+               std::tm tm = date.getTm();
+               char timeString[9];
+               std::strftime(timeString, 9, "%H:%M:%S", &tm);
+               std::fprintf(file, "[%s] [%s] <%s>", timeString, LevelToString(level), name.data());
                m_lineStart = false;
             }
 
-            file << line;
+            std::fputs(line.data(), file);
+
+            std::fclose(file);
          }
 
          void flush() override
@@ -49,11 +46,22 @@ namespace ze
          }
 
          MemoryWriter()
-            : ConsoleWriter(std::cout), m_lineStart(true), m_firstWrite(true) {}
+            : ConsoleWriter(std::cout), m_lineStart(true)
+         {
+            FILE* file = std::fopen(MEMORYLOGGER_FILENAME, "w+");
+
+            // TODO Error handling
+
+            std::fclose(file);
+         }
 
       private:
+         inline bool isAtLineBegin() const noexcept
+         {
+            return m_lineStart;
+         }
+
          bool m_lineStart;
-         bool m_firstWrite;
       };
       
       MemoryWriter memWriter; // Custom writer to avoid heap allocation

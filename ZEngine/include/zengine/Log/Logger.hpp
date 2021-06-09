@@ -126,7 +126,7 @@ namespace ze
       char m_name[LOGGERNAME_MAXLENGTH + 1];
       Writer* m_writer;
 
-      uint8_t m_logMask; // Members of Level enum to be ORed together
+      unsigned int m_logMask; // Members of Level enum to be ORed together
       ze::Level m_logLevel;
    };
 }

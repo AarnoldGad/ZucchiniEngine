@@ -52,7 +52,7 @@ namespace ze
       Priority getPriority() const noexcept;
       EventHandler<EventType>& getHandler() noexcept;
 
-      Subscriber(CallbackList& list, CallbackType callback, Priority priority = Priority::NORMAL);
+      Subscriber(CallbackList& list, CallbackType callback, Priority priority = Priority::Normal);
       Subscriber(SubscriberType const& other);
       Subscriber() noexcept;
       ~Subscriber();

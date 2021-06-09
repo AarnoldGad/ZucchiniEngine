@@ -151,7 +151,7 @@ namespace ze
       else if (!strcmp(sysInfo.machine, "ia64"))
          return Architecture::IA64;
       else
-         return Architecture::UNKNOWN;
+         return Architecture::Unknown;
 
       #elif defined(_WIN32)
 
@@ -171,7 +171,7 @@ namespace ze
          case PROCESSOR_ARCHITECTURE_IA64:
             return Architecture::IA64;
          default:
-            return Architecture::UNKNOWN;
+            return Architecture::Unknown;
       }
 
       #endif
@@ -185,7 +185,7 @@ namespace ze
          char b[4];
       } c = { 0x01020304 }; // I have absolutely no idea what names I could give to these things
 
-      return c.b[0] == 1 ? Endianess::BIG : Endianess::LITTLE;
+      return c.b[0] == 1 ? Endianess::Big : Endianess::Little;
    }
 
    Processor::Cores GetCPUCores()
@@ -345,7 +345,7 @@ namespace ze
             return "ARM64";
          case Architecture::IA64:
             return "IA64";
-         case Architecture::UNKNOWN:
+         case Architecture::Unknown:
          default:
             return "UNKNOWN";
       }

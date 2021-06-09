@@ -2,7 +2,7 @@
 
 template<typename EventType, typename E>
 ze::Subscriber<EventType, E>::Subscriber() noexcept
-   : m_priority(Priority::NORMAL), m_list(nullptr) {}
+   : m_priority(Priority::Normal), m_list(nullptr) {}
 
 template<typename EventType, typename E>
 ze::Subscriber<EventType, E>::Subscriber(SubscriberType const& other)

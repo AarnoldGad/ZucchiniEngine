@@ -32,12 +32,12 @@ namespace ze
 {
    enum class Architecture
    {
-      x86, x64, ARM, ARM64, IA64, UNKNOWN
+      x86, x64, ARM, ARM64, IA64, Unknown
    };
 
    enum class Endianess
    {
-      LITTLE, BIG
+      Little, Big
    };
 
    struct System
