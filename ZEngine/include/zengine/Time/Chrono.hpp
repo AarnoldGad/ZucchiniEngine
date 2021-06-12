@@ -39,6 +39,7 @@ namespace ze
       Time restart() noexcept;
 
       void pause() noexcept;
+      bool isPaused() const noexcept;
       void resume() noexcept;
 
       Chrono() noexcept;

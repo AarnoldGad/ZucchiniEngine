@@ -22,12 +22,16 @@ namespace ze
 
    void Chrono::pause() noexcept
    {
-      m_accumTime += elapsed(); // Accumulate elapsed time so we can reset startTime
+      if (isPaused()) return;
+
+      m_accumTime += elapsed(); // Accumulate elapsed time before pausing
       m_paused = true;
    }
 
    void Chrono::resume() noexcept
    {
+      if (!isPaused()) return;
+
       m_startTime = Time::Now();
       m_paused = false;
    }
