@@ -18,9 +18,7 @@ namespace ze
       public:
          void write(std::string_view name, Level level, std::string_view line) override
          {
-            #if defined(_DEBUG)
-               ConsoleWriter::write(name, level, line);
-            #endif
+            ConsoleWriter::write(name, level, line);
 
             FILE* file = std::fopen(MEMORYLOGGER_FILENAME, "a");
 
@@ -31,6 +29,7 @@ namespace ze
                char timeString[9];
                std::strftime(timeString, 9, "%H:%M:%S", &tm);
                std::fprintf(file, "[%s] [%s] <%s>", timeString, LevelToString(level), name.data());
+
                m_lineStart = false;
             }
 
@@ -65,14 +64,17 @@ namespace ze
       };
       
       MemoryWriter memWriter; // Custom writer to avoid heap allocation
-      Logger s_memoryLogger("MEMORY");
+      Logger s_memoryLogger("MEMORYTRACKER");
 
+      // Debugs deletions
       char const* s_nextFile = nullptr;
       unsigned int s_nextLine = 0;
 
+      // Debug stats
       unsigned int s_totalAllocations = 0;
       size_t s_sizeAllocated = 0;
 
+      // Identification hashes
       const unsigned int s_allocationHash = 0xA110CA73; // Identify a block allocated with this manager
       const unsigned int s_releaseHash = 0xF533D; // Identify a block freed
 
@@ -89,16 +91,109 @@ namespace ze
          Block* next;
       };
 
+      // Linked list of allocated memory blocks
       Block s_blockList
       {
          0, nullptr, 0, 0,
          &s_blockList, &s_blockList
       };
+
+      Block* AllocateBlock(size_t size, char const* file, unsigned int line)
+      {
+         Block* block = static_cast<Block*>(std::malloc(size + sizeof(Block)));
+
+         if (block == nullptr)
+         {
+            s_memoryLogger.logLine(Level::Error, "Unable to allocate %u bytes", size);
+
+            if (file)
+               s_memoryLogger.logLine(Level::Error, "   at %s:%o", file, line);
+            else
+               s_memoryLogger.logLine(Level::Error, "   at undefined position");
+
+            throw std::bad_alloc{};
+         }
+
+         return block;
+      }
+
+      Block* RetrieveBlock(void* pointer)
+      {
+         return reinterpret_cast<Block*>(static_cast<uint8_t*>(pointer) - sizeof(Block));
+      }
+
+      void InitBlock(Block* block, size_t size, char const* file, unsigned int line)
+      {
+         block->size = size;
+         block->file = file;
+         block->line = line;
+         block->guardHash = s_allocationHash;
+      }
+
+      bool IsBlockDeletable(Block* block)
+      {
+         if (block->guardHash != s_allocationHash)
+            return false;
+
+         return true;
+      }
+
+      void DeinitBlock(Block* block)
+      {
+         block->guardHash = s_releaseHash;
+      }
+
+      void PushBlockToList(Block* block)
+      {
+         block->previous = s_blockList.previous;
+         block->next = &s_blockList;
+
+         s_blockList.previous->next = block;
+         s_blockList.previous = block;
+      }
+
+      void PopBlockFromList(Block* block)
+      {
+         block->previous->next = block->next;
+         block->next->previous = block->previous;
+      }
+
+      void IncreaseMemoryStats(size_t size)
+      {
+         ++s_totalAllocations;
+         s_sizeAllocated += size;
+      }
+
+      void DecreaseMemoryStats(size_t size)
+      {
+         --s_totalAllocations;
+         s_sizeAllocated -= size;
+      }
+
+      #ifdef ZE_DEBUG_LOG_MEMORYALLOC
+         void LogAllocation(Block* block, size_t size, char const* file, unsigned int line)
+         {
+            s_memoryLogger.logLine(Level::Debug, "Allocating %u bytes of memory", size);
+            if (file)
+               s_memoryLogger.logLine(Level::Debug, "   at 0x%x %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)), file, line);
+            else
+               s_memoryLogger.logLine(Level::Debug, "   at 0x%x undefined position", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)));
+         }
+
+         void LogRelease(void* pointer)
+         {
+            s_memoryLogger.logLine(Level::Debug, "Deallocating 0x%x", reinterpret_cast<uintptr_t>(pointer));
+            if (s_nextFile)
+               s_memoryLogger.logLine(Level::Debug, "   at %s:%u", s_nextFile, s_nextLine);
+            else
+               s_memoryLogger.logLine(Level::Debug, "   at undefined position");
+         }
+      #endif
    }
 
    void MemoryManager::Initialise()
    {
-      static MemoryManager instance;
+      static MemoryManager instance; // This instance is used to RAII termination of memory tracker
 
       s_memoryLogger.setWriter(&memWriter);
       s_memoryLogger.info() << "------ Memory Tracker Started ------" << Logger::newLine;
@@ -111,40 +206,17 @@ namespace ze
       if (!s_isInitialised)
          MemoryManager::Initialise();
 
-      Block* allocated = (Block*) std::malloc(size + sizeof(Block));
-      if (allocated == nullptr)
-      {
-         s_memoryLogger.logLine(Level::Error, "Unable to allocate %u bytes", size);
-         if (file)
-            s_memoryLogger.logLine(Level::Error, "   at %s:%o", file, line);
-         else
-            s_memoryLogger.logLine(Level::Error, "   at undefined position");
-         throw std::bad_alloc{};
-      }
+      Block* allocatedBlock = AllocateBlock(size, file, line);
+      InitBlock(allocatedBlock, size, file, line);
+      PushBlockToList(allocatedBlock);
 
-      allocated->size = size;
-      allocated->file = file;
-      allocated->line = line;
-      allocated->guardHash = s_allocationHash;
+      IncreaseMemoryStats(size);
 
-      allocated->previous = s_blockList.previous;
-      allocated->next = &s_blockList;
-
-      s_blockList.previous->next = allocated;
-      s_blockList.previous = allocated;
-
-      ++s_totalAllocations;
-      s_sizeAllocated += size;
-
-      #if _DEBUG
-         s_memoryLogger.logLine(Level::Debug, "Allocating %u bytes of memory", size);
-         if (file) 
-            s_memoryLogger.logLine(Level::Debug, "   at 0x%x %s:%u", (size_t)(reinterpret_cast<uint8_t*>(allocated) + sizeof(Block)), file, line);
-         else
-            s_memoryLogger.logLine(Level::Debug, "   at 0x%x undefined position", (size_t)(reinterpret_cast<uint8_t*>(allocated) + sizeof(Block)));
+      #ifdef ZE_DEBUG_LOG_MEMORYALLOC
+         LogAllocation(allocatedBlock, size, file, line);
       #endif
 
-      return reinterpret_cast<uint8_t*>(allocated) + sizeof(Block);
+      return reinterpret_cast<uint8_t*>(allocatedBlock) + sizeof(Block);
    }
 
    void MemoryManager::NextRelease(char const* file, unsigned int line) noexcept
@@ -157,36 +229,29 @@ namespace ze
    {
       if (pointer == nullptr) return;
 
-      Block* allocated = reinterpret_cast<Block*>(static_cast<uint8_t*>(pointer) - sizeof(Block));
-      if (allocated->guardHash != s_allocationHash)
+      Block* allocatedBlock = RetrieveBlock(pointer);
+
+      if (!IsBlockDeletable(allocatedBlock))
       {
-         s_memoryLogger.logLine(Level::Error, allocated->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion");
+         s_memoryLogger.logLine(Level::Error, allocatedBlock->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion");
          if (s_nextFile)
             s_memoryLogger.logLine(Level::Error, "   at %s:%u", s_nextFile,s_nextLine);
          else
             s_memoryLogger.logLine(Level::Error, "   at undefined position");
          return;
       }
-      
-      allocated->guardHash = s_releaseHash;
-      allocated->previous->next = allocated->next;
-      allocated->next->previous = allocated->previous;
 
-      --s_totalAllocations;
-      s_sizeAllocated -= allocated->size;
+      DeinitBlock(allocatedBlock);
+      PopBlockFromList(allocatedBlock);
+      DecreaseMemoryStats(allocatedBlock->size);
 
-      #if _DEBUG
-      s_memoryLogger.logLine(Level::Debug, "Deallocating 0x%x", (size_t)(pointer));
-      if (s_nextFile)
-         s_memoryLogger.logLine(Level::Debug, "   at %s:%u", s_nextFile, s_nextLine);
-      else
-         s_memoryLogger.logLine(Level::Debug, "   at undefined position");
+      #ifdef ZE_DEBUG_LOG_MEMORYALLOC
+         LogRelease(pointer);
       #endif
 
-      std::free(allocated);
+      std::free(allocatedBlock);
       
-      s_nextFile = nullptr;
-      s_nextLine = 0;
+      NextRelease(nullptr, 0); // Reset release data
    }
 
    size_t MemoryManager::GetTotalAllocations() noexcept
@@ -214,9 +279,9 @@ namespace ze
          {
             s_memoryLogger.logLine(Level::Error, "--- ", pointer->size, " bytes");
             if (pointer->file)
-               s_memoryLogger.logLine(Level::Error, "---    at 0x%x %s:%u", (size_t)(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)), pointer->file, pointer->line);
+               s_memoryLogger.logLine(Level::Error, "---    at 0x%x %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)), pointer->file, pointer->line);
             else
-               s_memoryLogger.logLine(Level::Error, "---    at 0x%x", (size_t)(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)));
+               s_memoryLogger.logLine(Level::Error, "---    at 0x%x", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)));
 
             void* leak = pointer;
             pointer = pointer->next;

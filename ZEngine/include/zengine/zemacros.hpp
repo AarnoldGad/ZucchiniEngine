@@ -9,7 +9,9 @@
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 21
 #define ZE_VERSION_PATCH 6
-#define ZE_VERSION_REV 9
+#define ZE_VERSION_REV 12
+
+#define ZE_DEBUG_LOG_MEMORYALLOC
 
 #define FLAG(shift) 1 << shift
 #define MACRO_TO_STRING(x) TO_STRING(x)
