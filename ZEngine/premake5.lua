@@ -4,7 +4,7 @@ project "ZEngine"
    cppdialect "C++17"
 
    targetname("zengine")
-   
+
    filter "configurations:Debug"
       targetsuffix "-d"
 
@@ -13,8 +13,8 @@ project "ZEngine"
    targetdir("%{prj.location}/lib")
    objdir("%{prj.location}/bin/%{cfg.buildcfg}")
 
-   pchheader "zepch.hpp"
    pchsource "include/zepch.cpp"
+   pchheader "zepch.hpp"
 
    files {
       "src/**.cpp",
@@ -28,10 +28,10 @@ project "ZEngine"
    }
 
    filter "system:windows"
-      systemversion "latest"
       links {
          "version.lib"
       }
+      systemversion "latest"
 
    filter "system:linux"
       includedirs {

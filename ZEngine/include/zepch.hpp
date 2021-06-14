@@ -58,6 +58,7 @@
 #include <ctime>
 #include <cassert>
 #include <cstdlib>
+#include <cstdio>
 
 // Platform specific
 #if defined(ZE_PLATFORM_WINDOWS)
