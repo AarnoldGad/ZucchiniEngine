@@ -13,36 +13,57 @@ namespace ze
       : m_path(path), m_lineStart(true)
    {
       // Empty potential existing file before use
-      FILE* file = std::fopen(m_path.c_str(), "w+");
+      FILE* file = openFile("w+");
 
+      if (file)
+         fclose(file);
       // TODO Error handling
-
-      std::fclose(file);
    }
 
    void FileWriter::write(std::string_view name, Level level, std::string_view line)
    {
-      // C Style file opening for performance
-      FILE* file = std::fopen(m_path.c_str(), "a");
+      FILE* file = openFile("a");
+
+      if (!file) return;
+      // TODO Error handling
 
       if (isAtLineBegin())
       {
          Date date = Date::CurrentDate();
          std::tm tm = date.getTm();
          char timeString[9];
-         std::strftime(timeString, 9, "%H:%M:%S", &tm);
-         std::fprintf(file, "[%s] [%s] <%s>", timeString, LevelToString(level), name.data());
+         strftime(timeString, 9, "%H:%M:%S", &tm);
+         fprintf(file, "[%s] [%s] <%s> ", timeString, LevelToString(level), name.data());
 
          m_lineStart = false;
       }
 
-      std::fputs(line.data(), file);
+      fputs(line.data(), file);
 
-      std::fclose(file);
+      fclose(file);
    }
 
-   void FileWriter::flush()
+   void FileWriter::flush() {}
+
+   void FileWriter::newLine()
    {
+      FILE* file = openFile("a");
+
+      if (!file) return;
+
+      fputc('\n', file);
+      fclose(file);
+
       m_lineStart = true;
+   }
+
+   [[nodiscard("File should be closed")]]
+   FILE* FileWriter::openFile(char const* mode)
+   {
+      // C Style file opening for performance
+      FILE* file;
+      fopen_s(&file, m_path.string().c_str(), mode);
+
+      return file;
    }
 }

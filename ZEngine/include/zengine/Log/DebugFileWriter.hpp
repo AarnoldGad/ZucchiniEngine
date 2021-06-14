@@ -29,21 +29,19 @@
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Log/FileWriter.hpp"
+#include "zengine/Log/ConsoleWriter.hpp"
 
 namespace ze
 {
    // TODO Rework design to avoid this kind of class combination
-   class ZE_API DebugFileWriter : public FileWriter
+   class ZE_API DebugFileWriter : public FileWriter, public ConsoleWriter
    {
    public:
       void write(std::string_view name, Level level, std::string_view line) override;
       void flush() override;
+      void newLine() override;
 
       DebugFileWriter(std::string_view path, std::ostream& console = std::cout);
-
-   private:
-      bool m_lineStart;
-      std::ostream& m_console;
    };
 }
 

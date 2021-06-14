@@ -8,6 +8,9 @@
 
 #include "zengine/Memory/New.hpp"
 
+#define CORELOGGER_NAME "Core"
+#define CORELOGGER_FILENAME "zengine.log"
+
 namespace ze
 {
    Core* Core::s_app = nullptr;
@@ -19,8 +22,8 @@ namespace ze
    }
 
    Core::Core(std::string const& appName)
-       : m_appName(appName), m_isInitialised(false), m_coreWriter(ZENGINE_CORELOGGER_FILENAME),
-        m_clientWriter(getApplicationName() + ".log"), m_coreLogger(ZENGINE_CORELOGGER_NAME), m_clientLogger(getApplicationName()),
+       : m_appName(appName), m_isInitialised(false), m_coreWriter(CORELOGGER_FILENAME),
+        m_clientWriter(getApplicationName() + ".log"), m_coreLogger(CORELOGGER_NAME), m_clientLogger(getApplicationName()),
         m_shouldPop(false), m_running(false), m_tickRate{}
    {
       s_app = this;
@@ -52,10 +55,10 @@ namespace ze
 
       ZE_LOG_INFO("------ Initialising ZEngine ------");
       ZE_LOG_INFO("------  * ZEngine version %u-%u.%u.%u", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_PATCH, ZE_VERSION_REV);
-      ZE_LOG_INFO("------  * Running on %s v%s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
+      ZE_LOG_INFO("------  * Running on %s %s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
       ZE_LOG_INFO("------      * %s", cpuInfo.model.c_str());
       ZE_LOG_INFO("------      * %s, %u cores %u thread", ::ze::ArchToString(cpuInfo.arch).c_str(), cpuInfo.cores.physical, cpuInfo.cores.logical);
-      ZE_LOG_INFO("------      * %f.1%s physical memory installed", totalMemory, (memoryOrder == 0 ? "B" : (memoryOrder == 1 ? "KB" : "GB")));
+      ZE_LOG_INFO("------      * %.1f%s physical memory installed", totalMemory, (memoryOrder == 0 ? "B" : (memoryOrder == 1 ? "KB" : "GB")));
       ZE_LOG_INFO("------  * Creating new application %s", getApplicationName().c_str());
 
       m_eventSubscriber = useEventBusTo().subscribe(&Core::handleEvent, this);
@@ -63,7 +66,6 @@ namespace ze
       m_isInitialised = true;
 
       ZE_LOG_INFO("------ Initialised in %d ms !", initTime.elapsed().asMilliseconds());
-      ZE_LOG_INFO("");
    }
 
    void Core::connectEngine(Engine& engine)

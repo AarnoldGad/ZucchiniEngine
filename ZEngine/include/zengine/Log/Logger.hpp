@@ -51,7 +51,7 @@ namespace ze
    class ZE_API Logger
    {
    public:
-      
+
    // Logging functions
       template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> = 0>
       void log(Message message);
@@ -123,7 +123,7 @@ namespace ze
 
       Logger& startNewLineAs(ze::Level logLevel);
 
-      char m_name[LOGGERNAME_MAXLENGTH + 1];
+      char m_name[LOGGERNAME_MAXLENGTH + 1]; // TODO Release mode SSO
       Writer* m_writer;
 
       unsigned int m_logMask; // Members of Level enum to be ORed together

@@ -32,8 +32,9 @@ void ze::Logger::logLine(std::string_view format, Args&&... args)
 template<typename... Args>
 void ze::Logger::logLine(Level logLevel, std::string_view format, Args&&... args)
 {
-   startNewLineAs(logLevel);
+   setLogLevel(logLevel);
    write(format, std::forward<Args>(args)...);
+   newLine();
 }
 
 template<typename Message>

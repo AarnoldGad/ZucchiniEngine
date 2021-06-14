@@ -37,6 +37,7 @@ namespace ze
    public:
       virtual void write(std::string_view name, Level level, std::string_view line) = 0;
       virtual void flush() = 0;
+      virtual void newLine() = 0;
 
       virtual ~Writer() = default;
    };

@@ -96,7 +96,7 @@ namespace ze
    {
       if (canLog())
       {
-         getWriter()->write(getName(), getLogLevel(), "\n");
+         getWriter()->newLine();
          getWriter()->flush();
       }
 

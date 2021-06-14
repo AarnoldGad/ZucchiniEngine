@@ -42,9 +42,6 @@
 #include <iostream>
 #include <fstream>
 
-#define ZENGINE_CORELOGGER_NAME "Core"
-#define ZENGINE_CORELOGGER_FILENAME "zengine.log"
-
 namespace ze
 {
    class ZE_API Core

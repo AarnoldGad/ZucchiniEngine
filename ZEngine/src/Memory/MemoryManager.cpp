@@ -20,38 +20,59 @@ namespace ze
          {
             ConsoleWriter::write(name, level, line);
 
-            FILE* file = std::fopen(MEMORYLOGGER_FILENAME, "a");
+            FILE* file;
+            fopen_s(&file, MEMORYLOGGER_FILENAME, "a");
+
+            if (!file)
+               return;
+            // TODO Error handling
 
             if (isAtLineBegin())
             {
                Date date = Date::CurrentDate();
                std::tm tm = date.getTm();
                char timeString[9];
-               std::strftime(timeString, 9, "%H:%M:%S", &tm);
-               std::fprintf(file, "[%s] [%s] <%s>", timeString, LevelToString(level), name.data());
+               strftime(timeString, 9, "%H:%M:%S", &tm);
+               fprintf(file, "[%s] [%s] <%s> ", timeString, LevelToString(level), name.data());
 
                m_lineStart = false;
             }
 
-            std::fputs(line.data(), file);
+            fputs(line.data(), file);
 
-            std::fclose(file);
+            fclose(file);
          }
 
          void flush() override
          {
             ConsoleWriter::flush();
+         }
+
+         void newLine() override
+         {
+            ConsoleWriter::newLine();
+
+            FILE* file;
+            fopen_s(&file, MEMORYLOGGER_FILENAME, "a");
+
+            if (!file) return;
+
+            fputc('\n', file);
+            fclose(file);
+
             m_lineStart = true;
          }
 
          MemoryWriter()
             : ConsoleWriter(std::cout), m_lineStart(true)
          {
-            FILE* file = std::fopen(MEMORYLOGGER_FILENAME, "w+");
+            FILE* file;
+            fopen_s(&file, MEMORYLOGGER_FILENAME, "w+");
 
             // TODO Error handling
 
-            std::fclose(file);
+            if (file)
+               fclose(file);
          }
 
       private:
@@ -62,7 +83,7 @@ namespace ze
 
          bool m_lineStart;
       };
-      
+
       MemoryWriter memWriter; // Custom writer to avoid heap allocation
       Logger s_memoryLogger("MEMORYTRACKER");
 
@@ -175,9 +196,9 @@ namespace ze
          {
             s_memoryLogger.logLine(Level::Debug, "Allocating %u bytes of memory", size);
             if (file)
-               s_memoryLogger.logLine(Level::Debug, "   at 0x%x %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)), file, line);
+               s_memoryLogger.logLine(Level::Debug, "   to 0x%x at %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)), file, line);
             else
-               s_memoryLogger.logLine(Level::Debug, "   at 0x%x undefined position", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)));
+               s_memoryLogger.logLine(Level::Debug, "   to 0x%x at undefined position", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)));
          }
 
          void LogRelease(void* pointer)
@@ -189,6 +210,24 @@ namespace ze
                s_memoryLogger.logLine(Level::Debug, "   at undefined position");
          }
       #endif
+
+      void TraceLeaks()
+      {
+         Block* leakedPointer = s_blockList.next;
+         while (leakedPointer != &s_blockList)
+         {
+            s_memoryLogger.logLine(Level::Error, "--- ", leakedPointer->size, " bytes");
+            if (leakedPointer->file)
+               s_memoryLogger.logLine(Level::Error, "---    at 0x%x %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)), leakedPointer->file, leakedPointer->line);
+            else
+               s_memoryLogger.logLine(Level::Error, "---    at 0x%x", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)));
+
+            void* handledLeak = leakedPointer;
+            leakedPointer = leakedPointer->next;
+
+            std::free(handledLeak);
+         }
+      }
    }
 
    void MemoryManager::Initialise()
@@ -196,7 +235,7 @@ namespace ze
       static MemoryManager instance; // This instance is used to RAII termination of memory tracker
 
       s_memoryLogger.setWriter(&memWriter);
-      s_memoryLogger.info() << "------ Memory Tracker Started ------" << Logger::newLine;
+      s_memoryLogger.logLine(Level::Info, "------ Memory Tracker Started ------");
 
       s_isInitialised = true;
    }
@@ -250,7 +289,7 @@ namespace ze
       #endif
 
       std::free(allocatedBlock);
-      
+
       NextRelease(nullptr, 0); // Reset release data
    }
 
@@ -267,27 +306,14 @@ namespace ze
    void MemoryManager::Terminate()
    {
       if (s_totalAllocations == 0)
-         s_memoryLogger.info() << "------ Memory Tracker Ended with no leak ------" << Logger::newLine;
+         s_memoryLogger.logLine(Level::Info, "------ Memory Tracker Ended with no leak ------");
       else
       {
          s_memoryLogger.logLine(Level::Error, "--- Memory Tracker registered %u leaks ! ------", GetTotalAllocations());
          s_memoryLogger.logLine(Level::Error, "--- %u bytes leaked", GetTotalMemoryAllocated());
          s_memoryLogger.logLine(Level::Error, "--- Leaks trace");
-         
-         Block* pointer = s_blockList.next;
-         while (pointer != &s_blockList)
-         {
-            s_memoryLogger.logLine(Level::Error, "--- ", pointer->size, " bytes");
-            if (pointer->file)
-               s_memoryLogger.logLine(Level::Error, "---    at 0x%x %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)), pointer->file, pointer->line);
-            else
-               s_memoryLogger.logLine(Level::Error, "---    at 0x%x", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(pointer) + sizeof(Block)));
 
-            void* leak = pointer;
-            pointer = pointer->next;
-
-            std::free(leak);
-         }
+         TraceLeaks();
       }
    }
 

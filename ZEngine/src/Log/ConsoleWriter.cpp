@@ -31,6 +31,11 @@ namespace ze
    void ConsoleWriter::flush()
    {
       m_console.flush();
+   }
+
+   void ConsoleWriter::newLine()
+   {
+      m_console.put('\n');
       m_lineStart = true;
    }
 }

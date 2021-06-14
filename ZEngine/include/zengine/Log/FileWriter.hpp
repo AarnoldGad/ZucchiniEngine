@@ -32,11 +32,12 @@
 
 namespace ze
 {
-   class ZE_API FileWriter : public Writer
+   class ZE_API FileWriter : virtual public Writer
    {
    public:
       void write(std::string_view name, Level level, std::string_view line) override;
       void flush() override;
+      void newLine() override;
 
       std::filesystem::path getFilePath() const noexcept;
 
@@ -44,6 +45,9 @@ namespace ze
 
    private:
       bool isAtLineBegin() const noexcept;
+
+      [[nodiscard("File should be closed")]]
+      FILE* openFile(char const* mode);
 
       std::filesystem::path m_path;
       bool m_lineStart;
