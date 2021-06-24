@@ -1,11 +1,11 @@
 // Platform detection
 #if defined(_WIN32) // Windows
 
-   #if defined(_WIN64)
+   //#if defined(_WIN64)
       #define ZE_PLATFORM_WINDOWS
-   #else
-      #error "32-bit platforms not supported !"
-   #endif
+   //#else
+      //#error "32-bit platforms not supported !"
+   //#endif
 
    #ifdef _MSC_VER
       #pragma warning(disable: 4251)

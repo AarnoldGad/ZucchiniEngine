@@ -7,7 +7,6 @@ project "ZEngine"
 
    filter "configurations:Debug"
       targetsuffix "-d"
-
    filter {}
 
    targetdir("%{prj.location}/lib")
@@ -28,6 +27,7 @@ project "ZEngine"
    }
 
    filter "system:windows"
+      architecture "x86"
       links {
          "version.lib"
       }

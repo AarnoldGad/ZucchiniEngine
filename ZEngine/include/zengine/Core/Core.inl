@@ -19,6 +19,7 @@ inline bool ze::Core::isRunning() const noexcept
 
 inline ze::Logger& ze::Core::useCoreLogger() noexcept
 {
+   zassert(m_coreLogger.getWriter() != nullptr, "Core logger not initialised"); // TODO Error handling
    return m_coreLogger;
 }
 

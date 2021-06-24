@@ -93,9 +93,8 @@ namespace ze
       Logger& newLine();
       static Logger& newLine(Logger& logger);
 
-      // TODO Stacktrace
-      //Logger& stacktrace();
-      //static Logger& stacktrace(Logger& logger);
+      Logger& stacktrace();
+      static Logger& stacktrace(Logger& logger);
 
    // Accessors
       char const* getName() const noexcept;

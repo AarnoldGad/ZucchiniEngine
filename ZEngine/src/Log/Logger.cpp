@@ -114,17 +114,19 @@ namespace ze
          getWriter()->write(getName(), getLogLevel(), message);
    }
 
-   // TODO
-   //Logger& Logger::stacktrace()
-   //{
+   Logger& Logger::stacktrace()
+   {
+      // TODO Refactor stacktrace
 
-   //   return *this;
-   //}
 
-   //Logger& Logger::stacktrace(Logger& logger)
-   //{
-   //   return logger.stacktrace();
-   //}
+
+      return *this;
+   }
+
+   Logger& Logger::stacktrace(Logger& logger)
+   {
+      return logger.stacktrace();
+   }
 
    void Logger::setLogLevel(Level logLevel) noexcept
    {

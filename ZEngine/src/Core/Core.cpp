@@ -47,9 +47,9 @@ namespace ze
 
       double totalMemory = static_cast<double>(memInfo.total);
       int memoryOrder = 0;
-      while (totalMemory > 1024.)
+      while (totalMemory > 1024.0)
       {
-         totalMemory /= 1024.;
+         totalMemory /= 1024.0;
          ++memoryOrder;
       }
 
@@ -70,6 +70,8 @@ namespace ze
 
    void Core::connectEngine(Engine& engine)
    {
+      zassert(m_isInitialised, "Core engine should be initialised first");
+
       bool wasInserted = m_engines.insert(&engine).second;
 
       if (wasInserted)

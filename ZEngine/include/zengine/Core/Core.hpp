@@ -97,16 +97,11 @@ namespace ze
       std::string m_appName;
       bool m_isInitialised;
 
-      #if defined(_DEBUG)
-         DebugFileWriter m_coreWriter;
-         DebugFileWriter m_clientWriter;
-      #else
-         FileWriter m_coreWriter;
-         FileWriter m_clientWriter;
-      #endif
-
+      DebugFileWriter m_coreWriter;
+      DebugFileWriter m_clientWriter;
       Logger m_coreLogger;
       Logger m_clientLogger;
+
       EventBus m_eventBus;
 
       std::vector<State*> m_states;
