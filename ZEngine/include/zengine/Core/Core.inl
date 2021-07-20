@@ -1,51 +1,35 @@
 #include "zengine/Memory/New.hpp"
 
-template<typename StateType, typename... Args>
-void ze::Core::pushState(Args&&... args)
+//template<typename StateType, typename... Args>
+//void ze::Core::pushState(Args&&... args)
+//{
+//   m_states.push_back(new StateType(std::forward<Args>(args)...));
+//   m_states.back()->onConnection();
+//}
+
+inline ze::Application* ze::Core::GetApplication() noexcept
 {
-   m_states.push_back(new StateType(std::forward<Args>(args)...));
-   m_states.back()->onConnection();
+   return s_app;
 }
 
-inline std::string ze::Core::getApplicationName() const noexcept
+inline bool ze::Core::IsRunning() noexcept
 {
-   return m_appName;
+   return s_running;
 }
 
-inline bool ze::Core::isRunning() const noexcept
+inline ze::Logger& ze::Core::UseCoreLogger() noexcept
 {
-   return m_running;
+   return s_coreLogger;
 }
 
-inline ze::Logger& ze::Core::useCoreLogger() noexcept
+inline ze::Time ze::Core::GetRunTime() noexcept
 {
-   zassert(m_coreLogger.getWriter() != nullptr, "Core logger not initialised"); // TODO Error handling
-   return m_coreLogger;
+   return IsInitialised() ? s_runTime.elapsed() : 0;
 }
 
-inline ze::Logger& ze::Core::useClientLogger() noexcept
+inline unsigned int ze::Core::GetTickRate() noexcept
 {
-   return m_clientLogger;
-}
-
-inline ze::EventBus& ze::Core::useEventBusTo() noexcept
-{
-   return m_eventBus;
-}
-
-inline ze::Time ze::Core::getRunTime() const noexcept
-{
-   return m_runTime.elapsed();
-}
-
-inline unsigned int ze::Core::getTickRate() const noexcept
-{
-   return m_tickRate;
-}
-
-inline bool ze::Core::hasState() const noexcept
-{
-   return m_states.size();
+   return s_tickRate;
 }
 
 #include "zengine/Memory/NewOff.hpp"

@@ -28,6 +28,7 @@
 
 #include "zengine/zemacros.hpp"
 
+#include "zengine/Core/Application.hpp"
 #include "zengine/Log/Logger.hpp"
 #include "zengine/Log/DebugFileWriter.hpp"
 #include "zengine/Log/FileWriter.hpp"
@@ -44,75 +45,58 @@
 
 namespace ze
 {
-   class ZE_API Core
+   class ZE_API Core final
    {
    public:
-      static Core& GetApplication();
+      static void Initialise();
 
-      void initialise();
+      static void ConnectEngine(Engine& engine);
+      static void DisconnectEngine(Engine& engine);
 
-      void connectEngine(Engine& engine);
-      void disconnectEngine(Engine& engine);
+      static void PlaceApplication(Application* app);
+      static Application* GetApplication() noexcept;
 
-      std::string getApplicationName() const noexcept;
+      static void Run();
+      static bool IsRunning() noexcept;
+      static void Stop() noexcept;
 
-      void run();
-      bool isRunning() const noexcept;
-      void stop() noexcept;
+      static Logger& UseCoreLogger() noexcept;
 
-      template<typename StateType, typename... Args>
-      void pushState(Args&&... args);
-      void popState();
+      static void SetTickRate(unsigned int rate) noexcept;
 
-      Logger& useCoreLogger() noexcept;
-      Logger& useClientLogger() noexcept;
-      EventBus& useEventBusTo() noexcept;
+      static Time GetRunTime() noexcept;
+      static unsigned int GetTickRate() noexcept;
 
-      void setTickRate(unsigned int rate) noexcept;
-
-      Time getRunTime() const noexcept;
-      unsigned int getTickRate() const noexcept;
-
-      void terminate();
-
-   protected:
-      Core(std::string const& appName = "Zucchini Sprout");
-      virtual ~Core() noexcept;
-
-      static Core* s_app;
+      static void Terminate();
 
    private:
-      void mainLoop();
+      Core() = delete;
+      Core(Core const&) = delete;
+      Core(Core&&) = delete;
+      Core& operator=(Core const&) = delete;
+      Core& operator=(Core&&) = delete;
+      ~Core() = delete;
 
-      void popRegisteredState();
-      bool hasState() const noexcept;
+      static void MainLoop();
 
-      void tickEngines(Time deltaTime);
-      void handleEvent(Event& event);
+      static void TickApplication(Time deltaTime);
+      static void TickEngines(Time deltaTime);
+      static void CapTickRate(Time loopTime);
 
-      void capTickRate(Chrono loopTime);
+      static bool IsInitialised() noexcept;
+      static void SetInitialised(bool value = true) noexcept;
 
-      void clearStates();
+      static bool s_initialised;
 
-      std::string m_appName;
-      bool m_isInitialised;
+      static DebugFileWriter s_coreWriter;
+      static Logger s_coreLogger;
 
-      DebugFileWriter m_coreWriter;
-      DebugFileWriter m_clientWriter;
-      Logger m_coreLogger;
-      Logger m_clientLogger;
+      static bool s_running;
+      static Chrono s_runTime; // Run from Initialisation to Termination
+      static unsigned int s_tickRate;
 
-      EventBus m_eventBus;
-
-      std::vector<State*> m_states;
-      bool m_shouldPop;
-
-      bool m_running;
-      Chrono m_runTime; // Starts when application is constructed and run till its destruction
-      unsigned int m_tickRate;
-
-      Subscriber<Event> m_eventSubscriber;
-      std::unordered_set<Engine*> m_engines;
+      static Application* s_app;
+      static std::set<Engine*> s_engines;
    };
 }
 

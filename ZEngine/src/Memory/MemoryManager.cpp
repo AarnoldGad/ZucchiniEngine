@@ -191,25 +191,23 @@ namespace ze
          s_sizeAllocated -= size;
       }
 
-      #ifdef ZE_DEBUG_LOG_MEMORYALLOC
-         void LogAllocation(Block* block, size_t size, char const* file, unsigned int line)
-         {
-            s_memoryLogger.logLine(Level::Debug, "Allocating %u bytes of memory", size);
-            if (file)
-               s_memoryLogger.logLine(Level::Debug, "   to 0x%x at %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)), file, line);
-            else
-               s_memoryLogger.logLine(Level::Debug, "   to 0x%x at undefined position", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)));
-         }
+      void LogAllocation(Block* block, size_t size, char const* file, unsigned int line)
+      {
+         s_memoryLogger.logLine(Level::Debug, "Allocating %u bytes of memory", size);
+         if (file)
+            s_memoryLogger.logLine(Level::Debug, "   to 0x%x at %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)), file, line);
+         else
+            s_memoryLogger.logLine(Level::Debug, "   to 0x%x at undefined position", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)));
+      }
 
-         void LogRelease(void* pointer)
-         {
-            s_memoryLogger.logLine(Level::Debug, "Deallocating 0x%x", reinterpret_cast<uintptr_t>(pointer));
-            if (s_nextFile)
-               s_memoryLogger.logLine(Level::Debug, "   at %s:%u", s_nextFile, s_nextLine);
-            else
-               s_memoryLogger.logLine(Level::Debug, "   at undefined position");
-         }
-      #endif
+      void LogRelease(void* pointer)
+      {
+         s_memoryLogger.logLine(Level::Debug, "Deallocating 0x%x", reinterpret_cast<uintptr_t>(pointer));
+         if (s_nextFile)
+            s_memoryLogger.logLine(Level::Debug, "   at %s:%u", s_nextFile, s_nextLine);
+         else
+            s_memoryLogger.logLine(Level::Debug, "   at undefined position");
+      }
 
       void TraceLeaks()
       {
@@ -248,7 +246,6 @@ namespace ze
       Block* allocatedBlock = AllocateBlock(size, file, line);
       InitBlock(allocatedBlock, size, file, line);
       PushBlockToList(allocatedBlock);
-
       IncreaseMemoryStats(size);
 
       #ifdef ZE_DEBUG_LOG_MEMORYALLOC

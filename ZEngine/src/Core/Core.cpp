@@ -13,104 +13,97 @@
 
 namespace ze
 {
-   Core* Core::s_app = nullptr;
-
-   Core& Core::GetApplication()
+   namespace
    {
-      zassert(s_app != nullptr, "No application !");
-      return *s_app;
+      void PrintRunTimeInformations()
+      {
+         System sysInfo = ::ze::GetSystemInfo();
+         Processor cpuInfo = ::ze::GetProcessorInfo();
+         Memory memInfo = ::ze::GetMemoryInfo();
+
+         double totalMemory = static_cast<double>(memInfo.total);
+         int memoryOrder = 0;
+         while (totalMemory > 1024.0)
+         {
+            totalMemory /= 1024.0;
+            ++memoryOrder;
+         }
+
+         ZE_LOG_INFO("------  * ZEngine version %u-%u.%u%s (%u/%u/%u)", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_REV, ZE_VERSION_SPEC, ZE_VERSION_MONTH, ZE_VERSION_DAY, ZE_VERSION_YEAR);
+         ZE_LOG_INFO("------  * Running on %s %s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
+         ZE_LOG_INFO("------      * %s", cpuInfo.model.c_str());
+         ZE_LOG_INFO("------      * %s, %u cores %u thread", ::ze::ArchToString(cpuInfo.arch).c_str(), cpuInfo.cores.physical, cpuInfo.cores.logical);
+         ZE_LOG_INFO("------      * %.1f%s physical memory installed", totalMemory, (memoryOrder == 0 ? "B" : (memoryOrder == 1 ? "KB" : "GB")));
+      }
    }
 
-   Core::Core(std::string const& appName)
-       : m_appName(appName), m_isInitialised(false), m_coreWriter(CORELOGGER_FILENAME),
-        m_clientWriter(getApplicationName() + ".log"), m_coreLogger(CORELOGGER_NAME), m_clientLogger(getApplicationName()),
-        m_shouldPop(false), m_running(false), m_tickRate{}
-   {
-      s_app = this;
-   }
+   bool Core::s_initialised = false;
 
-   void Core::initialise()
+   DebugFileWriter Core::s_coreWriter(CORELOGGER_FILENAME);
+   Logger Core::s_coreLogger(CORELOGGER_NAME, &s_coreWriter);
+
+   bool Core::s_running = false;
+   unsigned int Core::s_tickRate{};
+
+   Application* Core::s_app = nullptr;
+   std::set<Engine*> Core::s_engines{};
+
+   void Core::Initialise()
    {
-      // Debug guard
-      zassert(m_isInitialised == false, "Engine has already been initialised !");
+      if (Core::IsInitialised()) return ZE_LOG_ERROR("Core engine already initialised !");
 
       ze::Chrono initTime;
 
-      // Init loggers
-      m_coreLogger.setWriter(&m_coreWriter);
-      m_clientLogger.setWriter(&m_clientWriter);
-
-      // Print system informations
-      System sysInfo = ::ze::GetSystemInfo();
-      Processor cpuInfo = ::ze::GetProcessorInfo();
-      Memory memInfo = ::ze::GetMemoryInfo();
-
-      double totalMemory = static_cast<double>(memInfo.total);
-      int memoryOrder = 0;
-      while (totalMemory > 1024.0)
-      {
-         totalMemory /= 1024.0;
-         ++memoryOrder;
-      }
-
       ZE_LOG_INFO("------ Initialising ZEngine ------");
-      ZE_LOG_INFO("------  * ZEngine version %u-%u.%u.%u", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_PATCH, ZE_VERSION_REV);
-      ZE_LOG_INFO("------  * Running on %s %s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
-      ZE_LOG_INFO("------      * %s", cpuInfo.model.c_str());
-      ZE_LOG_INFO("------      * %s, %u cores %u thread", ::ze::ArchToString(cpuInfo.arch).c_str(), cpuInfo.cores.physical, cpuInfo.cores.logical);
-      ZE_LOG_INFO("------      * %.1f%s physical memory installed", totalMemory, (memoryOrder == 0 ? "B" : (memoryOrder == 1 ? "KB" : "GB")));
-      ZE_LOG_INFO("------  * Creating new application %s", getApplicationName().c_str());
+      PrintRunTimeInformations();
 
-      m_eventSubscriber = useEventBusTo().subscribe(&Core::handleEvent, this);
+      // There's not much to initialise yet
 
-      m_isInitialised = true;
+      Core::SetInitialised();
+      s_runTime.restart();
 
       ZE_LOG_INFO("------ Initialised in %d ms !", initTime.elapsed().asMilliseconds());
    }
 
-   void Core::connectEngine(Engine& engine)
+   void Core::PlaceApplication(Application* app)
    {
-      zassert(m_isInitialised, "Core engine should be initialised first");
+      s_app = app;
+   }
 
-      bool wasInserted = m_engines.insert(&engine).second;
+   void Core::ConnectEngine(Engine& engine)
+   {
+      bool engineConnected = s_engines.insert(&engine).second;
 
-      if (wasInserted)
+      if (engineConnected)
          engine.initialise();
       else
-         LOG_TRACE("Trying to connect same engine multiple times !");
+         ZE_LOG_ERROR("Trying to connect same engine multiple times !");
    }
 
-   void Core::disconnectEngine(Engine& engine)
+   void Core::DisconnectEngine(Engine& engine)
    {
-      bool wasErased = m_engines.erase(&engine);
+      bool engineDisconnected = s_engines.erase(&engine);
 
-      if (wasErased)
+      if (engineDisconnected)
          engine.terminate();
       else
-         LOG_TRACE("Trying to disconnect unknown engine !");
+         ZE_LOG_ERROR("Trying to disconnect unknown engine !");
    }
 
-   void Core::setTickRate(unsigned int rate) noexcept
+   void Core::SetTickRate(unsigned int rate) noexcept
    {
-      m_tickRate = rate;
+      s_tickRate = rate;
    }
 
-   void Core::popState()
+   void Core::Run()
    {
-      m_shouldPop = true;
-   }
+      if (IsRunning()) return ZE_LOG_ERROR("Engine is already running !");
 
-   void Core::run()
-   {
-      if (isRunning()) return;
-
-      m_running = true;
-      m_shouldPop = false;
-      m_runTime.restart();
+      s_running = true;
 
       try
       {
-         mainLoop();
+         MainLoop();
       }
       catch (std::exception const& e)
       {
@@ -119,97 +112,63 @@ namespace ze
       }
    }
 
-   void Core::mainLoop()
+   void Core::MainLoop()
    {
       Time deltaTime;
       Chrono loopTime;
 
-      while (m_running)
+      while (deltaTime = loopTime.restart(), IsRunning())
       {
-         deltaTime = loopTime.restart();
+         TickApplication(deltaTime);
+         TickEngines(deltaTime);
 
-         popRegisteredState();
-
-         tickEngines(deltaTime);
-
-         if (hasState())
-         {
-            State& state = *(m_states.back());
-            state.tick(deltaTime);
-         }
-
-         useEventBusTo().dispatchEvents();
-
-         capTickRate(loopTime);
+         CapTickRate(loopTime.elapsed());
       }
    }
 
-   void Core::popRegisteredState()
+   void Core::TickApplication(Time deltaTime)
    {
-      if (m_shouldPop && hasState())
-      {
-         State* state = m_states.back();
-         m_states.pop_back();
-
-         state->onDisconnection();
-         delete state;
-      }
-
-      m_shouldPop = false;
+      if (GetApplication() != nullptr)
+         GetApplication()->tick(deltaTime);
    }
 
-   void Core::tickEngines(Time deltaTime)
+   void Core::TickEngines(Time deltaTime)
    {
-      for (Engine* engine : m_engines)
+      for (Engine* engine : s_engines)
          engine->tick(deltaTime);
    }
 
-   void Core::handleEvent(Event& event)
+   void Core::CapTickRate(Time loopTime)
    {
-      EventDispatcher dispatcher(event);
-
-      if (hasState())
-         dispatcher.dispatch(&State::handleEvent, m_states.back());
-   }
-
-   void Core::capTickRate(Chrono loopTime)
-   {
-      if (m_tickRate)
+      if (GetTickRate() > 0)
       {
-         Time loopPeriod = ze::Seconds(1.0 / static_cast<double>(m_tickRate));
-         if (loopTime.elapsed() < loopPeriod)
-            ze::Sleep(loopPeriod - loopTime.elapsed());
+         Time loopPeriod = ze::Seconds(1.0 / static_cast<double>(GetTickRate()));
+         if (loopTime < loopPeriod)
+            ze::Sleep(loopPeriod - loopTime);
       }
    }
 
-   void Core::clearStates()
+   void Core::Stop() noexcept
    {
-      for (State* state : m_states)
-      {
-         state->onDisconnection();
-         delete state;
-      }
-
-      m_states.clear();
+      s_running = false;
    }
 
-   void Core::stop() noexcept
+   void Core::Terminate()
    {
-      m_running = false;
-      clearStates();
-      ZE_LOG_INFO("------ Application %s ran for %d ms !", getApplicationName().c_str(), getRunTime().asMilliseconds());
-   }
+      if (IsRunning()) return; // TODO Error handling
+      
+      Core::SetInitialised(false);
 
-   void Core::terminate()
-   {
       ZE_LOG_INFO("------ Terminating ZEngine ------");
    }
 
-   Core::~Core() noexcept
+   bool Core::IsInitialised() noexcept
    {
-      if (isRunning())
-         stop();
+      return s_initialised;
+   }
 
-      clearStates();
+   void Core::SetInitialised(bool value) noexcept
+   {
+      s_initialised = value;
    }
 }
