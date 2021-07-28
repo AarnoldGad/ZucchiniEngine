@@ -21,7 +21,7 @@ namespace ze
       class MemoryWriter : public ConsoleWriter
       {
       public:
-         void write(std::string_view name, Level level, std::string_view line) override;
+         void write(std::string_view name, Logger::Level level, std::string_view line) override;
          void flush() override;
          void newLine() override;
 
@@ -29,7 +29,7 @@ namespace ze
 
       private:
          bool isAtLineBegin() const noexcept;
-         void printDate(FILE* file, std::string_view name, Level level);
+         void printDate(FILE* file, std::string_view name, Logger::Level level);
 
          bool m_lineStart;
       };
@@ -106,7 +106,7 @@ namespace ze
             fclose(file);
       }
 
-      void MemoryWriter::write(std::string_view name, Level level, std::string_view line)
+      void MemoryWriter::write(std::string_view name, Logger::Level level, std::string_view line)
       {
          ConsoleWriter::write(name, level, line);
 
@@ -148,13 +148,13 @@ namespace ze
          return m_lineStart;
       }
 
-      inline void MemoryWriter::printDate(FILE* file, std::string_view name, Level level)
+      inline void MemoryWriter::printDate(FILE* file, std::string_view name, Logger::Level level)
       {
          Date date = Date::CurrentDate();
          std::tm tm = date.getTm();
          char timeString[9];
          strftime(timeString, 9, "%H:%M:%S", &tm);
-         fprintf(file, "[%s] [%s] <%s> ", timeString, LevelToString(level), name.data());
+         fprintf(file, "[%s] [%s] <%s> ", timeString, Logger::LevelToString(level), name.data());
 
          m_lineStart = false;
       }
@@ -165,7 +165,7 @@ namespace ze
            m_nextFile(nullptr), m_nextLine{},
            m_totalAllocations{}, m_sizeAllocated{}
       {
-         useMemoryLogger().logLine(Level::Info, "------ Memory Tracker Started ------");
+         useMemoryLogger().logLine(Logger::Level::Info, "------ Memory Tracker Started ------");
       }
 
       inline Logger& MemoryAllocator::useMemoryLogger() noexcept
@@ -211,11 +211,11 @@ namespace ze
 
          if (!isBlockDeletable(allocatedBlock))
          {
-            useMemoryLogger().logLine(Level::Error, allocatedBlock->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion");
+            useMemoryLogger().logLine(Logger::Level::Error, allocatedBlock->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion");
             if (m_nextFile)
-               useMemoryLogger().logLine(Level::Error, "   at %s:%u", m_nextFile, m_nextLine);
+               useMemoryLogger().logLine(Logger::Level::Error, "   at %s:%u", m_nextFile, m_nextLine);
             else
-               useMemoryLogger().logLine(Level::Error, "   at undefined position");
+               useMemoryLogger().logLine(Logger::Level::Error, "   at undefined position");
             return;
          }
 
@@ -238,12 +238,12 @@ namespace ze
 
          if (block == nullptr)
          {
-            useMemoryLogger().logLine(Level::Error, "Unable to allocate %u bytes", size);
+            useMemoryLogger().logLine(Logger::Level::Error, "Unable to allocate %u bytes", size);
 
             if (file)
-               useMemoryLogger().logLine(Level::Error, "   at %s:%o", file, line);
+               useMemoryLogger().logLine(Logger::Level::Error, "   at %s:%o", file, line);
             else
-               useMemoryLogger().logLine(Level::Error, "   at undefined position");
+               useMemoryLogger().logLine(Logger::Level::Error, "   at undefined position");
 
             throw std::bad_alloc{};
          }
@@ -306,20 +306,20 @@ namespace ze
 
       void MemoryAllocator::logAllocation(Block* block, size_t size, char const* file, unsigned int line)
       {
-         useMemoryLogger().logLine(Level::Debug, "Allocating %u bytes of memory", size);
+         useMemoryLogger().logLine(Logger::Level::Debug, "Allocating %u bytes of memory", size);
          if (file)
-            useMemoryLogger().logLine(Level::Debug, "   to 0x%x at %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)), file, line);
+            useMemoryLogger().logLine(Logger::Level::Debug, "   to 0x%x at %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)), file, line);
          else
-            useMemoryLogger().logLine(Level::Debug, "   to 0x%x at undefined position", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)));
+            useMemoryLogger().logLine(Logger::Level::Debug, "   to 0x%x at undefined position", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(block) + sizeof(Block)));
       }
 
       void MemoryAllocator::logRelease(void* pointer) noexcept
       {
-         useMemoryLogger().logLine(Level::Debug, "Deallocating 0x%x", reinterpret_cast<uintptr_t>(pointer));
+         useMemoryLogger().logLine(Logger::Level::Debug, "Deallocating 0x%x", reinterpret_cast<uintptr_t>(pointer));
          if (m_nextFile)
-            useMemoryLogger().logLine(Level::Debug, "   at %s:%u", m_nextFile, m_nextLine);
+            useMemoryLogger().logLine(Logger::Level::Debug, "   at %s:%u", m_nextFile, m_nextLine);
          else
-            useMemoryLogger().logLine(Level::Debug, "   at undefined position");
+            useMemoryLogger().logLine(Logger::Level::Debug, "   at undefined position");
       }
 
       void MemoryAllocator::traceLeaks()
@@ -327,11 +327,11 @@ namespace ze
          Block* leakedPointer = m_blockList.next;
          while (leakedPointer != &m_blockList)
          {
-            useMemoryLogger().logLine(Level::Error, "--- ", leakedPointer->size, " bytes");
+            useMemoryLogger().logLine(Logger::Level::Error, "--- ", leakedPointer->size, " bytes");
             if (leakedPointer->file)
-               useMemoryLogger().logLine(Level::Error, "---    at 0x%x %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)), leakedPointer->file, leakedPointer->line);
+               useMemoryLogger().logLine(Logger::Level::Error, "---    at 0x%x %s:%u", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)), leakedPointer->file, leakedPointer->line);
             else
-               useMemoryLogger().logLine(Level::Error, "---    at 0x%x", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)));
+               useMemoryLogger().logLine(Logger::Level::Error, "---    at 0x%x", reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)));
 
             void* handledLeak = leakedPointer;
             leakedPointer = leakedPointer->next;
@@ -343,12 +343,12 @@ namespace ze
       MemoryAllocator::~MemoryAllocator()
       {
          if (m_totalAllocations == 0)
-            useMemoryLogger().logLine(Level::Info, "------ Memory Tracker Ended with no leak ------");
+            useMemoryLogger().logLine(Logger::Level::Info, "------ Memory Tracker Ended with no leak ------");
          else
          {
-            useMemoryLogger().logLine(Level::Error, "--- Memory Tracker registered %u leaks ! ------", m_totalAllocations);
-            useMemoryLogger().logLine(Level::Error, "--- %u bytes leaked", m_sizeAllocated);
-            useMemoryLogger().logLine(Level::Error, "--- Leaks trace");
+            useMemoryLogger().logLine(Logger::Level::Error, "--- Memory Tracker registered %u leaks ! ------", m_totalAllocations);
+            useMemoryLogger().logLine(Logger::Level::Error, "--- %u bytes leaked", m_sizeAllocated);
+            useMemoryLogger().logLine(Logger::Level::Error, "--- Leaks trace");
 
             traceLeaks();
          }

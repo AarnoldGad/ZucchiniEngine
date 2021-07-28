@@ -37,7 +37,7 @@ namespace ze
    class ZE_API DebugFileWriter : public FileWriter, public ConsoleWriter
    {
    public:
-      void write(std::string_view name, Level level, std::string_view line) override;
+      void write(std::string_view name, Logger::Level level, std::string_view line) override;
       void flush() override;
       void newLine() override;
 

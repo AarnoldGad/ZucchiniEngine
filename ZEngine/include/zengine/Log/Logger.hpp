@@ -28,9 +28,6 @@
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Log/LogLevels.hpp"
-#include "zengine/Log/Writer.hpp"
-
 #include <iostream>
 #include <string>
 #include <charconv>
@@ -47,34 +44,41 @@ namespace ze
 {
    class Writer;
 
-   // TODO Print thread name / Print stacktrace / Check output stream validity
+   // TODO Print thread name ? / Print stacktrace / Check output stream validity
    class ZE_API Logger
    {
    public:
-
-   // Logging functions
-      template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> = 0>
-      void log(Message message);
-
-      template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> = 0>
-      void log(Message message);
+      enum class Level : uint8_t
+      {
+         Info = FLAG(0),
+         Debug = FLAG(1),
+         Warn = FLAG(2),
+         Error = FLAG(3),
+         Critical = FLAG(4)
+      };
+      
+      static char const* LevelToString(Level level) noexcept;
 
       template<typename Message>
-      void log(ze::Level logLevel, Message&& message);
+      void log(Message&& message);
+
+      template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> = 0>
+      void log(Level logLevel, Message message);
+
+      template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> = 0>
+      void log(Level logLevel, Message message);
 
       template<typename... Args>
       void logLine(std::string_view format, Args&&... args);
 
       template<typename... Args>
-      void logLine(ze::Level logLevel, std::string_view format, Args&&... args);
+      void logLine(Level logLevel, std::string_view format, Args&&... args);
 
-   // Operators
       template<typename Message>
       Logger& operator<<(Message&& message);
       //Logger& operator<<(std::ostream& (*manip)(std::ostream&));
       Logger& operator<<(Logger& (*manip)(Logger&));
 
-   // Manipulators
       Logger& info();
       static Logger& info(Logger& logger);
 
@@ -96,10 +100,9 @@ namespace ze
       Logger& stacktrace();
       static Logger& stacktrace(Logger& logger);
 
-   // Accessors
       char const* getName() const noexcept;
 
-      void setWriter(Writer* writer);
+      void setWriter(Writer* writer) noexcept;
       Writer* getWriter() const noexcept;
 
       void setLogMask(uint8_t mask) noexcept;
@@ -107,9 +110,7 @@ namespace ze
 
       bool canLog() const noexcept;
 
-   // Constructors/Destructor
-      explicit Logger(std::string_view name = "UNDEFINED", Writer* = nullptr, unsigned int logMask = 0xFF);
-      ~Logger();
+      explicit Logger(std::string_view name, Writer* = nullptr, unsigned int logMask = 0xFF);
 
    private:
       template<typename... Args>
@@ -117,16 +118,16 @@ namespace ze
 
       void write(std::string_view message);
 
-      void setLogLevel(ze::Level logLevel) noexcept;
+      void setLogLevel(Level logLevel) noexcept;
       Level getLogLevel() const noexcept;
 
-      Logger& startNewLineAs(ze::Level logLevel);
+      Logger& startNewLineAs(Level logLevel);
 
       char m_name[LOGGERNAME_MAXLENGTH + 1]; // TODO Release mode SSO
       Writer* m_writer;
 
       unsigned int m_logMask; // Members of Level enum to be ORed together
-      ze::Level m_logLevel;
+      Level m_logLevel;
    };
 }
 

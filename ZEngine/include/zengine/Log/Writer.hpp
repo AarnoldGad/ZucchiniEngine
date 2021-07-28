@@ -28,14 +28,14 @@
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Log/LogLevels.hpp"
+#include "zengine/Log/Logger.hpp"
 
 namespace ze
 {
    class ZE_API Writer
    {
    public:
-      virtual void write(std::string_view name, Level level, std::string_view line) = 0;
+      virtual void write(std::string_view name, Logger::Level level, std::string_view line) = 0;
       virtual void flush() = 0;
       virtual void newLine() = 0;
 

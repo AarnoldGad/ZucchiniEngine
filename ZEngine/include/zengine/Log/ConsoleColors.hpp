@@ -28,7 +28,7 @@
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Log/LogLevels.hpp"
+#include "zengine/Log/Logger.hpp"
 
 namespace ze
 {
@@ -50,7 +50,7 @@ namespace ze
 
    ZE_API void ResetConsoleColor();
    ZE_API void SetConsoleColor(Color color);
-   ZE_API Color GetLevelColor(Level level) noexcept;
+   ZE_API Color GetLevelColor(Logger::Level level) noexcept;
 }
 
 #endif // ZE_CONSOLECOLORS_HPP

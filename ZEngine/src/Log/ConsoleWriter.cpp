@@ -11,7 +11,7 @@ namespace ze
    ConsoleWriter::ConsoleWriter(std::ostream& console)
       : m_console(console), m_lineStart(true) {}
 
-   void ConsoleWriter::write(std::string_view name, Level level, std::string_view line)
+   void ConsoleWriter::write(std::string_view name, Logger::Level level, std::string_view line)
    {
       ze::SetConsoleColor(ze::GetLevelColor(level));
 
@@ -19,7 +19,7 @@ namespace ze
       {
          Date date = Date::CurrentDate();
          std::tm tm = date.getTm();
-         m_console << "[" << std::put_time(&tm, "%H:%M:%S") << "] [" << LevelToString(level) << "] <" << name << "> ";
+         m_console << "[" << std::put_time(&tm, "%H:%M:%S") << "] [" << Logger::LevelToString(level) << "] <" << name << "> ";
          m_lineStart = false;
       }
 

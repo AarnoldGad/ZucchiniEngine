@@ -36,17 +36,17 @@
    #define LOG_TRACE(...)
 #endif
 
-#define ZE_LOG_INFO(...)     ::ze::Core::UseCoreLogger().logLine(::ze::Level::Info    , __VA_ARGS__)
-#define ZE_LOG_DEBUG(...)    ::ze::Core::UseCoreLogger().logLine(::ze::Level::Debug   , __VA_ARGS__)
-#define ZE_LOG_WARN(...)     ::ze::Core::UseCoreLogger().logLine(::ze::Level::Warn    , __VA_ARGS__)
-#define ZE_LOG_ERROR(...)    ::ze::Core::UseCoreLogger().logLine(::ze::Level::Error   , __VA_ARGS__)
-#define ZE_LOG_CRITICAL(...) ::ze::Core::UseCoreLogger().logLine(::ze::Level::Critical, __VA_ARGS__)
+#define ZE_LOG_INFO(...)     ::ze::Core::UseCoreLogger().logLine(::ze::Logger::Level::Info    , __VA_ARGS__)
+#define ZE_LOG_DEBUG(...)    ::ze::Core::UseCoreLogger().logLine(::ze::Logger::Level::Debug   , __VA_ARGS__)
+#define ZE_LOG_WARN(...)     ::ze::Core::UseCoreLogger().logLine(::ze::Logger::Level::Warn    , __VA_ARGS__)
+#define ZE_LOG_ERROR(...)    ::ze::Core::UseCoreLogger().logLine(::ze::Logger::Level::Error   , __VA_ARGS__)
+#define ZE_LOG_CRITICAL(...) ::ze::Core::UseCoreLogger().logLine(::ze::Logger::Level::Critical, __VA_ARGS__)
 
-#define APP_LOG_INFO(...)     if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Level::Info    , __VA_ARGS__)
-#define APP_LOG_DEBUG(...)    if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Level::Debug   , __VA_ARGS__)
-#define APP_LOG_WARN(...)     if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Level::Warn    , __VA_ARGS__)
-#define APP_LOG_ERROR(...)    if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Level::Error   , __VA_ARGS__)
-#define APP_LOG_CRITICAL(...) if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Level::Critical, __VA_ARGS__)
+#define APP_LOG_INFO(...)     if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Logger::Level::Info    , __VA_ARGS__)
+#define APP_LOG_DEBUG(...)    if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Logger::Level::Debug   , __VA_ARGS__)
+#define APP_LOG_WARN(...)     if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Logger::Level::Warn    , __VA_ARGS__)
+#define APP_LOG_ERROR(...)    if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Logger::Level::Error   , __VA_ARGS__)
+#define APP_LOG_CRITICAL(...) if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().logLine(::ze::Logger::Level::Critical, __VA_ARGS__)
 
 #include "zengine/Debug/Assert.hpp"
 #include "zengine/Debug/Tee.hpp"

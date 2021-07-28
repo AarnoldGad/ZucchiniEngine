@@ -1,30 +1,30 @@
 #include "zengine/Memory/New.hpp"
 
-template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> >
-void ze::Logger::log(Message message)
+template<typename Message>
+inline void ze::Logger::log(Message&& message)
 {
-   log(getLogLevel(), std::string_view(message));
+   log(getLogLevel(), std::forward<Message>(message));
 }
 
-template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int>>
-void ze::Logger::log(Message message)
+template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> >
+void ze::Logger::log(Level logLevel, Message message)
 {
    // Cast arithmetic type to char array to avoid heap allocation
    std::array<char, 25> buf{0};
    auto [end, err] = std::to_chars(buf.data(), buf.data() + buf.size(), message);
 
-   log(getLogLevel(), std::string_view(buf.data(), end - buf.data()));
+   log(logLevel, std::string_view(buf.data(), end - buf.data()));
 }
 
-template<typename Message>
-void ze::Logger::log(Level logLevel, Message&& message)
+template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> >
+void ze::Logger::log(Level logLevel, Message message)
 {
    setLogLevel(logLevel);
-   write(std::forward<Message>(message));
+   write(std::string_view(message));
 }
 
 template<typename... Args>
-void ze::Logger::logLine(std::string_view format, Args&&... args)
+inline void ze::Logger::logLine(std::string_view format, Args&&... args)
 {
    logLine(getLogLevel(), format, std::forward<Args>(args)...);
 }
@@ -38,7 +38,7 @@ void ze::Logger::logLine(Level logLevel, std::string_view format, Args&&... args
 }
 
 template<typename Message>
-ze::Logger& ze::Logger::operator<<(Message&& message)
+inline ze::Logger& ze::Logger::operator<<(Message&& message)
 {
    log(std::forward<Message>(message));
    return *this;
@@ -57,7 +57,7 @@ void ze::Logger::write(std::string_view format, Args&&... args)
    else if (static_cast<size_t>(written) >= line.size())
       LOG_TRACE("Warning : Insufficient buffer size"); // TODO Too
 
-   write(std::string_view(line.data(), static_cast<unsigned long>(written)));
+   write(std::string_view(line.data(), static_cast<size_t>(written)));
 }
 
 inline bool ze::Logger::canLog() const noexcept
@@ -80,7 +80,7 @@ inline unsigned int ze::Logger::getLogMask() const noexcept
    return m_logMask;
 }
 
-inline ze::Level ze::Logger::getLogLevel() const noexcept
+inline ze::Logger::Level ze::Logger::getLogLevel() const noexcept
 {
    return m_logLevel;
 }

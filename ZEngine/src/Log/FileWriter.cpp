@@ -20,7 +20,7 @@ namespace ze
       // TODO Error handling
    }
 
-   void FileWriter::write(std::string_view name, Level level, std::string_view line)
+   void FileWriter::write(std::string_view name, Logger::Level level, std::string_view line)
    {
       FILE* file = openFile("a");
 
@@ -33,7 +33,7 @@ namespace ze
          std::tm tm = date.getTm();
          char timeString[9];
          strftime(timeString, 9, "%H:%M:%S", &tm);
-         fprintf(file, "[%s] [%s] <%s> ", timeString, LevelToString(level), name.data());
+         fprintf(file, "[%s] [%s] <%s> ", timeString, Logger::LevelToString(level), name.data());
 
          m_lineStart = false;
       }

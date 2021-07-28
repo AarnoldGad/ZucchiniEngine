@@ -26,19 +26,19 @@ namespace ze
       #endif
    }
 
-   Color GetLevelColor(Level level) noexcept
+   Color GetLevelColor(Logger::Level level) noexcept
    {
       switch (level)
       {
-         case Level::Info:
+         case Logger::Level::Info:
             return Color::White;
-         case Level::Debug:
+         case Logger::Level::Debug:
             return Color::Aqua;
-         case Level::Warn:
+         case Logger::Level::Warn:
             return Color::Yellow;
-         case Level::Error:
+         case Logger::Level::Error:
             return Color::Red;
-         case Level::Critical:
+         case Logger::Level::Critical:
             return Color::LightRed;
          default:
             return Color::White;

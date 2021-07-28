@@ -34,7 +34,6 @@
 #include <zengine/Core/Engine.hpp>
 
 // Logger
-#include <zengine/Log/LogLevels.hpp>
 #include <zengine/Log/Logger.hpp>
 #include <zengine/Log/Writer.hpp>
 #include <zengine/Log/ConsoleColors.hpp>

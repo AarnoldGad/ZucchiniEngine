@@ -35,7 +35,7 @@ namespace ze
    class ZE_API FileWriter : virtual public Writer
    {
    public:
-      void write(std::string_view name, Level level, std::string_view line) override;
+      void write(std::string_view name, Logger::Level level, std::string_view line) override;
       void flush() override;
       void newLine() override;
 

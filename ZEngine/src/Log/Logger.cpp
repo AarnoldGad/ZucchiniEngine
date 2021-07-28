@@ -2,6 +2,7 @@
 
 #include "zengine/Log/Logger.hpp"
 #include "zengine/Time/Date.hpp"
+#include "zengine/Log/Writer.hpp"
 
 #include "zengine/Memory/New.hpp"
 
@@ -17,7 +18,7 @@ namespace ze
          m_name[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(m_name[i]))); // TODO String utils
    }
 
-   void Logger::setWriter(Writer* writer)
+   void Logger::setWriter(Writer* writer) noexcept
    {
       m_writer = writer;
    }
@@ -29,10 +30,7 @@ namespace ze
 
    Logger& Logger::info()
    {
-      if (getLogLevel() == Level::Info)
-         return *this;
-
-      return startNewLineAs(Level::Info);
+      return getLogLevel() != Level::Info ? startNewLineAs(Level::Info) : *this;
    }
 
    Logger& Logger::info(Logger& logger)
@@ -42,10 +40,7 @@ namespace ze
 
    Logger& Logger::debug()
    {
-      if (getLogLevel() == Level::Debug)
-         return *this;
-
-      return startNewLineAs(Level::Debug);
+      return getLogLevel() != Level::Debug ? startNewLineAs(Level::Debug) : *this;
    }
 
    Logger& Logger::debug(Logger& logger)
@@ -55,10 +50,7 @@ namespace ze
 
    Logger& Logger::warn()
    {
-      if (getLogLevel() == Level::Warn)
-         return *this;
-
-      return startNewLineAs(Level::Warn);
+      return getLogLevel() != Level::Warn ? startNewLineAs(Level::Warn) : *this;
    }
 
    Logger& Logger::warn(Logger& logger)
@@ -68,10 +60,7 @@ namespace ze
 
    Logger& Logger::error()
    {
-      if (getLogLevel() == Level::Error)
-         return *this;
-
-      return startNewLineAs(Level::Error);
+      return getLogLevel() != Level::Error ? startNewLineAs(Level::Error) : *this;
    }
 
    Logger& Logger::error(Logger& logger)
@@ -81,10 +70,7 @@ namespace ze
 
    Logger& Logger::critical()
    {
-      if (getLogLevel() == Level::Critical)
-         return *this;
-
-      return startNewLineAs(Level::Critical);
+      return getLogLevel() != Level::Critical ? startNewLineAs(Level::Critical) : *this;
    }
 
    Logger& Logger::critical(Logger& logger)
@@ -116,9 +102,7 @@ namespace ze
 
    Logger& Logger::stacktrace()
    {
-      // TODO Refactor stacktrace
-
-
+      // TODO
 
       return *this;
    }
@@ -145,8 +129,22 @@ namespace ze
       return newLine();
    }
 
-   Logger::~Logger()
+   char const* Logger::LevelToString(Level level) noexcept
    {
-      if (getWriter()) getWriter()->flush(); // Flush output
+      switch (level)
+      {
+         case Level::Info:
+            return "Info";
+         case Level::Debug:
+            return "Debug";
+         case Level::Warn:
+            return "Warn";
+         case Level::Error:
+            return "Error";
+         case Level::Critical:
+            return "Critical";
+         default:
+            return "None";
+      }
    }
 }
