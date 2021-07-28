@@ -57,7 +57,7 @@ inline ze::EventHandler<EventType>& ze::Subscriber<EventType, E>::getHandler() n
 }
 
 template<typename EventType, typename E>
-ze::Subscriber<EventType, E>::~Subscriber()
+ze::Subscriber<EventType, E>::~Subscriber<EventType, E>()
 {
    unsubscribe();
 }

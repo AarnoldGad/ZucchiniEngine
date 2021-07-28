@@ -1,9 +1,9 @@
 /**
  * FileWriter.hpp
  * 27 Apr 2021
- * Gaétan "The Aarnold" Jalin
+ * GaŽtan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 GaŽtan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -46,7 +46,7 @@ namespace ze
    private:
       bool isAtLineBegin() const noexcept;
 
-      [[nodiscard("File should be closed")]]
+      [[nodiscard]]
       FILE* openFile(char const* mode);
 
       std::filesystem::path m_path;

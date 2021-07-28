@@ -7,29 +7,64 @@
 //   m_states.back()->onConnection();
 //}
 
+inline void ze::Core::Initialise()
+{
+   Instance().initialise();
+}
+
+inline ze::Application* ze::Core::PlaceApplication(Application& app)
+{
+   return Instance().placeApplication(app);
+}
+
+inline void ze::Core::ConnectEngine(Engine& engine)
+{
+   Instance().connectEngine(engine);
+}
+
+inline void ze::Core::DisconnectEngine(Engine& engine)
+{
+   Instance().disconnectEngine(engine);
+}
+
 inline ze::Application* ze::Core::GetApplication() noexcept
 {
-   return s_app;
+   return Instance().m_app;
+}
+
+inline ze::Application* ze::Core::RemoveApplication()
+{
+   return Instance().removeApplication();
+}
+
+inline void ze::Core::Terminate()
+{
+   Instance().terminate();
 }
 
 inline bool ze::Core::IsRunning() noexcept
 {
-   return s_running;
+   return Instance().m_running;
+}
+
+inline ze::EventBus& ze::Core::UseEventBus() noexcept
+{
+   return Instance().m_eventBus;
 }
 
 inline ze::Logger& ze::Core::UseCoreLogger() noexcept
 {
-   return s_coreLogger;
+   return Instance().m_coreLogger;
 }
 
 inline ze::Time ze::Core::GetRunTime() noexcept
 {
-   return IsInitialised() ? s_runTime.elapsed() : 0;
+   return Instance().isInitialised() ? Instance().m_runTime.elapsed() : 0;
 }
 
 inline unsigned int ze::Core::GetTickRate() noexcept
 {
-   return s_tickRate;
+   return Instance().m_tickRate;
 }
 
 #include "zengine/Memory/NewOff.hpp"

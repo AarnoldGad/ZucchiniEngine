@@ -27,7 +27,8 @@ namespace ze
 
    float Random::GenerateFloat(float minimum, float maximum)
    {
-      return static_cast<float>(GenerateDouble(minimum, maximum));
+      zassert(minimum < maximum, "Minimum value is greater than maximum !");
+      return static_cast<float>(s_engine()) / static_cast<float>(std::default_random_engine::max() / (maximum - minimum)) + minimum;
    }
 
    double Random::GenerateDouble(double minimum, double maximum)

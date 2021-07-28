@@ -1,9 +1,9 @@
 /**
  * Memory.hpp
  * 24 Apr 2021
- * Gaétan "The Aarnold" Jalin
+ * GaŽtan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 GaŽtan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -28,63 +28,12 @@
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Memory/MemoryManager.hpp"
-
 #include <cstdlib>
 
-#if defined(_WIN32)
-   #pragma warning(disable:4595)
-#endif
+ZE_API void* operator new(size_t size, char const* file, unsigned int line);
+ZE_API void* operator new[](size_t size, char const* file, unsigned int line);
 
-inline void* operator new(size_t size) // Sufficient to handle all standard allocations (No new[] needed)
-{
-   return ze::MemoryManager::Allocate(size);
-}
-
-inline void* operator new(size_t size, char const* file, unsigned int line)
-{
-   return ze::MemoryManager::Allocate(size, file, line);
-}
-
-inline void* operator new[](size_t size, char const* file, unsigned int line)
-{
-   return ze::MemoryManager::Allocate(size, file, line);
-}
-
-inline void operator delete(void* pointer) noexcept
-{
-   ze::MemoryManager::Release(pointer);
-}
-
-inline void operator delete[](void* pointer) noexcept
-{
-   ze::MemoryManager::Release(pointer);
-}
-
-inline void operator delete(void* pointer, [[maybe_unused]] size_t size) noexcept
-{
-   ze::MemoryManager::Release(pointer);
-}
-
-inline void operator delete[](void* pointer, [[maybe_unused]] size_t size) noexcept
-{
-   ze::MemoryManager::Release(pointer);
-}
-
-inline void operator delete(void* pointer, char const* file, unsigned int line) noexcept
-{
-   ze::MemoryManager::NextRelease(file, line);
-   ze::MemoryManager::Release(pointer);
-}
-
-inline void operator delete[](void* pointer, char const* file, unsigned int line) noexcept
-{
-   ze::MemoryManager::NextRelease(file, line);
-   ze::MemoryManager::Release(pointer);
-}
-
-#if defined(_WIN32)
-   #pragma warning(default:4595)
-#endif
+ZE_API void operator delete(void* pointer, char const* file, unsigned int line) noexcept;
+ZE_API void operator delete[](void* pointer, char const* file, unsigned int line) noexcept;
 
 #endif // ZE_MEMORY_HPP

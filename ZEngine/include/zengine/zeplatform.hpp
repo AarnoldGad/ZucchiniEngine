@@ -27,7 +27,6 @@
 #elif defined(__APPLE__) || defined(__MACH__) // MacOS
 
    #define ZE_PLATFORM_APPLE
-   #error "MacOS not supported !"
 
 #else
 
@@ -44,7 +43,7 @@
       #define ZE_API __declspec(dllimport)
    #endif
 
-#elif __GNUC__ >= 4 // GNU GCC __attribute__
+#elif __GNUC__ >= 4 || defined(__clang__)// GNU GCC __attribute__
 
    #define ZE_API __attribute__ ((__visibility__("default")))
 

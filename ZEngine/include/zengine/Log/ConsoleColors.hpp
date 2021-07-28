@@ -1,9 +1,9 @@
 /**
  * ConsoleColors.hpp
  * 27 Apr 2021
- * Gaétan "The Aarnold" Jalin
+ * GaŽtan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 GaŽtan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -40,7 +40,7 @@ namespace ze
          Gray, LightBlue, LightGreen, LightAqua,
          LightRed, LightPurple, LightYellow, BrightWhite
       };
-   #elif defined(ZE_PLATFORM_LINUX)
+   #else
       enum class Color : uint8_t // Actual ANSI colors are limited due to compatibility of interface between platforms
       {
          Black = 0, Red = 0b001, Green = 0b010, Yellow = 0b011, Blue = 0b100, LightPurple = 0b101, LightAqua = 0b110, White = 0b111,

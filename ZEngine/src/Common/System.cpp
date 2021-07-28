@@ -4,10 +4,17 @@
 
 #include <bitset>
 
-#ifdef _WIN32
+#if defined(_WIN32)
    #include <lmcons.h>
-#else
+#elif defined(__linux__)
    #include <unistd.h>
+#elif defined(__MACH__) || defined(__APPLE__)
+   #include <unistd.h>
+   #include <sys/utsname.h>
+   #include <sys/sysctl.h>
+   #include <sys/types.h>
+   #include <mach/vm_statistics.h>
+   #include <mach/mach.h>
 #endif
 
 #include "zengine/Memory/New.hpp"
@@ -20,18 +27,18 @@ namespace ze
       {
          std::string name;
 
-         #if defined(__unix__)
-
-            const size_t hostNameSize = sysconf(_SC_HOST_NAME_MAX) + 1;
-            name.resize(hostNameSize);
-
-            if (gethostname(&name[0], hostNameSize)) return "";
-
-         #elif defined(_WIN32)
+         #if defined(_WIN32)
 
             name.resize(MAX_COMPUTERNAME_LENGTH + 1); // TODO Not sure about this +1
             DWORD x = MAX_COMPUTERNAME_LENGTH;
             GetComputerNameA(&name[0], &x);
+
+         #else
+
+            const size_t hostNameSize = static_cast<size_t>(sysconf(_SC_HOST_NAME_MAX)) + 1;
+            name.resize(hostNameSize);
+
+            if (gethostname(&name[0], hostNameSize)) return "";
 
          #endif
 
@@ -40,16 +47,7 @@ namespace ze
 
       std::string GetSystemUserName()
       {
-         #if defined(__unix__)
-
-            std::string name;
-            size_t loginNameSize = sysconf(_SC_LOGIN_NAME_MAX) + 1;
-            name.resize(loginNameSize);
-            if (getlogin_r(&name[0], loginNameSize)) return "";
-
-            return name;
-
-         #elif defined(_WIN32)
+         #if defined(_WIN32)
 
             std::string name;
             name.resize(UNLEN + 1); // TODO Not sure about this +1
@@ -58,42 +56,39 @@ namespace ze
 
             return name;
 
+         #else
+
+            std::string name;
+            size_t loginNameSize = static_cast<size_t>(sysconf(_SC_LOGIN_NAME_MAX)) + 1;
+            name.resize(loginNameSize);
+            if (getlogin_r(&name[0], loginNameSize)) return "";
+
+            return name;
+
          #endif
       }
 
       std::string GetKernelName()
       {
-         #if defined(__unix__)
+
+         #if defined(_WIN32)
+
+            return "Windows";
+
+         #else
 
             utsname sysInfo;
             uname(&sysInfo);
 
             return sysInfo.sysname;
 
-         #elif defined(_WIN32)
-
-            return "Windows";
-
          #endif
       }
 
       System::OS::Version GetKernelVersion()
       {
-         #if defined(__unix__)
 
-            utsname sysInfo;
-            uname(&sysInfo);
-
-            System::OS::Version version;
-            char* cursor = sysInfo.release;
-            version.major = static_cast<uint32_t>(std::strtoul(cursor, &cursor, 10));
-            version.minor = static_cast<uint32_t>(std::strtoul(cursor + 1, &cursor, 10));
-            version.patch = static_cast<uint32_t>(std::strtoul(cursor + 1, &cursor, 10));
-            version.rev = static_cast<uint32_t>(std::strtoul(cursor + 1, nullptr, 10));
-
-            return version;
-
-         #elif defined(_WIN32)
+         #if defined(_WIN32)
 
             // return "\"Windows is a mess to get the version (and you don't even care), gfy\"";
 
@@ -112,48 +107,45 @@ namespace ze
 
             return { HIWORD(version->dwProductVersionMS), LOWORD(version->dwProductVersionMS), HIWORD(version->dwProductVersionLS), LOWORD(version->dwProductVersionLS) };
 
+         #else
+
+            utsname sysInfo;
+            uname(&sysInfo);
+
+            System::OS::Version version;
+            char* cursor = sysInfo.release;
+            version.major = static_cast<uint32_t>(std::strtoul(cursor, &cursor, 10));
+            version.minor = static_cast<uint32_t>(std::strtoul(cursor + 1, &cursor, 10));
+            version.patch = static_cast<uint32_t>(std::strtoul(cursor + 1, &cursor, 10));
+            version.rev = static_cast<uint32_t>(std::strtoul(cursor + 1, nullptr, 10));
+
+            return version;
+
          #endif
       }
 
       std::string GetSystemVersionName([[maybe_unused]] System::OS::Version version)
       {
-         #if defined(__unix__)
+
+         #if defined(_WIN32)
+
+            std::stringstream ss;
+            ss << "v" << version.major << "." << version.minor << "." << version.patch << " rev" << version.rev;
+            return ss.str();
+
+         #else
 
             utsname sysInfo;
             uname(&sysInfo);
 
             return sysInfo.release;
 
-         #elif defined(_WIN32)
-
-            std::stringstream ss;
-            ss << "v" << version.major << "." << version.minor << "." << version.patch << " rev" << version.rev;
-            return ss.str();
-
          #endif
       }
 
       Architecture GetSystemArchitecture()
       {
-         #if defined(__unix__)
-
-            utsname sysInfo;
-            uname(&sysInfo);
-
-            if (!strcmp(sysInfo.machine, "i686") || !strcmp(sysInfo.machine, "i386"))
-               return Architecture::x86;
-            else if (!strcmp(sysInfo.machine, "x86_64"))
-               return Architecture::x64;
-            else if (!strcmp(sysInfo.machine, "arm") || !strcmp(sysInfo.machine, "armv7l"))
-               return Architecture::ARM;
-            else if (!strcmp(sysInfo.machine, "aarch64") || !strcmp(sysInfo.machine, "armv8l"))
-               return Architecture::ARM64;
-            else if (!strcmp(sysInfo.machine, "ia64"))
-               return Architecture::IA64;
-            else
-               return Architecture::Unknown;
-
-         #elif defined(_WIN32)
+         #if defined(_WIN32)
 
             SYSTEM_INFO sysInfo;
             GetSystemInfo(&sysInfo);
@@ -174,6 +166,28 @@ namespace ze
                   return Architecture::Unknown;
             }
 
+         #else
+
+            utsname sysInfo;
+            uname(&sysInfo);
+
+            if (!strcmp(sysInfo.machine, "i686") ||
+                !strcmp(sysInfo.machine, "i386"))
+               return Architecture::x86;
+            else if (!strcmp(sysInfo.machine, "x86_64"))
+               return Architecture::x64;
+            else if (!strcmp(sysInfo.machine, "arm") ||
+                     !strcmp(sysInfo.machine, "armv7l"))
+               return Architecture::ARM;
+            else if (!strcmp(sysInfo.machine, "aarch64") ||
+                     !strcmp(sysInfo.machine, "armv8l") ||
+                     !strcmp(sysInfo.machine, "arm64"))
+               return Architecture::ARM64;
+            else if (!strcmp(sysInfo.machine, "ia64"))
+               return Architecture::IA64;
+            else
+               return Architecture::Unknown;
+
          #endif
       }
 
@@ -190,26 +204,7 @@ namespace ze
 
       Processor::Cores GetCPUCores()
       {
-         #if defined(__unix__)
-
-            std::ifstream cpuinfo("/proc/cpuinfo");
-            if (!cpuinfo) return {};
-
-            uint32_t physic = 0;
-            uint32_t logic = static_cast<uint32_t>(sysconf(_SC_NPROCESSORS_ONLN));
-
-            for (std::string line; std::getline(cpuinfo, line);)
-            {
-               if (line.find("cpu cores") != std::string::npos) // TODO Test on other unix platforms
-               {
-                  physic = static_cast<uint32_t>(std::strtoul(line.c_str() + line.find_first_of("0123456789"), nullptr, 10));
-                  break;
-               }
-            }
-
-            return { physic, logic };
-
-         #elif defined(_WIN32)
+         #if defined(_WIN32)
 
             std::vector<SYSTEM_LOGICAL_PROCESSOR_INFORMATION> infoList;
             DWORD size = 0;
@@ -235,12 +230,54 @@ namespace ze
 
             return { physic, logic };
 
+         #elsif defined(__linux__)
+
+            std::ifstream cpuinfo("/proc/cpuinfo");
+            if (!cpuinfo) return {};
+
+            uint32_t physic = 0;
+            uint32_t logic = static_cast<uint32_t>(sysconf(_SC_NPROCESSORS_ONLN));
+
+            for (std::string line; std::getline(cpuinfo, line);)
+            {
+               if (line.find("cpu cores") != std::string::npos) // TODO Test on other unix platforms
+               {
+                  physic = static_cast<uint32_t>(std::strtoul(line.c_str() + line.find_first_of("0123456789"), nullptr, 10));
+                  break;
+               }
+            }
+
+            return { physic, logic };
+
+         #elif defined(__MACH__) || defined(__APPLE__)
+
+            int physic = 0, logic = 0;
+            size_t length = sizeof(int);
+         
+            sysctlbyname("machdep.cpu.core_count", &physic, &length, nullptr, 0);
+            sysctlbyname("machdep.cpu.thread_count", &logic, &length, nullptr, 0);
+
+            return { static_cast<uint32_t>(physic), static_cast<uint32_t>(logic) };
+
          #endif
       }
 
       std::string GetCPUModel()
       {
-         #if defined(__unix__)
+         #if defined(_WIN32)
+
+            HKEY hkey;
+            if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
+               return {};
+
+            char model[64];
+            DWORD size = sizeof(model);
+            if (RegQueryValueExA(hkey, "ProcessorNameString", nullptr, nullptr, static_cast<LPBYTE>(static_cast<void*>(&model[0])), &size))
+               return {};
+
+            return model;
+
+         #elif defined(__linux__)
 
             std::ifstream cpuinfo("/proc/cpuinfo");
             if (!cpuinfo) return {};
@@ -257,18 +294,14 @@ namespace ze
 
             return model;
 
-         #elif defined(_WIN32)
+         #elif defined(__APPLE__) || defined(__MACH__)
 
-            HKEY hkey;
-            if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)", 0, KEY_READ, &hkey))
-               return {};
+            char name[64];
+            size_t namelen = sizeof(name);
 
-            char model[64];
-            DWORD size = sizeof(model);
-            if (RegQueryValueExA(hkey, "ProcessorNameString", nullptr, nullptr, static_cast<LPBYTE>(static_cast<void*>(&model[0])), &size))
-               return {};
+            sysctlbyname("machdep.cpu.brand_string", &name, &namelen, nullptr, 0);
 
-            return model;
+            return name;
 
          #endif
       }
@@ -301,9 +334,23 @@ namespace ze
 
    Memory GetMemoryInfo()
    {
-      Memory memoryInfo{};
+      #if defined(_WIN32)
 
-      #if defined(__unix__)
+         Memory memoryInfo{};
+
+         MEMORYSTATUSEX memStat;
+         memStat.dwLength = sizeof(memStat);
+         GlobalMemoryStatusEx(&memStat);
+
+         memoryInfo.total = memStat.ullTotalPhys;
+         memoryInfo.available = memStat.ullAvailPhys;
+         memoryInfo.used = memStat.ullTotalPhys - memStat.ullAvailPhys;
+
+         return memoryInfo;
+
+      #elif defined(__linux__)
+
+         Memory memoryInfo{};
 
          std::ifstream meminfo("/proc/meminfo");
          if (!meminfo) return {};
@@ -318,19 +365,24 @@ namespace ze
 
          memoryInfo.used = memoryInfo.total - memoryInfo.available;
 
-      #elif defined(_WIN32)
+         return memoryInfo;
 
-         MEMORYSTATUSEX memStat;
-         memStat.dwLength = sizeof(memStat);
-         GlobalMemoryStatusEx(&memStat);
+      #elif defined(__MACH__) || defined(__APPLE__)
 
-         memoryInfo.total = memStat.ullTotalPhys;
-         memoryInfo.available = memStat.ullAvailPhys;
-         memoryInfo.used = memStat.ullTotalPhys - memStat.ullAvailPhys;
+         uint64_t total = 0, available = 0;
+         size_t length = sizeof(uint64_t);
+
+         vm_statistics64 stats;
+         natural_t count = HOST_VM_INFO64_COUNT;
+         mach_port_t host = mach_host_self();
+
+         sysctlbyname("hw.memsize", &total, &length, nullptr, 0);
+         host_statistics64(host, HOST_VM_INFO64, reinterpret_cast<host_info64_t>(&stats), &count);
+         available = stats.free_count * static_cast<unsigned>(getpagesize());
+
+         return { total, available, total - available };
 
       #endif
-
-      return memoryInfo;
    }
 
    std::string ArchToString(Architecture arch)

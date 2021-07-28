@@ -1,5 +1,5 @@
 /**
- * MemoryManager.hpp
+ * MemoryTracker.hpp
  * 6 Mar 2021
  * Gaétan "The Aarnold" Jalin
  *
@@ -23,8 +23,8 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_MEMORYMANAGER_HPP
-#define ZE_MEMORYMANAGER_HPP
+#ifndef ZE_MEMORYTRACKER_HPP
+#define ZE_MEMORYTRACKER_HPP
 
 #include "zengine/zemacros.hpp"
 
@@ -32,7 +32,7 @@
 
 namespace ze
 {
-   class ZE_API MemoryManager
+   class ZE_API MemoryTracker final
    {
    public:
       static void* Allocate(size_t size, char const* file = nullptr, unsigned int line = 0);
@@ -44,12 +44,13 @@ namespace ze
       static size_t GetTotalMemoryAllocated() noexcept;
 
    private:
-      MemoryManager() = default;
-      ~MemoryManager();
-
-      static void Initialise();
-      static void Terminate();
+      MemoryTracker() = delete;
+      MemoryTracker(MemoryTracker const&) = delete;
+      MemoryTracker(MemoryTracker&&) = delete;
+      MemoryTracker& operator=(MemoryTracker const&) = delete;
+      MemoryTracker& operator=(MemoryTracker&&) = delete;
+      ~MemoryTracker() = delete;
    };
 }
 
-#endif // ZE_MEMORYMANAGER_HPP
+#endif // ZE_MEMORYTRACKER_HPP

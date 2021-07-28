@@ -1,9 +1,9 @@
 /**
  * zengine.hpp
  * 27 Nov 2020
- * Gaétan "The Aarnold" Jalin
+ * GaŽtan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 GaŽtan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -28,12 +28,10 @@
 
 #include <zengine/zemacros.hpp>
 
-// Abstract design
-#include <zengine/Abstract/Singleton.hpp>
-
 // Core
 #include <zengine/Core/Core.hpp>
-#include <zengine/Core/State.hpp>
+#include <zengine/Core/Application.hpp>
+#include <zengine/Core/Engine.hpp>
 
 // Logger
 #include <zengine/Log/LogLevels.hpp>
@@ -58,7 +56,7 @@
 
 // Misc Managers
 #include <zengine/Resource/ResourceManager.hpp>
-#include <zengine/Memory/MemoryManager.hpp>
+#include <zengine/Memory/MemoryTracker.hpp>
 
 // Time management
 #include <zengine/Time/Chrono.hpp>

@@ -57,12 +57,11 @@ namespace ze
       m_lineStart = true;
    }
 
-   [[nodiscard("File should be closed")]]
+   [[nodiscard]]
    FILE* FileWriter::openFile(char const* mode)
    {
       // C Style file opening for performance
-      FILE* file;
-      fopen_s(&file, m_path.string().c_str(), mode);
+      FILE* file = fopen(m_path.string().c_str(), mode);
 
       return file;
    }

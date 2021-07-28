@@ -7,12 +7,12 @@
 #include <iostream>
 
 #define ZE_VERSION_MAJOR 0
-#define ZE_VERSION_MINOR 9
-#define ZE_VERSION_REV 0
+#define ZE_VERSION_MINOR 10
+#define ZE_VERSION_REV 1
 #define ZE_VERSION_SPEC "pre"
 #define ZE_VERSION_MONTH 7
-#define ZE_VERSION_DAY 15
-#define ZE_VERSION_YEAR 21 
+#define ZE_VERSION_DAY 23
+#define ZE_VERSION_YEAR 21
 
 //#define ZE_DEBUG_LOG_MEMORYALLOC
 

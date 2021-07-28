@@ -1,9 +1,9 @@
 /**
  * Core.hpp
  * 18 Dec 2020
- * Gaétan "The Aarnold" Jalin
+ * GaŽtan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 GaŽtan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -53,13 +53,15 @@ namespace ze
       static void ConnectEngine(Engine& engine);
       static void DisconnectEngine(Engine& engine);
 
-      static void PlaceApplication(Application* app);
+      static Application* PlaceApplication(Application& app);
       static Application* GetApplication() noexcept;
+      static Application* RemoveApplication();
 
       static void Run();
       static bool IsRunning() noexcept;
       static void Stop() noexcept;
 
+      static EventBus& UseEventBus() noexcept;
       static Logger& UseCoreLogger() noexcept;
 
       static void SetTickRate(unsigned int rate) noexcept;
@@ -69,34 +71,51 @@ namespace ze
 
       static void Terminate();
 
+      static Core& Instance();
+
+      void initialise();
+
+      void connectEngine(Engine& engine);
+      void disconnectEngine(Engine& engine);
+      
+      Application* placeApplication(Application& app);
+      Application* removeApplication();
+
+      void terminate();
+
    private:
-      Core() = delete;
+      void mainLoop();
+
+      void tickApplication(Time deltaTime);
+      void tickEngines(Time deltaTime);
+      void capTickRate(Time loopTime);
+
+      bool isInitialised() noexcept;
+      void setInitialised(bool value = true) noexcept;
+
+      void printRunTimeInformations();
+
+      Core();
+      ~Core() = default;
+      
       Core(Core const&) = delete;
       Core(Core&&) = delete;
       Core& operator=(Core const&) = delete;
       Core& operator=(Core&&) = delete;
-      ~Core() = delete;
 
-      static void MainLoop();
+   private:
+      bool m_initialised;
 
-      static void TickApplication(Time deltaTime);
-      static void TickEngines(Time deltaTime);
-      static void CapTickRate(Time loopTime);
+      EventBus m_eventBus;
+      DebugFileWriter m_coreWriter;
+      Logger m_coreLogger;
 
-      static bool IsInitialised() noexcept;
-      static void SetInitialised(bool value = true) noexcept;
+      bool m_running;
+      Chrono m_runTime; // Run from Initialisation to Termination
+      unsigned int m_tickRate;
 
-      static bool s_initialised;
-
-      static DebugFileWriter s_coreWriter;
-      static Logger s_coreLogger;
-
-      static bool s_running;
-      static Chrono s_runTime; // Run from Initialisation to Termination
-      static unsigned int s_tickRate;
-
-      static Application* s_app;
-      static std::set<Engine*> s_engines;
+      Application* m_app;
+      std::set<Engine*> m_engines;
    };
 }
 

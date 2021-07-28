@@ -34,17 +34,30 @@ project "ZEngine"
       systemversion "latest"
 
    filter "system:linux"
-      includedirs {
+      sysincludedirs {
          "/usr/include",
          "/usr/local/include"
       }
-      libdirs {
+      syslibdirs {
          "/usr/lib",
          "/usr/local/lib"
       }
       links {
          "dl",
          "pthread"
+      }
+
+   filter { "system:macosx" }
+      pchheader ""
+      pchsource ""
+      buildoptions {
+         "-Wall", "-Wextra", "-Wold-style-cast", "-Woverloaded-virtual", "-Wfloat-equal", "-Wwrite-strings",
+         "-Wpointer-arith", "-Wcast-qual", "-Wcast-align", "-Wconversion", "-Wshadow", "-Wredundant-decls",
+         "-Wdouble-promotion", "-Winit-self", "-Wswitch-default", "-Wswitch-enum", "-Wundef", "-Winline",
+         "-fPIC", "-m64", "-fexceptions", "-pedantic"
+      }
+      linkoptions {
+         "-fPIC", "-shared", "-lc", "-m64"
       }
 
    filter { "action:gmake*", "toolset:gcc" }

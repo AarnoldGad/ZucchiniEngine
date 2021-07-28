@@ -23,7 +23,7 @@ namespace ze
          m_lineStart = false;
       }
 
-      m_console.write(line.data(), line.size());
+      m_console.write(line.data(), static_cast<std::streamsize>(line.size()));
 
       ze::ResetConsoleColor();
    }

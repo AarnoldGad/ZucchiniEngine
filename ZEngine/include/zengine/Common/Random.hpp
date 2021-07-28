@@ -1,9 +1,9 @@
 /**
  * Random.hpp
  * 4 Apr 2021
- * Gaétan "The Aarnold" Jalin
+ * GaŽtan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 GaŽtan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -45,7 +45,7 @@ namespace ze
       static uint32_t Generate(uint32_t minimum = std::default_random_engine::min(), uint32_t maximum = std::default_random_engine::max());
       static uint64_t GenerateLong(uint64_t minimum = std::default_random_engine::min(), uint64_t maximum = std::default_random_engine::max());
       static float GenerateFloat(float minimum = 0.f, float maximum = 1.f);
-      static double GenerateDouble(double minimum = 0.F, double maximum = 1.F);
+      static double GenerateDouble(double minimum = 0., double maximum = 1.);
 
    private:
       Random() = delete;

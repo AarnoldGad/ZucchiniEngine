@@ -57,7 +57,7 @@ void ze::Logger::write(std::string_view format, Args&&... args)
    else if (static_cast<size_t>(written) >= line.size())
       LOG_TRACE("Warning : Insufficient buffer size"); // TODO Too
 
-   write(std::string_view(line.data(), written));
+   write(std::string_view(line.data(), static_cast<unsigned long>(written)));
 }
 
 inline bool ze::Logger::canLog() const noexcept

@@ -1,9 +1,9 @@
 /**
  * Application.hpp
  * 15 Jul 2021
- * Gaétan "The Aarnold" Jalin
+ * GaŽtan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 GaŽtan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -40,10 +40,12 @@ namespace ze
       std::string const& getName() const noexcept;
       Logger& useAppLogger() noexcept;
 
+      virtual void onConnection() = 0;
       virtual void tick(Time deltaTime) = 0;
+      virtual void onDisconnection() = 0;
 
       Application(std::string const& name);
-      virtual ~Application();
+      virtual ~Application() = default;
 
    protected:
       std::string m_name;
