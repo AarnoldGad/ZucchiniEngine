@@ -7,5 +7,5 @@
 namespace ze
 {
    Application::Application(std::string const& name)
-      : m_name(name), m_appWriter(getName() + ".log"), m_appLogger(getName(), &m_appWriter) {}
+      : m_name(name) {}
 }

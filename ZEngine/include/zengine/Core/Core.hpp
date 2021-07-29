@@ -31,14 +31,11 @@
 #include "zengine/Core/Application.hpp"
 #include "zengine/Log/Logger.hpp"
 #include "zengine/Log/DebugFileWriter.hpp"
-#include "zengine/Log/FileWriter.hpp"
 #include "zengine/Event/EventBus.hpp"
-#include "zengine/Event/Subscriber.hpp"
 #include "zengine/Time/Chrono.hpp"
 #include "zengine/Core/Engine.hpp"
 
-#include <unordered_set>
-#include <vector>
+#include <set>
 #include <string>
 #include <iostream>
 #include <fstream>

@@ -1,9 +1,9 @@
 /**
- * EventHandler.hpp
- * 12 Dec 2020
- * Gaétan "The Aarnold" Jalin
+ * Subscriber.hpp
+ * 29 Jul 2021
+ * Ga√©tan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 Ga√©tan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -23,36 +23,24 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_EVENTHANDLER_HPP
-#define ZE_EVENTHANDLER_HPP
+#ifndef ZE_SUBSCRIBER_HPP
+#define ZE_SUBSCRIBER_HPP
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Event/Event.hpp"
-#include "zengine/Event/Callback.hpp"
-#include "zengine/Common/TypeTraits.hpp"
-
-#include <functional>
-#include <type_traits>
-
 namespace ze
 {
-   template<typename EventType, typename = if_is_event<EventType> >
-   class EventHandler : public Callback<Event&>
+   template<typename... Args>
+   class Subscriber
    {
    public:
-      using CallbackType = std::function<void (EventType&)>;
+      virtual bool subscribe() = 0;
+      virtual bool unsubscribe() = 0;
+      virtual void notify(Args... args) = 0;
 
-      EventHandler() = default;
-      explicit EventHandler(CallbackType callback) noexcept;
-
-      virtual void operator()(Event& event) override;
-
-   private:
-      CallbackType m_callback;
+      Subscriber() = default;
+      virtual ~Subscriber() = default;
    };
 }
 
-#include "EventHandler.inl"
-
-#endif // ZE_EVENTHANDLER_HPP
+#endif /* ZE_SUBSCRIBER_HPP */

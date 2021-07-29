@@ -23,14 +23,13 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_SUBSCRIBER_HPP
-#define ZE_SUBSCRIBER_HPP
+#ifndef ZE_EVENTSUBSCRIBER_HPP
+#define ZE_EVENTSUBSCRIBER_HPP
 
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Common/Priority.hpp"
-#include "zengine/Event/EventHandler.hpp"
-#include "zengine/Common/TypeTraits.hpp"
+#include "zengine/Common/Subscriber.hpp"
 
 #include <map>
 #include <set>
@@ -38,34 +37,40 @@
 
 namespace ze
 {
-   template<typename EventType, typename = if_is_event<EventType> >
-   class Subscriber
+   template<typename EventType>
+   class EventSubscriber : public Subscriber<Event&>
    {
    public:
-      using CallbackList = std::map<Priority, std::set<Callback<Event&>*>, std::greater<Priority> >;
-      using CallbackType = std::function<void(EventType&)>;
-      using SubscriberType = Subscriber<EventType>;
+      using HandlerFn = std::function<void (EventType&)>;
+      using SubscriberList = std::map<Priority, std::set<Subscriber<Event&>*>, std::greater<Priority> >;
+      
+      bool subscribe() override;
+      bool unsubscribe() override;
+      void notify(Event& event) override;
 
-      void subscribe();
-      void unsubscribe();
+      void setHandler(HandlerFn handler) noexcept;
+      void setList(SubscriberList* list);
+      void setPriority(Priority priority);
 
+      HandlerFn getHandler() const noexcept;
       Priority getPriority() const noexcept;
-      EventHandler<EventType>& getHandler() noexcept;
 
-      Subscriber(CallbackList& list, CallbackType callback, Priority priority = Priority::Normal);
-      Subscriber(SubscriberType const& other);
-      Subscriber() noexcept;
-      ~Subscriber();
 
-      SubscriberType& operator=(SubscriberType const& other);
+      EventSubscriber(SubscriberList* list, HandlerFn handler, Priority priority = Priority::Normal);
+      EventSubscriber(HandlerFn handler, Priority priority = Priority::Normal);
+      EventSubscriber(EventSubscriber const& other);
+      EventSubscriber() noexcept;
+      ~EventSubscriber();
+
+      EventSubscriber& operator=(EventSubscriber const& other);
 
    private:
+      SubscriberList* m_list;
+      HandlerFn m_handler;
       Priority m_priority;
-      EventHandler<EventType> m_handler;
-      CallbackList* m_list;
    };
 }
 
-#include "Subscriber.inl"
+#include "EventSubscriber.inl"
 
-#endif // ZE_SUBSCRIBER_HPP
+#endif // ZE_EVENTSUBSCRIBER_HPP

@@ -47,7 +47,7 @@ namespace ze
 
       virtual std::string toString() const = 0;
 
-      Event() noexcept;
+      Event();
       virtual ~Event() = default;
 
    private:

@@ -1,7 +1,7 @@
 /**
  * EventBus.hpp
  * 12 Dec 2020
- * Ga�tan "The Aarnold" Jalin
+ * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Ga�tan Jalin
  *
@@ -29,8 +29,8 @@
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Common/Priority.hpp"
+#include "zengine/Event/EventSubscriber.hpp"
 #include "zengine/Event/Event.hpp"
-#include "zengine/Event/Subscriber.hpp"
 
 #include <vector>
 #include <set>
@@ -38,27 +38,24 @@
 
 namespace ze
 {
-   template<typename... CallbackParameters>
-   class Callback;
-
    class ZE_API EventBus
    {
    public:
-      using Callbacks = std::map<Priority, std::set<Callback<Event&>*>, std::greater<Priority> >;
+      using SubscriberList = std::map<Priority, std::set<Subscriber<Event&>*>, std::greater<Priority> >;
 
       template<typename EventType, typename... Args>
       void pushEvent(Args&&... args);
 
       template<typename EventType>
-      [[nodiscard]]
-      Subscriber<EventType> subscribe(std::function<void (EventType&)> callback, Priority priotity = Priority::Normal);
+      void pushEvent(EventType&& event);
 
-      template<typename EventType, typename Receiver>
+      template<typename EventType>
       [[nodiscard]]
-      Subscriber<EventType> subscribe(void (Receiver::*callback)(EventType&), Receiver* receiver, Priority priotity = Priority::Normal);
+      EventSubscriber<EventType> subscribe(std::function<void (EventType&)> callback, Priority priotity = Priority::Normal);
 
-      void subscribe(Callback<Event&>& callback, Priority priority = Priority::Normal);
-      void unsubscribe(Callback<Event&>& callback, Priority priority);
+      template<typename EventType, typename ReceiverType>
+      [[nodiscard]]
+      EventSubscriber<EventType> subscribe(void (ReceiverType::*callback)(EventType&), ReceiverType* receiver, Priority priotity = Priority::Normal);
 
       void dispatchEvents();
       void fireEvent(Event& event);
@@ -68,7 +65,7 @@ namespace ze
 
    private:
       std::vector<std::shared_ptr<Event> > m_events;
-      Callbacks m_callbacks;
+      SubscriberList m_subscribers;
    };
 }
 

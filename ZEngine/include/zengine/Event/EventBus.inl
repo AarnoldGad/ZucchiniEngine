@@ -1,23 +1,29 @@
 #include "zengine/Memory/New.hpp"
 
 template<typename EventType, typename... Args>
-void ze::EventBus::pushEvent(Args&&... args)
+inline void ze::EventBus::pushEvent(Args&&... args)
 {
    m_events.push_back(std::make_shared<EventType>(std::forward<Args>(args)...));
 }
 
 template<typename EventType>
-[[nodiscard]]
-inline ze::Subscriber<EventType> ze::EventBus::subscribe(std::function<void (EventType&)> callback, Priority priority)
+inline void ze::EventBus::pushEvent(EventType&& event)
 {
-   return Subscriber<EventType>(m_callbacks, callback, priority);
+   m_events.push_back(std::make_shared<EventType>(std::move(event)));
 }
 
-template<typename EventType, typename Receiver>
+template<typename EventType>
 [[nodiscard]]
-inline ze::Subscriber<EventType> ze::EventBus::subscribe(void (Receiver::*callback)(EventType&), Receiver* receiver, Priority priority)
+inline ze::EventSubscriber<EventType> ze::EventBus::subscribe(std::function<void (EventType&)> callback, Priority priority)
 {
-   return Subscriber<EventType>(m_callbacks, std::bind(callback, receiver, std::placeholders::_1), priority);
+   return EventSubscriber<EventType>(&m_subscribers, callback, priority);
+}
+
+template<typename EventType, typename ReceiverType>
+[[nodiscard]]
+inline ze::EventSubscriber<EventType> ze::EventBus::subscribe(void (ReceiverType::*callback)(EventType&), ReceiverType* receiver, Priority priority)
+{
+   return EventSubscriber<EventType>(&m_subscribers, std::bind(callback, receiver, std::placeholders::_1), priority);
 }
 
 #include "zengine/Memory/NewOff.hpp"

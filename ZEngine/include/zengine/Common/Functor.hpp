@@ -1,9 +1,9 @@
 /**
- * Callback.hpp
- * 14 Dec 2020
- * Gaétan "The Aarnold" Jalin
+ * Functor.hpp
+ * 29 Jul 2021
+ * Ga√©tan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 Ga√©tan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -23,21 +23,24 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CALLBACK_HPP
-#define ZE_CALLBACK_HPP
+#ifndef ZE_FUNCTOR_HPP
+#define ZE_FUNCTOR_HPP
 
 #include "zengine/zemacros.hpp"
 
 namespace ze
 {
-   template<typename... CallbackParameters>
-   class Callback
+   template<typename Fn>
+   class Functor;
+
+   template<typename Return, typename... Args>
+   class Functor<Return (Args...)>
    {
    public:
-      virtual void operator()(CallbackParameters...) = 0;
+      virtual Return operator()(Args...) = 0;
 
-      virtual ~Callback() = default;
+      virtual ~Functor() = default;
    };
 }
 
-#endif // ZE_CALLBACK_HPP
+#endif /* ZE_FUNCTOR_HPP */

@@ -36,16 +36,16 @@ namespace ze
    class ZE_API EventDispatcher
    {
    public:
-      template<typename EventType, typename = if_is_event<EventType> >
+      template<typename EventType>
       void dispatch(std::function<void (EventType&)> handler);
 
-      template<typename EventType, typename Receiver, typename = if_is_event<EventType> >
+      template<typename EventType, typename Receiver>
       void dispatch(void (Receiver::*handler)(EventType&), Receiver* receiver);
 
       explicit EventDispatcher(Event& event) noexcept;
 
    private:
-      Event* m_event;
+      Event* const m_event;
    };
 }
 

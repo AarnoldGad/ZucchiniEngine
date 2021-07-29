@@ -1,5 +1,5 @@
 /**
- * Signal.hpp
+ * Listener.hpp
  * 6 Feb 2021
  * Gaétan "The Aarnold" Jalin
  *
@@ -23,52 +23,60 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_SIGNAL_HPP
-#define ZE_SIGNAL_HPP
+#ifndef ZE_LISTENER_HPP
+#define ZE_LISTENER_HPP
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Signal/Listener.hpp"
-
 #include <functional>
-#include <unordered_set>
 
 namespace ze
 {
    template<typename FnSignature>
    class Signal;
 
+   template<typename FnSignature>
+   class Listener;
+
    template<typename Return, typename... Args>
-   class Signal<Return(Args...)>
+   class Listener<Return(Args...)>
    {
    public:
-      using ListenerType = ze::Listener<Return(Args...)>;
+      using SignalType = Signal<Return(Args...)>;
       using HandlerFn = std::function<Return(Args...)>;
 
-      [[nodiscard]]
-      ListenerType connect(HandlerFn handler) noexcept;
-      void connect(ListenerType& listener) noexcept;
-      
-      bool isConnected(ListenerType& listener);
+      void connect(SignalType& signal) noexcept;
 
-      void disconnect(ListenerType& listener) noexcept;
-      void disconnectAll() noexcept;
+      explicit operator bool() const noexcept;
+      bool isConnected() const noexcept;
 
-      void emit(Args&&... args);
+      Return receive(Args&&... args);
 
-      Signal() noexcept;
-      ~Signal() noexcept;
+      void disconnect() noexcept;
 
-      Signal(Signal const&) = delete;
-      Signal(Signal&&) = delete;
-      Signal& operator=(Signal const&) = delete;
-      Signal& operator=(Signal&&) = delete;
+//      template<typename ReceiverType>
+//      void setHandler(Return (ReceiverType::*handler)(Args...), ReceiverType* receiver);
+      void setHandler(HandlerFn handler) noexcept;
+
+      SignalType const* getSignal() const noexcept;
+      HandlerFn getHandler() const noexcept;
+
+      explicit Listener(HandlerFn handler, SignalType* signal = nullptr) noexcept;
+
+      Listener(Listener const& other) noexcept;
+      Listener(Listener&& other);
+      Listener& operator=(Listener const& other) noexcept;
+      Listener& operator=(Listener&& other) noexcept;
+
+      Listener() noexcept;
+      ~Listener() noexcept;
 
    private:
-      std::unordered_set<ListenerType*> m_listeners;
+      SignalType* m_signal;
+      HandlerFn m_handler;
    };
 }
 
-#include "Signal.inl"
+#include "Listener.inl"
 
-#endif // ZE_SIGNAL_HPP
+#endif // ZE_LISTENER_HPP

@@ -46,12 +46,11 @@
 
 // Event System
 #include <zengine/Event/Event.hpp>
-#include <zengine/Event/EventHandler.hpp>
 #include <zengine/Event/EventDispatcher.hpp>
 #include <zengine/Event/EventBus.hpp>
-#include <zengine/Event/Subscriber.hpp>
+#include <zengine/Event/EventSubscriber.hpp>
 #include <zengine/Signal/Signal.hpp>
-#include <zengine/Signal/Connection.hpp>
+#include <zengine/Signal/Listener.hpp>
 
 // Misc Managers
 #include <zengine/Resource/ResourceManager.hpp>

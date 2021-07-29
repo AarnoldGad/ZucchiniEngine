@@ -6,7 +6,7 @@
 
 namespace ze
 {
-   Event::Event() noexcept
+   Event::Event()
       : m_canceled(false), m_timestamp(Date::CurrentDate()) {}
 
    void Event::cancel() noexcept

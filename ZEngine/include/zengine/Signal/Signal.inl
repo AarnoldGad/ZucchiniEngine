@@ -1,55 +1,47 @@
 #include "zengine/Memory/New.hpp"
 
-template<typename ReturnType, typename... Args>
-ze::Signal<ReturnType(Args...)>::Signal() noexcept
-   : m_connections{} {}
+template<typename Return, typename... Args>
+ze::Signal<Return (Args...)>::Signal() noexcept
+   : m_listeners{} {}
 
-template<typename ReturnType, typename... Args>
-ze::Connection<ReturnType(Args...)> ze::Signal<ReturnType(Args...)>::connect(ReceiverType receiver) noexcept
+template<typename Return, typename... Args>
+ze::Listener<Return (Args...)> ze::Signal<Return (Args...)>::connect(HandlerFn handler) noexcept
 {
-   return ConnectionType(this, receiver);
+   return ListenerType(this, handler);
 }
 
-template<typename ReturnType, typename... Args>
-void ze::Signal<ReturnType(Args...)>::connect(ConnectionType& connection) noexcept
+template<typename Return, typename... Args>
+void ze::Signal<Return (Args...)>::connect(ListenerType& listener) noexcept
 {
-   if (connection.m_signal != this) return; // TODO Error Handling ?
+   if (listener.m_signal != this) return; // TODO Error Handling ?
 
-   m_connections.push_back(&connection);
+   m_listeners.push_back(&listener);
 }
 
-template<typename ReturnType, typename... Args>
-void ze::Signal<ReturnType(Args...)>::disconnect(ConnectionType& connection) noexcept
+template<typename Return, typename... Args>
+void ze::Signal<Return (Args...)>::disconnect(ListenerType& listener) noexcept
 {
-   m_connections.remove(&connection);
+   m_listeners.erase(&listener);
 }
 
-template<typename ReturnType, typename... Args>
-void ze::Signal<ReturnType(Args...)>::clearConnections() noexcept
+template<typename Return, typename... Args>
+void ze::Signal<Return (Args...)>::disconnectAll() noexcept
 {
-   for (auto& connection : m_connections)
-      connection->disconnect();
+   for (auto& listener : m_listeners)
+      listener->disconnect();
 }
 
-template<typename ReturnType, typename... Args>
-void ze::Signal<ReturnType(Args...)>::emit(Args&&... args)
+template<typename Return, typename... Args>
+void ze::Signal<Return (Args...)>::emit(Args&&... args)
 {
-   for (auto& connection : m_connections)
-      connection->receiveSignal(std::forward<Args>(args)...);
+   for (auto& listener : m_listeners)
+      listener->receive(std::forward<Args>(args)...);
 }
 
-template<typename ReturnType, typename... Args>
-void ze::Signal<ReturnType(Args...)>::replaceConnection(ConnectionType& oldConnection, ConnectionType& newConnection) noexcept
+template<typename Return, typename... Args>
+ze::Signal<Return (Args...)>::~Signal() noexcept
 {
-   auto it = std::find(m_connections.begin(), m_connections.end(), &oldConnection);
-   if (it != m_connections.end())
-      *it = &newConnection;
-}
-
-template<typename ReturnType, typename... Args>
-ze::Signal<ReturnType(Args...)>::~Signal() noexcept
-{
-   clearConnections();
+   disconnectAll();
 }
 
 #include "zengine/Memory/NewOff.hpp"
