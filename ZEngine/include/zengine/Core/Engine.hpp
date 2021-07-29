@@ -37,9 +37,7 @@ namespace ze
    {
    public:
       virtual void initialise() = 0;
-
       virtual void tick(Time deltaTime) = 0;
-
       virtual void terminate() = 0;
 
       virtual ~Engine() = default;

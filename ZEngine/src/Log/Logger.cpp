@@ -12,6 +12,11 @@ namespace ze
    Logger::Logger(std::string_view name, Writer* writer, unsigned int logMask)
       : m_name{0}, m_writer(writer), m_logMask(logMask), m_logLevel(Level::Info)
    {
+      setName(name);
+   }
+
+   void Logger::setName(std::string_view name)
+   {
       name.copy(m_name, std::min<size_t>(LOGGERNAME_MAXLENGTH, name.length()));
       // Make the name upper case
       for (size_t i = 0; i < LOGGERNAME_MAXLENGTH; ++i)

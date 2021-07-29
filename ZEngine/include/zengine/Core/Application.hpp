@@ -38,20 +38,17 @@ namespace ze
    {
    public:
       std::string const& getName() const noexcept;
-      Logger& useAppLogger() noexcept;
 
       virtual void onConnection() = 0;
-      virtual void tick(Time deltaTime) = 0;
       virtual void onDisconnection() = 0;
+
+      virtual void tick(Time deltaTime) = 0;
 
       Application(std::string const& name);
       virtual ~Application() = default;
 
    protected:
       std::string m_name;
-
-      DebugFileWriter m_appWriter;
-      Logger m_appLogger;
    };
 }
 

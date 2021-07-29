@@ -100,6 +100,7 @@ namespace ze
       Logger& stacktrace();
       static Logger& stacktrace(Logger& logger);
 
+      void setName(std::string_view name);
       char const* getName() const noexcept;
 
       void setWriter(Writer* writer) noexcept;
@@ -110,7 +111,7 @@ namespace ze
 
       bool canLog() const noexcept;
 
-      explicit Logger(std::string_view name, Writer* = nullptr, unsigned int logMask = 0xFF);
+      explicit Logger(std::string_view name = "UNDEFINED", Writer* = nullptr, unsigned int logMask = 0xFF);
 
    private:
       template<typename... Args>

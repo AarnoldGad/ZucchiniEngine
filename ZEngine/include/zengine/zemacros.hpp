@@ -42,11 +42,11 @@
 #define ZE_LOG_ERROR(...)    ::ze::Core::UseCoreLogger().error().logLine(__VA_ARGS__)
 #define ZE_LOG_CRITICAL(...) ::ze::Core::UseCoreLogger().critical().logLine(__VA_ARGS__)
 
-#define APP_LOG_INFO(...)     if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().info().logLine(__VA_ARGS__)
-#define APP_LOG_DEBUG(...)    if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().debug().logLine(__VA_ARGS__)
-#define APP_LOG_WARN(...)     if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().warn().logLine(__VA_ARGS__)
-#define APP_LOG_ERROR(...)    if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().error().logLine(__VA_ARGS__)
-#define APP_LOG_CRITICAL(...) if (::ze::Core::GetApplication()) ::ze::Core::GetApplication()->useAppLogger().critical().logLine(__VA_ARGS__)
+#define APP_LOG_INFO(...)     ::ze::Core::UseAppLogger().info().logLine(__VA_ARGS__)
+#define APP_LOG_DEBUG(...)    ::ze::Core::UseAppLogger().debug().logLine(__VA_ARGS__)
+#define APP_LOG_WARN(...)     ::ze::Core::UseAppLogger().warn().logLine(__VA_ARGS__)
+#define APP_LOG_ERROR(...)    ::ze::Core::UseAppLogger().error().logLine(__VA_ARGS__)
+#define APP_LOG_CRITICAL(...) ::ze::Core::UseAppLogger().critical().logLine(__VA_ARGS__)
 
 #include "zengine/Debug/Assert.hpp"
 #include "zengine/Debug/Tee.hpp"

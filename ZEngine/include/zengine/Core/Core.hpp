@@ -49,6 +49,7 @@ namespace ze
    {
    public:
       static void Initialise();
+      static bool IsInitialised() noexcept;
 
       static void ConnectEngine(Engine& engine);
       static void DisconnectEngine(Engine& engine);
@@ -63,6 +64,7 @@ namespace ze
 
       static EventBus& UseEventBus() noexcept;
       static Logger& UseCoreLogger() noexcept;
+      static Logger& UseAppLogger() noexcept;
 
       static void SetTickRate(unsigned int rate) noexcept;
 
@@ -90,7 +92,6 @@ namespace ze
       void tickEngines(Time deltaTime);
       void capTickRate(Time loopTime);
 
-      bool isInitialised() noexcept;
       void setInitialised(bool value = true) noexcept;
 
       void printRunTimeInformations();
@@ -107,8 +108,10 @@ namespace ze
       bool m_initialised;
 
       EventBus m_eventBus;
-      DebugFileWriter m_coreWriter;
+      
+      DebugFileWriter m_writer;
       Logger m_coreLogger;
+      Logger m_appLogger;
 
       bool m_running;
       Chrono m_runTime; // Run from Initialisation to Termination

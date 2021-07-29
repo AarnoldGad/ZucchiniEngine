@@ -8,7 +8,7 @@
 #include "zengine/Memory/New.hpp"
 
 #define CORELOGGER_NAME "Core"
-#define CORELOGGER_FILENAME "zengine.log"
+#define WRITER_FILENAME "zengine.log"
 
 namespace ze
 {
@@ -46,12 +46,13 @@ namespace ze
    }
 
    Core::Core()
-      : m_initialised(false), m_coreWriter(CORELOGGER_FILENAME), m_coreLogger(CORELOGGER_NAME, &m_coreWriter),
-        m_running(false), m_tickRate{}, m_app(nullptr) {}
+      : m_initialised(false),
+        m_writer(WRITER_FILENAME), m_coreLogger(CORELOGGER_NAME, &m_writer),
+        m_appLogger("NO APP", &m_writer), m_running(false), m_tickRate{}, m_app(nullptr) {}
 
    void Core::initialise()
    {
-      if (isInitialised()) return ZE_LOG_ERROR("Core engine already initialised !");
+      if (IsInitialised()) return ZE_LOG_ERROR("Core engine already initialised !");
 
       ze::Chrono initTime;
 
@@ -71,6 +72,7 @@ namespace ze
       Application* oldApp = m_app;
       m_app = &app;
       m_app->onConnection();
+      m_appLogger.setName(m_app->getName());
       return oldApp;
    }
 
@@ -79,6 +81,7 @@ namespace ze
       Application* oldApp = m_app;
       m_app = nullptr;
       oldApp->onDisconnection();
+      m_appLogger.setName("NO APP");
       return oldApp;
    }
 
@@ -147,11 +150,6 @@ namespace ze
       setInitialised(false);
       
       ZE_LOG_INFO("------ Terminating ZEngine ------");
-   }
-
-   bool Core::isInitialised() noexcept
-   {
-      return m_initialised;
    }
 
    void Core::setInitialised(bool value) noexcept
