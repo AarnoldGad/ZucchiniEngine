@@ -2,24 +2,38 @@
 
 template<typename EventType>
 ze::EventSubscriber<EventType>::EventSubscriber() noexcept
-   : m_list(nullptr), m_handler{}, m_priority(Priority::Normal) {}
+   : m_handler{}, m_bus(nullptr), m_priority(Priority::Normal) {}
 
 template<typename EventType>
 ze::EventSubscriber<EventType>::EventSubscriber(EventSubscriber const& other)
-   : m_list(other.m_list), m_handler(other.m_handler), m_priority(other.m_priority)
+   : m_handler(other.m_handler), m_bus(other.m_bus), m_priority(other.m_priority)
 {
-   subscribe();
+   if (m_bus)
+      subscribe(*m_bus);
 }
 
 template<typename EventType>
-ze::EventSubscriber<EventType>::EventSubscriber(HandlerFn handler, Priority priority)
-   : EventSubscriber(nullptr, handler, priority) {}
+ze::EventSubscriber<EventType>::EventSubscriber(HandlerFn handler, EventBus* bus, Priority priority)
+   : m_handler(std::move(handler)), m_bus(bus), m_priority(priority)
+{
+   if (m_bus)
+      subscribe(*m_bus);
+}
 
 template<typename EventType>
-ze::EventSubscriber<EventType>::EventSubscriber(SubscriberList* list, HandlerFn handler, Priority priority)
-   : m_list(list), m_handler(std::move(handler)), m_priority(priority)
+template<typename ReceiverType>
+ze::EventSubscriber<EventType>::EventSubscriber(void (ReceiverType::*handler)(EventType&), ReceiverType* receiver, EventBus* bus, Priority priority)
+   : m_handler{}, m_bus(bus), m_priority(priority)
 {
-   subscribe();
+   if (handler && receiver)
+      m_handler = [receiver, handler]
+         (EventType& event)
+         {
+            (receiver->*handler)(event);
+         };
+
+   if (m_bus)
+      subscribe(*m_bus);
 }
 
 template<typename EventType>
@@ -27,7 +41,7 @@ ze::EventSubscriber<EventType>& ze::EventSubscriber<EventType>::operator=(EventS
 {
    m_priority = other.m_priority;
    m_handler = other.m_handler;
-   m_list = other.m_list;
+   m_bus = other.m_bus;
    
    subscribe();
 
@@ -35,15 +49,20 @@ ze::EventSubscriber<EventType>& ze::EventSubscriber<EventType>::operator=(EventS
 }
 
 template<typename EventType>
-inline bool ze::EventSubscriber<EventType>::subscribe()
+inline bool ze::EventSubscriber<EventType>::subscribe(EventBus& bus, Priority priority)
 {
-   return m_list ? (*m_list)[getPriority()].insert(this).second : false;
+   unsubscribe();
+   m_bus = &bus;
+   m_priority = priority;
+   return m_bus->addSubscriber(*this, priority);
 }
 
 template<typename EventType>
 inline bool ze::EventSubscriber<EventType>::unsubscribe()
 {
-   return m_list ? (*m_list)[getPriority()].erase(this) : false;
+   bool unsubscribed = m_bus ? m_bus->removeSubscriber(*this, m_priority) : false;
+   m_bus = nullptr;
+   return unsubscribed;
 }
 
 template<typename EventType>
@@ -55,25 +74,22 @@ inline void ze::EventSubscriber<EventType>::notify(ze::Event& event)
 }
 
 template<typename EventType>
+template<typename ReceiverType>
+inline void ze::EventSubscriber<EventType>::setHandler(void (ReceiverType::*handler)(EventType&), ReceiverType* receiver)
+{
+   if (!handler || !receiver) return;
+
+   m_handler = [receiver, handler]
+      (EventType& event)
+      {
+         (receiver->*handler)(event);
+      };
+}
+
+template<typename EventType>
 inline void ze::EventSubscriber<EventType>::setHandler(HandlerFn handler) noexcept
 {
    m_handler = handler;
-}
-
-template<typename EventType>
-inline void ze::EventSubscriber<EventType>::setList(SubscriberList* list)
-{
-   unsubscribe();
-   m_list = list;
-   subscribe();
-}
-
-template<typename EventType>
-inline void ze::EventSubscriber<EventType>::setPriority(Priority priority)
-{
-   unsubscribe();
-   m_priority = priority;
-   subscribe();
 }
 
 template<typename EventType>

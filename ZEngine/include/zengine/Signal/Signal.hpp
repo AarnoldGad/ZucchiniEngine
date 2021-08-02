@@ -28,7 +28,7 @@
 
 #include "zengine/zemacros.hpp"
 
-#include "zengine/Signal/Listener.hpp"
+#include "zengine/Common/Observer.hpp"
 
 #include <functional>
 #include <unordered_set>
@@ -39,30 +39,25 @@ namespace ze
    class Signal;
 
    template<typename Return, typename... Args>
-   class Signal<Return(Args...)>
+   class Signal<Return (Args...)>
    {
    public:
-      using ListenerType = ze::Listener<Return(Args...)>;
+      using ListenerType = ze::Observer<Return(Args...)>;
       using HandlerFn = std::function<Return(Args...)>;
 
-      [[nodiscard]]
-      ListenerType connect(HandlerFn handler) noexcept;
-      void connect(ListenerType& listener) noexcept;
-      
-      bool isConnected(ListenerType& listener);
-
-      void disconnect(ListenerType& listener) noexcept;
-      void disconnectAll() noexcept;
+      bool addListener(ListenerType& listener);
+      bool hasListener(ListenerType& listener);
+      bool removeListener(ListenerType& listener);
 
       void emit(Args&&... args);
-
-      Signal() noexcept;
-      ~Signal() noexcept;
 
       Signal(Signal const&) = delete;
       Signal(Signal&&) = delete;
       Signal& operator=(Signal const&) = delete;
       Signal& operator=(Signal&&) = delete;
+
+      Signal() = default;
+      ~Signal() noexcept;
 
    private:
       std::unordered_set<ListenerType*> m_listeners;

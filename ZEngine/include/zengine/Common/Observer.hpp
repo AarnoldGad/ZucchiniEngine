@@ -1,5 +1,5 @@
 /**
- * Subscriber.hpp
+ * Observer.hpp
  * 29 Jul 2021
  * Gaétan "The Aarnold" Jalin
  *
@@ -23,24 +23,24 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_SUBSCRIBER_HPP
-#define ZE_SUBSCRIBER_HPP
+#ifndef ZE_OBSERVER_HPP
+#define ZE_OBSERVER_HPP
 
 #include "zengine/zemacros.hpp"
 
 namespace ze
 {
-   template<typename... Args>
-   class Subscriber
+   template<typename Fn>
+   class Observer;
+
+   template<typename Return, typename... Args>
+   class Observer<Return(Args...)>
    {
    public:
-      virtual bool subscribe() = 0;
-      virtual bool unsubscribe() = 0;
-      virtual void notify(Args... args) = 0;
+      virtual Return notify(Args... args) = 0;
 
-      Subscriber() = default;
-      virtual ~Subscriber() = default;
+      virtual ~Observer() = default;
    };
 }
 
-#endif /* ZE_SUBSCRIBER_HPP */
+#endif /* ZE_OBSERVER_HPP */

@@ -6,6 +6,16 @@
 
 namespace ze
 {
+   bool EventBus::addSubscriber(Observer<void (Event&)>& subscriber, Priority priority)
+   {
+      return m_subscribers[priority].insert(&subscriber).second;
+   }
+
+   bool EventBus::removeSubscriber(Observer<void (Event&)>& subscriber, Priority priority)
+   {
+      return m_subscribers[priority].erase(&subscriber);
+   }
+
    void EventBus::dispatchEvents()
    {
       for (auto& event : std::exchange(m_events, {}))
@@ -14,9 +24,9 @@ namespace ze
 
    void EventBus::fireEvent(Event& event)
    {
-      for (auto& subscriberList : m_subscribers)
+      for (auto const& subscriberList : m_subscribers)
       {
-         for (Subscriber<Event&>* subscriber : subscriberList.second)
+         for (Observer<void (Event&)>* const subscriber : subscriberList.second)
             subscriber->notify(event);
 
          if (event.isCanceled())

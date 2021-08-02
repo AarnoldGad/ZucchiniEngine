@@ -28,43 +28,40 @@
 
 #include "zengine/zemacros.hpp"
 
+#include "zengine/Common/Observer.hpp"
+#include "zengine/Signal/Signal.hpp"
+
 #include <functional>
 
 namespace ze
 {
    template<typename FnSignature>
-   class Signal;
-
-   template<typename FnSignature>
    class Listener;
 
    template<typename Return, typename... Args>
-   class Listener<Return(Args...)>
+   class Listener<Return (Args...)> : public Observer<Return (Args...)>
    {
    public:
-      using SignalType = Signal<Return(Args...)>;
-      using HandlerFn = std::function<Return(Args...)>;
+      using SignalType = Signal<Return (Args...)>;
+      using HandlerFn = std::function<Return (Args...)>;
 
-      void connect(SignalType& signal) noexcept;
+      bool listen(SignalType& signal);
+      bool isListening() const noexcept;
+      bool quitListening();
 
-      explicit operator bool() const noexcept;
-      bool isConnected() const noexcept;
+      Return notify(Args&&... args) override;
 
-      Return receive(Args&&... args);
-
-      void disconnect() noexcept;
-
-//      template<typename ReceiverType>
-//      void setHandler(Return (ReceiverType::*handler)(Args...), ReceiverType* receiver);
+      template<typename ReceiverType>
+      void setHandler(Return (ReceiverType::*handler)(Args...), ReceiverType* receiver) noexcept;
       void setHandler(HandlerFn handler) noexcept;
-
-      SignalType const* getSignal() const noexcept;
       HandlerFn getHandler() const noexcept;
 
+      template<typename ReceiverType>
+      Listener(Return (ReceiverType::*handler)(Args...), ReceiverType* receiver, SignalType* signal = nullptr);
       explicit Listener(HandlerFn handler, SignalType* signal = nullptr) noexcept;
 
       Listener(Listener const& other) noexcept;
-      Listener(Listener&& other);
+      Listener(Listener&& other) noexcept;
       Listener& operator=(Listener const& other) noexcept;
       Listener& operator=(Listener&& other) noexcept;
 
@@ -72,8 +69,8 @@ namespace ze
       ~Listener() noexcept;
 
    private:
-      SignalType* m_signal;
       HandlerFn m_handler;
+      SignalType* m_signal;
    };
 }
 

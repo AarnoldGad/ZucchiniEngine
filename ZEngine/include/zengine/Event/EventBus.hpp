@@ -29,7 +29,7 @@
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Common/Priority.hpp"
-#include "zengine/Event/EventSubscriber.hpp"
+#include "zengine/Common/Observer.hpp"
 #include "zengine/Event/Event.hpp"
 
 #include <vector>
@@ -41,7 +41,7 @@ namespace ze
    class ZE_API EventBus
    {
    public:
-      using SubscriberList = std::map<Priority, std::set<Subscriber<Event&>*>, std::greater<Priority> >;
+      using SubscriberList = std::map<Priority, std::set<Observer<void (Event&)>*>, std::greater<Priority> >;
 
       template<typename EventType, typename... Args>
       void pushEvent(Args&&... args);
@@ -49,13 +49,8 @@ namespace ze
       template<typename EventType>
       void pushEvent(EventType&& event);
 
-      template<typename EventType>
-      [[nodiscard]]
-      EventSubscriber<EventType> subscribe(std::function<void (EventType&)> callback, Priority priotity = Priority::Normal);
-
-      template<typename EventType, typename ReceiverType>
-      [[nodiscard]]
-      EventSubscriber<EventType> subscribe(void (ReceiverType::*callback)(EventType&), ReceiverType* receiver, Priority priotity = Priority::Normal);
+      bool addSubscriber(Observer<void (Event&)>& subscriber, Priority priority = Priority::Normal);
+      bool removeSubscriber(Observer<void (Event&)>& subscriber, Priority priority = Priority::Normal);
 
       void dispatchEvents();
       void fireEvent(Event& event);

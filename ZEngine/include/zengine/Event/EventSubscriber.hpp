@@ -29,35 +29,33 @@
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Common/Priority.hpp"
-#include "zengine/Common/Subscriber.hpp"
+#include "zengine/Common/Observer.hpp"
+#include "zengine/Event/EventBus.hpp"
 
-#include <map>
-#include <set>
 #include <functional>
 
 namespace ze
 {
    template<typename EventType>
-   class EventSubscriber : public Subscriber<Event&>
+   class EventSubscriber : public Observer<void (Event&)>
    {
    public:
       using HandlerFn = std::function<void (EventType&)>;
-      using SubscriberList = std::map<Priority, std::set<Subscriber<Event&>*>, std::greater<Priority> >;
-      
-      bool subscribe() override;
-      bool unsubscribe() override;
+
+      bool subscribe(EventBus& bus, Priority priority = Priority::Normal);
+      bool unsubscribe();
+
       void notify(Event& event) override;
 
+      template<typename ReceiverType>
+      void setHandler(void (ReceiverType::*handler)(EventType&), ReceiverType* receiver);
       void setHandler(HandlerFn handler) noexcept;
-      void setList(SubscriberList* list);
-      void setPriority(Priority priority);
-
       HandlerFn getHandler() const noexcept;
       Priority getPriority() const noexcept;
 
-
-      EventSubscriber(SubscriberList* list, HandlerFn handler, Priority priority = Priority::Normal);
-      EventSubscriber(HandlerFn handler, Priority priority = Priority::Normal);
+      template<typename ReceiverType>
+      EventSubscriber(void (ReceiverType::*handler)(EventType&), ReceiverType* receiver, EventBus* bus = nullptr, Priority priority = Priority::Normal);
+      explicit EventSubscriber(HandlerFn handler, EventBus* bus = nullptr, Priority priority = Priority::Normal);
       EventSubscriber(EventSubscriber const& other);
       EventSubscriber() noexcept;
       ~EventSubscriber();
@@ -65,8 +63,8 @@ namespace ze
       EventSubscriber& operator=(EventSubscriber const& other);
 
    private:
-      SubscriberList* m_list;
       HandlerFn m_handler;
+      EventBus* m_bus;
       Priority m_priority;
    };
 }
