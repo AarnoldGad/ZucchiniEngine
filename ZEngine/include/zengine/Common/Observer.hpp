@@ -34,7 +34,7 @@ namespace ze
    class Observer;
 
    template<typename Return, typename... Args>
-   class Observer<Return(Args...)>
+   class Observer<Return (Args...)>
    {
    public:
       virtual Return notify(Args... args) = 0;

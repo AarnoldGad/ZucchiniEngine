@@ -29,7 +29,6 @@
 #include "zengine/zemacros.hpp"
 
 #include "zengine/Event/Event.hpp"
-#include "zengine/Common/TypeTraits.hpp"
 
 namespace ze
 {

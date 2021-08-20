@@ -35,9 +35,6 @@ namespace ze
 {
    class Event;
 
-   template<typename EventType, typename Type = void>
-   using if_is_event = std::enable_if_t<std::is_base_of_v<Event, EventType>, Type>;
-
    template<typename Fn, typename Type = void>
    using if_is_invocable = std::enable_if_t<std::is_invocable_v<Fn>, Type>;
 

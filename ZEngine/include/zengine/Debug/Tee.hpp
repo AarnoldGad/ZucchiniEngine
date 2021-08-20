@@ -25,13 +25,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  * C++ 17
- * Experimental (i.e unfinished and unoptimised) header-only tee debugging tool.
+ * Header-only tee debugging tool.
  *
  * Based on the "tee" unix command, this debugging tool is used
  * to display object values at run-time in a simple and readable way, based on expressiveness.
  *
  *           []================[]
- * Value In -->    ------>    ---> Value Out
+ *          -->    ------>    --->
  *           []=====| | |======[]
  *                  | v |
  *                  |   |   ___   ___
@@ -39,9 +39,7 @@
  *                  |   |  |==   |==
  *                  |   |  |___  |___
  *                 || | ||
- *                    |
  *                    v
- *                Debugging
  *
  */
 #ifndef ZE_TEEDEBUG_HPP
@@ -75,7 +73,6 @@ private:
 };
 
 // File output specialisation
-// TODO Open a file at each call is performance heavy
 template<>
 class Tee<std::filesystem::path>
 {
