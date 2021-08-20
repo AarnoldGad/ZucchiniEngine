@@ -28,6 +28,9 @@
 
 #include "zengine/zemacros.hpp"
 
+#include "zengine/Log/DebugFileWriter.hpp"
+#include "zengine/Log/Logger.hpp"
+
 #include <cstdlib>
 
 namespace ze
@@ -35,21 +38,43 @@ namespace ze
    class ZE_API MemoryTracker final
    {
    public:
-      static void* Allocate(size_t size, char const* file = nullptr, unsigned int line = 0);
+      static void* Allocate(size_t size, SourceLocation const& location = { nullptr, 0, nullptr });
 
-      static void NextRelease(char const* file, unsigned int line) noexcept;
-      static void Release(void* pointer) noexcept;
+      static void NextRelease(SourceLocation const& location) noexcept;
+      static void Release(void* pointer, size_t size = 0) noexcept;
+
+      static Logger& UseMemoryLogger();
 
       static size_t GetTotalAllocations() noexcept;
       static size_t GetTotalMemoryAllocated() noexcept;
 
    private:
-      MemoryTracker() = delete;
+      static MemoryTracker& GetInstance();
+
+      Logger& useMemoryLogger() noexcept;
+
+      size_t getTotalAllocations() const noexcept;
+      size_t getTotalMemoryAllocated() const noexcept;
+
+      void increaseMemoryStats(size_t) noexcept;
+      void decreaseMemoryStats(size_t) noexcept;
+
+      MemoryTracker();
+      ~MemoryTracker();
+
       MemoryTracker(MemoryTracker const&) = delete;
       MemoryTracker(MemoryTracker&&) = delete;
       MemoryTracker& operator=(MemoryTracker const&) = delete;
       MemoryTracker& operator=(MemoryTracker&&) = delete;
-      ~MemoryTracker() = delete;
+
+   private:
+      DebugFileWriter m_writer;
+      Logger m_logger;
+
+      size_t m_totalAllocations;
+      size_t m_sizeAllocated;
+
+      SourceLocation m_nextRelease;
    };
 }
 

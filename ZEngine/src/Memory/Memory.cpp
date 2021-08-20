@@ -2,25 +2,25 @@
 
 #include "zengine/Memory/MemoryTracker.hpp"
 
-void* operator new(size_t size, char const* file, unsigned int line)
+void* operator new(size_t size, SourceLocation const& location)
 {
-   return ze::MemoryTracker::Allocate(size, file, line);
+   return ze::MemoryTracker::Allocate(size, location);
 }
 
-void* operator new[](size_t size, char const* file, unsigned int line)
+void* operator new[](size_t size, SourceLocation const& location)
 {
-   return ze::MemoryTracker::Allocate(size, file, line);
+   return ze::MemoryTracker::Allocate(size, location);
 }
 
-void operator delete(void* pointer, char const* file, unsigned int line) noexcept
+void operator delete(void* pointer, SourceLocation const& location) noexcept
 {
-   ze::MemoryTracker::NextRelease(file, line);
+   ze::MemoryTracker::NextRelease(location);
    ze::MemoryTracker::Release(pointer);
 }
 
-void operator delete[](void* pointer, char const* file, unsigned int line) noexcept
+void operator delete[](void* pointer, SourceLocation const& location) noexcept
 {
-   ze::MemoryTracker::NextRelease(file, line);
+   ze::MemoryTracker::NextRelease(location);
    ze::MemoryTracker::Release(pointer);
 }
 

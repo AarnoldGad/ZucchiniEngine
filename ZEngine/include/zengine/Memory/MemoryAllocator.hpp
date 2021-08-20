@@ -1,9 +1,9 @@
 /**
- * Memory.hpp
- * 24 Apr 2021
- * Gaétan "The Aarnold" Jalin
+ * Allocator.hpp
+ * 12 Aug 2021
+ * Ga√©tan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 Ga√©tan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -23,17 +23,25 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_MEMORY_HPP
-#define ZE_MEMORY_HPP
+#ifndef ZE_ALLOCATOR_HPP
+#define ZE_ALLOCATOR_HPP
 
 #include "zengine/zemacros.hpp"
 
-#include <cstdlib>
+namespace ze
+{
+   class MemoryAllocator
+   {
+   public:
+      virtual void* allocate(size_t size, SourceLocation const& location) = 0;
+      virtual size_t release(void* pointer, size_t size, SourceLocation const& location) noexcept = 0;
 
-ZE_API void* operator new(size_t size, SourceLocation const& location);
-ZE_API void* operator new[](size_t size, SourceLocation const& location);
+      MemoryAllocator() = default;
+      MemoryAllocator(MemoryAllocator const&) = delete;
+      MemoryAllocator(MemoryAllocator&&) = delete;
+      MemoryAllocator& operator=(MemoryAllocator const&) = delete;
+      MemoryAllocator& operator=(MemoryAllocator&&) = delete;
+   };
+}
 
-ZE_API void operator delete(void* pointer, SourceLocation const& location) noexcept;
-ZE_API void operator delete[](void* pointer, SourceLocation const& location) noexcept;
-
-#endif // ZE_MEMORY_HPP
+#endif /* ZE_ALLOCATOR_HPP */
