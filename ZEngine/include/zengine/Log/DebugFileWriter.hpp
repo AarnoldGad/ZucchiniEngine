@@ -41,7 +41,7 @@ namespace ze
       void flush() override;
       void newLine() override;
 
-      DebugFileWriter(std::string_view path, std::ostream& console = std::cout);
+      DebugFileWriter(std::string_view path);
    };
 }
 

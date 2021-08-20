@@ -32,7 +32,7 @@
 
 namespace ze
 {
-   class ZE_API Writer
+   class Writer
    {
    public:
       virtual void write(std::string_view name, Logger::Level level, std::string_view line) = 0;

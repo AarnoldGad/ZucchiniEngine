@@ -48,6 +48,7 @@ namespace ze
 
       [[nodiscard]]
       FILE* openFile(char const* mode);
+      void printDate(FILE* file, std::string_view name, Logger::Level level);
 
       std::filesystem::path m_path;
       bool m_lineStart;

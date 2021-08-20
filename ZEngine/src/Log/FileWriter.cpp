@@ -17,23 +17,18 @@ namespace ze
 
       if (file)
          fclose(file);
-      // TODO Error handling
+      else
+         LOG_TRACE("Unable to initialise log file ", m_path, " : ", std::strerror(errno));
    }
 
    void FileWriter::write(std::string_view name, Logger::Level level, std::string_view line)
    {
       FILE* file = openFile("a");
-
-      if (!file) return;
-      // TODO Error handling
+      if (!file) return LOG_TRACE("Unable to open log file ", m_path, " : ", std::strerror(errno));
 
       if (isAtLineBegin())
       {
-         Date date = Date::CurrentDate();
-         std::tm tm = date.getTm();
-         char timeString[9];
-         strftime(timeString, 9, "%H:%M:%S", &tm);
-         fprintf(file, "[%s] [%s] <%s> ", timeString, Logger::LevelToString(level), name.data());
+         printDate(file, name, level);
 
          m_lineStart = false;
       }
@@ -48,8 +43,7 @@ namespace ze
    void FileWriter::newLine()
    {
       FILE* file = openFile("a");
-
-      if (!file) return;
+      if (!file) return LOG_TRACE("Unable to open log file ", m_path, " : ", std::strerror(errno));
 
       fputc('\n', file);
       fclose(file);
@@ -60,9 +54,17 @@ namespace ze
    [[nodiscard]]
    FILE* FileWriter::openFile(char const* mode)
    {
-      // C Style file opening for performance
       FILE* file = fopen(m_path.string().c_str(), mode);
 
       return file;
+   }
+
+   void FileWriter::printDate(FILE* file, std::string_view name, Logger::Level level)
+   {
+      Date date = Date::CurrentDate();
+      std::tm tm = date.getTm();
+      char timeString[9];
+      strftime(timeString, 9, "%H:%M:%S", &tm);
+      fprintf(file, "[%s] [%s] <%s> ", timeString, Logger::LevelToString(level), name.data());
    }
 }

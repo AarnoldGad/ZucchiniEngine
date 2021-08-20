@@ -8,8 +8,8 @@
 
 namespace ze
 {
-   ConsoleWriter::ConsoleWriter(std::ostream& console)
-      : m_console(console), m_lineStart(true) {}
+   ConsoleWriter::ConsoleWriter()
+      : m_lineStart(true) {}
 
    void ConsoleWriter::write(std::string_view name, Logger::Level level, std::string_view line)
    {
@@ -19,23 +19,23 @@ namespace ze
       {
          Date date = Date::CurrentDate();
          std::tm tm = date.getTm();
-         m_console << "[" << std::put_time(&tm, "%H:%M:%S") << "] [" << Logger::LevelToString(level) << "] <" << name << "> ";
+         std::cout << "[" << std::put_time(&tm, "%H:%M:%S") << "] [" << Logger::LevelToString(level) << "] <" << name << "> ";
          m_lineStart = false;
       }
 
-      m_console.write(line.data(), static_cast<std::streamsize>(line.size()));
+      std::cout.write(line.data(), static_cast<std::streamsize>(line.size()));
 
       ze::ResetConsoleColor();
    }
 
    void ConsoleWriter::flush()
    {
-      m_console.flush();
+      std::cout.flush();
    }
 
    void ConsoleWriter::newLine()
    {
-      m_console.put('\n');
+      std::cout.put('\n');
       m_lineStart = true;
    }
 }

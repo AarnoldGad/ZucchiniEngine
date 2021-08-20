@@ -32,7 +32,7 @@
 
 namespace ze
 {
-   #if defined(ZE_PLATFORM_WINDOWS)
+   #if defined(_WIN32)
       enum class Color : uint8_t
       {
          Black = 0, Blue, Green, Aqua,

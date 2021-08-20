@@ -8,8 +8,8 @@
 
 namespace ze
 {
-   DebugFileWriter::DebugFileWriter(std::string_view path, std::ostream& console)
-      : FileWriter(path), ConsoleWriter(console) {}
+   DebugFileWriter::DebugFileWriter(std::string_view path)
+      : FileWriter(path) {}
 
    void DebugFileWriter::write(std::string_view name, Logger::Level level, std::string_view line)
    {

@@ -41,12 +41,11 @@ namespace ze
       void flush() override;
       void newLine() override;
 
-      explicit ConsoleWriter(std::ostream& console = std::cout);
+      ConsoleWriter();
 
    private:
       bool isAtLineBegin() const noexcept;
 
-      std::ostream& m_console;
       bool m_lineStart;
    };
 }
