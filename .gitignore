@@ -4,16 +4,18 @@
 
 # Projects
 
+/*/*.xcodeproj/
 /*/.kdev4/
 /.vs/
 
 # Binaries
 
-/lib/
-/bin/
+/*/lib/
+/*/bin/
 
 # Files
 
+*.DS_Store
 *.gch
 *.log
 *.exe
