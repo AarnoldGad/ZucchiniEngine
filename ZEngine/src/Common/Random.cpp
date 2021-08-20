@@ -13,27 +13,17 @@ namespace ze
       s_engine.seed(seed);
    }
 
-   uint32_t Random::Generate(uint32_t minimum, uint32_t maximum)
+   uint64_t Random::GenerateInteger(uint64_t minimum, uint64_t maximum)
    {
-      return static_cast<uint32_t>(GenerateLong(minimum, maximum));
-   }
-
-   uint64_t Random::GenerateLong(uint64_t minimum, uint64_t maximum)
-   {
-      zassert(minimum < maximum, "Minimum value is greater than maximum !");
-      zassert(maximum <= std::default_random_engine::max(), "Maximum value is too high !");
+      ZE_ASSERT(minimum < maximum, "Minimum value is greater than maximum !");
+      ZE_ASSERT(maximum <= std::default_random_engine::max(), "Maximum value is too high !");
+      
       return s_engine() % maximum + minimum;
    }
 
-   float Random::GenerateFloat(float minimum, float maximum)
+   double Random::GenerateFloat(double minimum, double maximum)
    {
-      zassert(minimum < maximum, "Minimum value is greater than maximum !");
-      return static_cast<float>(s_engine()) / static_cast<float>(std::default_random_engine::max() / (maximum - minimum)) + minimum;
-   }
-
-   double Random::GenerateDouble(double minimum, double maximum)
-   {
-      zassert(minimum < maximum, "Minimum value is greater than maximum !");
+      ZE_ASSERT(minimum < maximum, "Minimum value is greater than maximum !");
       return static_cast<double>(s_engine()) / static_cast<double>(std::default_random_engine::max() / (maximum - minimum)) + minimum;
    }
 }

@@ -28,21 +28,32 @@
 
 #include "zengine/zemacros.hpp"
 
-#include <string>
-
-#ifdef _DEBUG
-
-   #define zassert(condition, message) ze::Assert((condition), __FILENAME__, __FUNCTION__, __LINE__, #condition , message)
-
-   namespace ze
+namespace ze
+{
+   class AssertHandler
    {
-      void ZE_API Assert(bool const condition, std::string const& file, std::string const& function, unsigned int line, std::string const& conditionAsString, std::string const& message);
-   }
+   public:
+      #ifdef NDEBUG
+         static constexpr const bool enabled = false;
+      #else
+         static constexpr const bool enabled = true;
+      #endif
 
-#else
+      [[noreturn]] void handle(SourceLocation const& location, char const* expression, char const* message = nullptr) noexcept;
+   };
 
-   #define zassert(condition, message)
+   // Assert enabled
+   template<typename EvaluatorFn, typename HandlerType, typename... Args, std::enable_if_t<HandlerType::enabled, int> = 0>
+   void Assert(EvaluatorFn const& evaluator, SourceLocation const& location, char const* expression, HandlerType handler, Args&&... args) noexcept;
 
-#endif
+   // Assert disabled
+   template<typename EvaluatorFn, typename HandlerType, typename... Args, std::enable_if_t<!HandlerType::enabled, int> = 0>
+   void Assert(EvaluatorFn const& evaluator, SourceLocation const& location, char const* expression, HandlerType handler, Args&&... args) noexcept;
+}
+
+#define ASSERT(expr, ...)  ze::Assert([&](void) -> bool { return (expr); }, CURRENT_SOURCE_LOCATION, #expr, __VA_ARGS__)
+#define ZE_ASSERT(expr, message) ze::Assert([&](void) -> bool { return (expr); }, CURRENT_SOURCE_LOCATION, #expr, ze::AssertHandler{}, message)
+
+#include "Assert.inl"
 
 #endif // ZE_ASSERT_HPP

@@ -70,7 +70,7 @@ namespace ze
 
    Time& Time::operator/=(double factor)
    {
-      zassert(factor != 0.0, "Division by zero !");
+      ZE_ASSERT(factor != 0.0, "Division by zero !");
       m_time = std::chrono::nanoseconds(static_cast<int64_t>(static_cast<double>(asNanoseconds()) / factor));
       return *this;
    }
@@ -128,7 +128,7 @@ namespace ze
 
    Time Time::operator/(double factor) const
    {
-      zassert(factor != 0.0, "Division by Zero !");
+      ZE_ASSERT(factor != 0.0, "Division by Zero !");
       return static_cast<int64_t>(static_cast<double>(asNanoseconds()) / factor);
    }
 

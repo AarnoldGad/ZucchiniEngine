@@ -32,10 +32,12 @@
 
 namespace ze
 {
-   template<typename NumericType, std::intmax_t MinValue, std::intmax_t MaxValue,
-            typename = std::enable_if_t<std::is_arithmetic_v<NumericType> && (MinValue < MaxValue)> >
+   template<typename NumericType, std::intmax_t MinValue, std::intmax_t MaxValue>
    class RangedNumeric
    {
+      static_assert(MinValue < MaxValue);
+      static_assert(std::is_arithmetic_v<NumericType>);
+
    public:
       operator NumericType() noexcept;
 
@@ -46,6 +48,12 @@ namespace ze
    private:
       NumericType m_value;
    };
+
+   template<std::intmax_t min, std::intmax_t max>
+   using RangedInt = RangedNumeric<int, min, max>;
+   
+   template<std::intmax_t min, std::intmax_t max>
+   using RangedUnsigned = RangedNumeric<unsigned, min, max>;
 }
 
 #include "RangedNumeric.inl"

@@ -7,11 +7,11 @@
 #include <iostream>
 
 #define ZE_VERSION_MAJOR 0
-#define ZE_VERSION_MINOR 10
-#define ZE_VERSION_REV 1
+#define ZE_VERSION_MINOR 11
+#define ZE_VERSION_REV 0
 #define ZE_VERSION_SPEC "pre"
-#define ZE_VERSION_MONTH 7
-#define ZE_VERSION_DAY 23
+#define ZE_VERSION_MONTH 8
+#define ZE_VERSION_DAY 20
 #define ZE_VERSION_YEAR 21
 
 //#define ZE_DEBUG_LOG_MEMORYALLOC
@@ -23,18 +23,23 @@
 #ifdef ZE_PLATFORM_WINDOWS
    #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
-   #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+   #define __FILENAME__ (strrchr(__FILE__, '/' ) ? strrchr(__FILE__, '/' ) + 1 : __FILE__)
 #endif
 
-#if defined(_DEBUG)
-   template<typename... Args>
-   inline void LOG_TRACE(Args... args)
-   {
-      (std::cout << ... << args) << std::endl;
-   }
-#else
-   #define LOG_TRACE(...)
-#endif
+typedef struct
+{
+   char const* file;
+   unsigned int line;
+   char const* function;
+} SourceLocation;
+
+#define CURRENT_SOURCE_LOCATION SourceLocation{__FILENAME__, __LINE__, __func__ }
+
+template<typename... Args>
+inline void LOG_TRACE(Args... args)
+{
+   (std::cout << ... << args) << std::endl;
+}
 
 #define ZE_LOG_INFO(...)     ::ze::Core::UseCoreLogger().info().logLine(__VA_ARGS__)
 #define ZE_LOG_WARN(...)     ::ze::Core::UseCoreLogger().debug().logLine(__VA_ARGS__)
