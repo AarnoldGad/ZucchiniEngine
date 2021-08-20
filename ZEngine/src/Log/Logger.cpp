@@ -1,5 +1,6 @@
 #include "zepch.hpp"
 
+#include "zengine/Common/Backtrace/CallStack.hpp"
 #include "zengine/Log/Logger.hpp"
 #include "zengine/Time/Date.hpp"
 #include "zengine/Log/Writer.hpp"
@@ -107,7 +108,9 @@ namespace ze
 
    Logger& Logger::stacktrace()
    {
-      // TODO
+      CallStack stack = Stacktrace(32, 1);
+      for (size_t i = 0; i < stack.getSize(); ++i)
+         logLine("\t%s", stack[i].toString().c_str());
 
       return *this;
    }
