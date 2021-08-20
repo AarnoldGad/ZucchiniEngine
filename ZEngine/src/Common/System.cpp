@@ -1,8 +1,12 @@
+// Inspired by https://github.com/ThePhD/infoware
+
 #include "zepch.hpp"
 
 #include "zengine/Common/System.hpp"
 
 #include <bitset>
+#include <csignal>
+#include <cstdlib>
 
 #if defined(_WIN32)
    #include <lmcons.h>
@@ -306,6 +310,18 @@ namespace ze
          #endif
       }
    }
+
+   void (*SetSignalHandler(StdSignal signal, void (*handler)(int)))(int)
+   {
+      return std::signal(static_cast<int>(signal), handler);
+   }
+
+   int CallAtExit(void (*fn)(void))
+   {
+      return std::atexit(fn);
+   }
+
+//   type Backtrace()
 
    System GetSystemInfo()
    {

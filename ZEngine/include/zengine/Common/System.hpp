@@ -28,6 +28,10 @@
 
 #include "zengine/zemacros.hpp"
 
+#include "zengine/Common/Backtrace/CallStack.hpp"
+
+#include <csignal>
+
 namespace ze
 {
    enum class Architecture
@@ -79,6 +83,19 @@ namespace ze
       uint64_t available;
       uint64_t used;
    };
+
+   enum class StdSignal : int
+   {
+      Interrupt = SIGINT,
+      Abort = SIGABRT,
+      Termination = SIGTERM,
+      SegFault = SIGSEGV,
+      Ill = SIGILL,
+      Arithmetic = SIGFPE,
+   };
+
+   ZE_API void (*SetSignalHandler(StdSignal signal, void (*handler)(int)))(int);
+   ZE_API int CallAtExit(void(*fn)(void));
 
    ZE_API System GetSystemInfo();
    ZE_API Processor GetProcessorInfo();
