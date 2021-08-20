@@ -31,6 +31,7 @@
 // Core
 #include <zengine/Core/Core.hpp>
 #include <zengine/Core/Application.hpp>
+#include <zengine/Core/State.hpp>
 #include <zengine/Core/Engine.hpp>
 
 // Logger
@@ -38,8 +39,11 @@
 #include <zengine/Log/Writer.hpp>
 #include <zengine/Log/ConsoleColors.hpp>
 #include <zengine/Log/ConsoleWriter.hpp>
+#include <zengine/Log/FileWriter.hpp>
+#include <zengine/Log/DebugFileWriter.hpp>
 
 // Debug
+#include <zengine/Exception/Exception.hpp>
 #include <zengine/Debug/Assert.hpp>
 #include <zengine/Debug/Tee.hpp>
 #include <zengine/Memory/Memory.hpp>
@@ -65,6 +69,10 @@
 #include <zengine/Math/RangedNumeric.hpp>
 
 // Utility
+#include <zengine/Common/Backtrace/CallStack.hpp>
+#include <zengine/Common/Backtrace/StackFrame.hpp>
+#include <zengine/Common/Functor.hpp>
+#include <zengine/Common/Observer.hpp>
 #include <zengine/Common/Random.hpp>
 #include <zengine/Common/System.hpp>
 #include <zengine/Common/TypeTraits.hpp>

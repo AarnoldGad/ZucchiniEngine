@@ -9,7 +9,7 @@
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 11
 #define ZE_VERSION_REV 0
-#define ZE_VERSION_SPEC "pre"
+#define ZE_VERSION_SPEC "alpha"
 #define ZE_VERSION_MONTH 8
 #define ZE_VERSION_DAY 20
 #define ZE_VERSION_YEAR 21
