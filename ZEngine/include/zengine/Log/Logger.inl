@@ -9,11 +9,9 @@ inline void ze::Logger::log(Message&& message)
 template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> >
 void ze::Logger::log(Level logLevel, Message message)
 {
-   // Cast arithmetic type to char array to avoid heap allocation
-   std::array<char, 25> buf{0};
-   auto [end, err] = std::to_chars(buf.data(), buf.data() + buf.size(), message);
-
-   log(logLevel, std::string_view(buf.data(), end - buf.data()));
+   std::stringstream ss;
+   ss << message;
+   log(logLevel, ss.str());
 }
 
 template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> >
@@ -47,15 +45,13 @@ inline ze::Logger& ze::Logger::operator<<(Message&& message)
 template<typename... Args>
 void ze::Logger::write(std::string_view format, Args&&... args)
 {
-   std::array<char, LOGGERLINE_MAXLENGTH> line{0};
-   int written = std::snprintf(line.data(), line.size(), format.data(), std::forward<Args>(args)...);
+   int lineSize = std::snprintf(nullptr, 0, format.data(), std::forward<Args>(args)...);
+   std::string line;
+   line.reserve(static_cast<size_t>(lineSize) + 1);
+   
+   int written = std::snprintf(line.data(), line.capacity(), format.data(), std::forward<Args>(args)...);
    if (written < 0)
-   {
-      LOG_TRACE("An error occured whilst logging");
-      return; // TODO Error handling
-   }
-   else if (static_cast<size_t>(written) >= line.size())
-      LOG_TRACE("Warning : Insufficient buffer size"); // TODO Too
+      return LOG_TRACE("An error occured whilst logging");
 
    write(std::string_view(line.data(), static_cast<size_t>(written)));
 }

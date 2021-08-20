@@ -31,7 +31,7 @@
 #include <iostream>
 #include <string>
 #include <charconv>
-#include <array>
+#include <sstream>
 
 #ifdef ZE_PLATFORM_WINDOWS
    #include <Windows.h>
