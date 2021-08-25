@@ -4,6 +4,8 @@
 
 #include "zengine/Common/System.hpp"
 
+#include "zengine/Common/Backtrace/CallStack.hpp"
+
 #include <bitset>
 #include <csignal>
 #include <cstdlib>
@@ -320,8 +322,6 @@ namespace ze
    {
       return std::atexit(fn);
    }
-
-//   type Backtrace()
 
    System GetSystemInfo()
    {

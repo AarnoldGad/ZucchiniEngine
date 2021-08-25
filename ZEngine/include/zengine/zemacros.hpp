@@ -36,10 +36,7 @@ typedef struct
 #define CURRENT_SOURCE_LOCATION SourceLocation{__FILENAME__, __LINE__, __func__ }
 
 template<typename... Args>
-inline void LOG_TRACE(Args... args)
-{
-   (std::cout << ... << args) << std::endl;
-}
+void LOG_TRACE(Args... args);
 
 #define ZE_LOG_INFO(...)     ::ze::Core::UseCoreLogger().info().logLine(__VA_ARGS__)
 #define ZE_LOG_WARN(...)     ::ze::Core::UseCoreLogger().debug().logLine(__VA_ARGS__)
@@ -55,5 +52,15 @@ inline void LOG_TRACE(Args... args)
 
 #include "zengine/Debug/Assert.hpp"
 #include "zengine/Debug/Tee.hpp"
+#include "zengine/Common/Backtrace/CallStack.hpp"
+
+template<typename... Args>
+inline void LOG_TRACE(Args... args)
+{
+   (std::cout << ... << args) << std::endl;
+   ze::CallStack stack = ze::Stacktrace(8, 1);
+   for (size_t i = 0; i < stack.getSize(); ++i)
+      std::cout << "\t at " << stack[i].toString() << std::endl;
+}
 
 #endif // ZE_MACROS_HPP
