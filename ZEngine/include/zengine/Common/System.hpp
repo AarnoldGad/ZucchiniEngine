@@ -96,6 +96,7 @@ namespace ze
 
    ZE_API void (*SetSignalHandler(StdSignal signal, void (*handler)(int)))(int);
    ZE_API int CallAtExit(void(*fn)(void));
+   [[noreturn]] ZE_API void RaiseCritical(int code, char const* description) noexcept;
 
    ZE_API System GetSystemInfo();
    ZE_API Processor GetProcessorInfo();

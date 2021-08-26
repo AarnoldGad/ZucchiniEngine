@@ -323,6 +323,12 @@ namespace ze
       return std::atexit(fn);
    }
 
+   [[noreturn]] void RaiseCritical(int code, char const* description) noexcept
+   {
+      LOG_TRACE(description);
+      std::exit(code);
+   }
+
    System GetSystemInfo()
    {
       System sysInfo{};

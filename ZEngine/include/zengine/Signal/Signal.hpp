@@ -42,8 +42,8 @@ namespace ze
    class Signal<Return (Args...)>
    {
    public:
-      using ListenerType = ze::Observer<Return(Args...)>;
-      using HandlerFn = std::function<Return(Args...)>;
+      using ListenerType = ze::Observer<Return (Args...)>;
+      using HandlerFn = std::function<Return (Args...)>;
 
       bool addListener(ListenerType& listener);
       bool hasListener(ListenerType& listener);
