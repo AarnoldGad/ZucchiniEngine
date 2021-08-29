@@ -16,7 +16,7 @@
 
 //#define ZE_DEBUG_LOG_MEMORYALLOC
 
-#define FLAG(shift) 1 << shift
+#define FLAG(shift) (1 << shift)
 #define MACRO_TO_STRING(x) TO_STRING(x)
 #define TO_STRING(str) #str
 

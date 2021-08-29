@@ -10,18 +10,17 @@
 namespace ze
 {
 
-   Logger::Logger(std::string_view name, Writer* writer, unsigned int logMask)
-      : m_name{0}, m_writer(writer), m_logMask(logMask), m_logLevel(Level::Info)
+   Logger::Logger(std::string const& name, Writer* writer, uint8_t logMask)
+      : m_name{}, m_writer(writer), m_logMask(logMask), m_logLevel(Level::Info), m_lineStart(true)
    {
       setName(name);
    }
 
-   void Logger::setName(std::string_view name)
+   void Logger::setName(std::string const& name)
    {
-      name.copy(m_name, std::min<size_t>(LOGGERNAME_MAXLENGTH, name.length()));
-      // Make the name upper case
-      for (size_t i = 0; i < LOGGERNAME_MAXLENGTH; ++i)
-         m_name[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(m_name[i]))); // TODO String utils
+      m_name = name;
+      std::transform(m_name.begin(), m_name.end(), m_name.begin(),
+                     [](unsigned char c) { return std::toupper(c); });
    }
 
    void Logger::setWriter(Writer* writer) noexcept
@@ -36,7 +35,7 @@ namespace ze
 
    Logger& Logger::info()
    {
-      return getLogLevel() != Level::Info ? startNewLineAs(Level::Info) : *this;
+      return getLogLevel() != Level::Info && !m_lineStart ? startNewLineAs(Level::Info) : *this;
    }
 
    Logger& Logger::info(Logger& logger)
@@ -46,7 +45,7 @@ namespace ze
 
    Logger& Logger::debug()
    {
-      return getLogLevel() != Level::Debug ? startNewLineAs(Level::Debug) : *this;
+      return getLogLevel() != Level::Debug && !m_lineStart ? startNewLineAs(Level::Debug) : *this;
    }
 
    Logger& Logger::debug(Logger& logger)
@@ -56,7 +55,7 @@ namespace ze
 
    Logger& Logger::warn()
    {
-      return getLogLevel() != Level::Warn ? startNewLineAs(Level::Warn) : *this;
+      return getLogLevel() != Level::Warn && !m_lineStart ? startNewLineAs(Level::Warn) : *this;
    }
 
    Logger& Logger::warn(Logger& logger)
@@ -66,7 +65,7 @@ namespace ze
 
    Logger& Logger::error()
    {
-      return getLogLevel() != Level::Error ? startNewLineAs(Level::Error) : *this;
+      return getLogLevel() != Level::Error && !m_lineStart ? startNewLineAs(Level::Error) : *this;
    }
 
    Logger& Logger::error(Logger& logger)
@@ -76,7 +75,7 @@ namespace ze
 
    Logger& Logger::critical()
    {
-      return getLogLevel() != Level::Critical ? startNewLineAs(Level::Critical) : *this;
+      return getLogLevel() != Level::Critical && !m_lineStart ? startNewLineAs(Level::Critical) : *this;
    }
 
    Logger& Logger::critical(Logger& logger)
@@ -88,6 +87,7 @@ namespace ze
    {
       if (canLog())
       {
+         m_lineStart = true;
          getWriter()->newLine();
          getWriter()->flush();
       }
@@ -103,7 +103,11 @@ namespace ze
    void Logger::write(std::string_view message)
    {
       if (canLog())
+      {
+         // TODO Treat \n and \r as newLine()
+         m_lineStart = false;
          getWriter()->write(getName(), getLogLevel(), message);
+      }
    }
 
    Logger& Logger::stacktrace()

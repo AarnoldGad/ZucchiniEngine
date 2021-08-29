@@ -7,7 +7,7 @@ inline void ze::Logger::log(Message&& message)
 }
 
 template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> >
-void ze::Logger::log(Level logLevel, Message message)
+inline void ze::Logger::log(Level logLevel, Message message)
 {
    std::stringstream ss;
    ss << message;
@@ -15,7 +15,7 @@ void ze::Logger::log(Level logLevel, Message message)
 }
 
 template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> >
-void ze::Logger::log(Level logLevel, Message message)
+inline void ze::Logger::log(Level logLevel, Message message)
 {
    setLogLevel(logLevel);
    write(std::string_view(message));
@@ -28,7 +28,7 @@ inline void ze::Logger::logLine(std::string_view format, Args&&... args)
 }
 
 template<typename... Args>
-void ze::Logger::logLine(Level logLevel, std::string_view format, Args&&... args)
+inline void ze::Logger::logLine(Level logLevel, std::string_view format, Args&&... args)
 {
    setLogLevel(logLevel);
    write(format, std::forward<Args>(args)...);
@@ -43,7 +43,7 @@ inline ze::Logger& ze::Logger::operator<<(Message&& message)
 }
 
 template<typename... Args>
-void ze::Logger::write(std::string_view format, Args&&... args)
+inline void ze::Logger::write(std::string_view format, Args&&... args)
 {
    int lineSize = std::snprintf(nullptr, 0, format.data(), std::forward<Args>(args)...);
    std::string line;
@@ -58,20 +58,20 @@ void ze::Logger::write(std::string_view format, Args&&... args)
 
 inline bool ze::Logger::canLog() const noexcept
 {
-   return (static_cast<unsigned int>(getLogLevel()) & getLogMask()) && getWriter();
+   return (static_cast<unsigned int>(m_logLevel) & m_logMask) && m_writer;
 }
 
-inline char const* ze::Logger::getName() const noexcept
+inline std::string ze::Logger::getName() const noexcept
 {
    return m_name;
 }
 
-inline ze::Writer* ze::Logger::getWriter() const noexcept
+inline ze::Writer* ze::Logger::getWriter() noexcept
 {
    return m_writer;
 }
 
-inline unsigned int ze::Logger::getLogMask() const noexcept
+inline uint8_t ze::Logger::getLogMask() const noexcept
 {
    return m_logMask;
 }

@@ -37,18 +37,14 @@
    #include <Windows.h>
 #endif
 
-#define LOGGERLINE_MAXLENGTH 150
-#define LOGGERNAME_MAXLENGTH 15
-
 namespace ze
 {
    class Writer;
 
-   // TODO Print thread name ? / Print stacktrace / Check output stream validity
    class ZE_API Logger
    {
    public:
-      enum class Level : uint8_t
+      enum Level : uint8_t
       {
          Info = FLAG(0),
          Debug = FLAG(1),
@@ -100,18 +96,18 @@ namespace ze
       Logger& stacktrace();
       static Logger& stacktrace(Logger& logger);
 
-      void setName(std::string_view name);
-      char const* getName() const noexcept;
+      void setName(std::string const& name);
+      std::string getName() const noexcept;
 
       void setWriter(Writer* writer) noexcept;
-      Writer* getWriter() const noexcept;
+      Writer* getWriter() noexcept;
 
       void setLogMask(uint8_t mask) noexcept;
-      unsigned int getLogMask() const noexcept;
+      uint8_t getLogMask() const noexcept;
 
       bool canLog() const noexcept;
 
-      explicit Logger(std::string_view name = "UNDEFINED", Writer* = nullptr, unsigned int logMask = 0xFF);
+      explicit Logger(std::string const& name = "UNDEFINED", Writer* = nullptr, uint8_t logMask = 0xFF);
 
    private:
       template<typename... Args>
@@ -124,11 +120,12 @@ namespace ze
 
       Logger& startNewLineAs(Level logLevel);
 
-      char m_name[LOGGERNAME_MAXLENGTH + 1]; // TODO Release mode SSO
+      std::string m_name;
       Writer* m_writer;
 
-      unsigned int m_logMask; // Members of Level enum to be ORed together
+      uint8_t m_logMask; //<- Members of Level enum to be OR-ed together
       Level m_logLevel;
+      bool m_lineStart;
    };
 }
 

@@ -55,6 +55,7 @@
 
 // C Legacy
 #include <cstdint>
+#include <cctype>
 #include <ctime>
 #include <cassert>
 #include <cstdlib>
