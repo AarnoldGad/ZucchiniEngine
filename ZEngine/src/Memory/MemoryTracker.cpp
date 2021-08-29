@@ -39,6 +39,25 @@ namespace ze
       }
    }
 
+   void MemoryTracker::MemoryLog(char const* line)
+   {
+      FILE* file = fopen("memtrack.log", "a");
+      if (!file)
+         return LOG_TRACE("Fail to open memory log file");
+
+      char timeBuf[9];
+      time_t date = std::time(nullptr);
+      std::strftime(timeBuf, sizeof(timeBuf), "%H:%M:%S", std::localtime(&date));
+
+      fprintf(file, "[%s] ", timeBuf);
+      fputs(line, file);
+      fprintf(file, "\n");
+
+      std::cout << "[" << timeBuf << "] " << line << std::endl;
+
+      fclose(file);
+   }
+
    MemoryTracker::MemoryTracker()
       : m_totalAllocations{}, m_sizeAllocated{}
    {

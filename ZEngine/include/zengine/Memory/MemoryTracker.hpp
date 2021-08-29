@@ -43,6 +43,7 @@ namespace ze
 
       template<typename... Args>
       static void MemoryLog(char const* format, Args&&... args);
+      static void MemoryLog(char const* line);
 
       static void NextRelease(SourceLocation const& location) noexcept;
       static void Release(void* pointer, size_t size = 0) noexcept;

@@ -106,7 +106,8 @@ namespace ze
 
       EventBus m_eventBus;
       
-      DebugFileWriter m_writer;
+      DebugFileWriter m_coreWriter;
+      DebugFileWriter m_appWriter;
       Logger m_coreLogger;
       Logger m_appLogger;
 

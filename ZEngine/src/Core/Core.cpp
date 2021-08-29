@@ -8,7 +8,8 @@
 #include "zengine/Memory/New.hpp"
 
 #define CORELOGGER_NAME "Core"
-#define WRITER_FILENAME "zengine.log"
+#define COREWRITER_FILENAME "zengine.log"
+#define APPWRITER_FILENAME "app.log"
 
 namespace ze
 {
@@ -47,8 +48,9 @@ namespace ze
 
    Core::Core()
       : m_initialised(false),
-        m_writer(WRITER_FILENAME), m_coreLogger(CORELOGGER_NAME, &m_writer),
-        m_appLogger("NO APP", &m_writer), m_running(false), m_tickRate{}, m_app(nullptr) {}
+        m_coreWriter(COREWRITER_FILENAME), m_appWriter(APPWRITER_FILENAME),
+        m_coreLogger(CORELOGGER_NAME, &m_coreWriter), m_appLogger("NO APP", &m_appWriter),
+        m_running(false), m_tickRate{}, m_app(nullptr) {}
 
    void Core::initialise()
    {
