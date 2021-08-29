@@ -8,10 +8,10 @@
 
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 11
-#define ZE_VERSION_REV 1
+#define ZE_VERSION_REV 3
 #define ZE_VERSION_SPEC "alpha"
 #define ZE_VERSION_MONTH 8
-#define ZE_VERSION_DAY 25
+#define ZE_VERSION_DAY 29
 #define ZE_VERSION_YEAR 21
 
 //#define ZE_DEBUG_LOG_MEMORYALLOC
