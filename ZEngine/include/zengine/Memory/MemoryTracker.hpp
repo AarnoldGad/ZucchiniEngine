@@ -32,6 +32,7 @@
 #include "zengine/Log/Logger.hpp"
 
 #include <cstdlib>
+#include <array>
 
 namespace ze
 {
@@ -40,18 +41,17 @@ namespace ze
    public:
       static void* Allocate(size_t size, SourceLocation const& location = { nullptr, 0, nullptr });
 
+      template<typename... Args>
+      static void MemoryLog(char const* format, Args&&... args);
+
       static void NextRelease(SourceLocation const& location) noexcept;
       static void Release(void* pointer, size_t size = 0) noexcept;
-
-      static Logger& UseMemoryLogger();
 
       static size_t GetTotalAllocations() noexcept;
       static size_t GetTotalMemoryAllocated() noexcept;
 
    private:
       static MemoryTracker& GetInstance();
-
-      Logger& useMemoryLogger() noexcept;
 
       size_t getTotalAllocations() const noexcept;
       size_t getTotalMemoryAllocated() const noexcept;
@@ -68,14 +68,13 @@ namespace ze
       MemoryTracker& operator=(MemoryTracker&&) = delete;
 
    private:
-      DebugFileWriter m_writer;
-      Logger m_logger;
-
       size_t m_totalAllocations;
       size_t m_sizeAllocated;
 
       SourceLocation m_nextRelease;
    };
 }
+
+#include "MemoryTracker.inl"
 
 #endif // ZE_MEMORYTRACKER_HPP

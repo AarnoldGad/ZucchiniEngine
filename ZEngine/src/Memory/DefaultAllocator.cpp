@@ -33,12 +33,12 @@ namespace ze
 
       if (!isBlockDeletable(allocatedBlock))
       {
-         MemoryTracker::UseMemoryLogger().error().logLine(allocatedBlock->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion");
+         MemoryTracker::MemoryLog(allocatedBlock->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion");
          if (location.file)
-            MemoryTracker::UseMemoryLogger().error().logLine("   at %s::%s:%u",
+            MemoryTracker::MemoryLog("   at %s::%s:%u",
                                                              location.file, location.function, location.line);
          else
-            MemoryTracker::UseMemoryLogger().error().logLine("   at undefined position");
+            MemoryTracker::MemoryLog("   at undefined position");
          return 0;
       }
 
@@ -56,13 +56,13 @@ namespace ze
 
       if (block == nullptr)
       {
-         MemoryTracker::UseMemoryLogger().error().logLine("Unable to allocate %u bytes", size);
+         MemoryTracker::MemoryLog("Unable to allocate %u bytes", size);
 
          if (location.file)
-            MemoryTracker::UseMemoryLogger().error().logLine("   at %s::%s:%u",
+            MemoryTracker::MemoryLog("   at %s::%s:%u",
                                                              location.file, location.function, location.line);
          else
-            MemoryTracker::UseMemoryLogger().error().logLine("   at undefined position");
+            MemoryTracker::MemoryLog("   at undefined position");
 
          throw std::bad_alloc{};
       }
@@ -115,14 +115,13 @@ namespace ze
       Block* leakedPointer = m_blockList.next;
       while (leakedPointer != &m_blockList)
       {
-         MemoryTracker::UseMemoryLogger().error().logLine("--- ", leakedPointer->size, " bytes");
          if (leakedPointer->location.file)
-            MemoryTracker::UseMemoryLogger().error().logLine("---    at 0x%x %s::%s:%u",
-                                                             reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)),
-                                                             leakedPointer->location.file, leakedPointer->location.function, leakedPointer->location.line);
-         else
-            MemoryTracker::UseMemoryLogger().error().logLine("---    at 0x%x",
-                                                             reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)));
+         {
+            MemoryTracker::MemoryLog("--- %u bytes", leakedPointer->size);
+            MemoryTracker::MemoryLog("---    at 0x%x %s::%s:%u",
+                                     reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)),
+                                     leakedPointer->location.file, leakedPointer->location.function, leakedPointer->location.line);
+         }
 
          void* handledLeak = leakedPointer;
          leakedPointer = leakedPointer->next;
@@ -135,8 +134,8 @@ namespace ze
    {
       if (MemoryTracker::GetTotalAllocations() != 0) // TODO
       {
-         MemoryTracker::UseMemoryLogger().error().logLine("--- Memory Allocator registered %u leaks ! ------", MemoryTracker::GetTotalAllocations());
-         MemoryTracker::UseMemoryLogger().error().logLine("--- %u bytes leaked", MemoryTracker::GetTotalMemoryAllocated());
+         MemoryTracker::MemoryLog("--- Memory Allocator registered %u leaks ! ------", MemoryTracker::GetTotalAllocations());
+         MemoryTracker::MemoryLog("--- %u bytes leaked", MemoryTracker::GetTotalMemoryAllocated());
 
          traceLeaks();
       }

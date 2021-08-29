@@ -3,8 +3,6 @@
 #include "zengine/Memory/MemoryTracker.hpp"
 
 #include "zengine/Memory/DefaultAllocator.hpp"
-#include "zengine/Log/DebugFileWriter.hpp"
-#include "zengine/Log/Logger.hpp"
 
 #include <fstream>
 
@@ -12,32 +10,25 @@ namespace ze
 {
    namespace
    {
-      constexpr char const* memoryLoggerFileName = "memtrack.log";
-
       [[maybe_unused]] void LogAllocation(void* pointer, size_t size, SourceLocation const& location) noexcept
       {
-         MemoryTracker::UseMemoryLogger().debug().logLine("Allocating %u bytes of memory", size);
+         MemoryTracker::MemoryLog("Allocating %u bytes of memory", size);
          if (location.file)
-            MemoryTracker::UseMemoryLogger().debug().logLine("   to 0x%x at %s::%s:%u",
-                                                             reinterpret_cast<uintptr_t>(pointer),
-                                                             location.file, location.function, location.line);
+            MemoryTracker::MemoryLog("   to 0x%x at %s::%s:%u", reinterpret_cast<uintptr_t>(pointer),
+                      location.file, location.function, location.line);
          else
-            MemoryTracker::UseMemoryLogger().debug().logLine("   to 0x%x",
-                                                             reinterpret_cast<uintptr_t>(pointer));
+            MemoryTracker::MemoryLog("   to 0x%x",  reinterpret_cast<uintptr_t>(pointer));
       }
 
       [[maybe_unused]] void LogRelease(void* pointer, size_t size, SourceLocation const& location) noexcept
       {
          if (size)
-            MemoryTracker::UseMemoryLogger().debug().logLine("Releasing %u bytes of memory from 0x%x",
-                                                             size, reinterpret_cast<uintptr_t>(pointer));
+            MemoryTracker::MemoryLog("Releasing %u bytes of memory from 0x%x", size, reinterpret_cast<uintptr_t>(pointer));
          else
-            MemoryTracker::UseMemoryLogger().debug().logLine("Releasing memory from 0x%x",
-                                                             reinterpret_cast<uintptr_t>(pointer));
+            MemoryTracker::MemoryLog("Releasing memory from 0x%x", reinterpret_cast<uintptr_t>(pointer));
 
          if (location.file)
-            MemoryTracker::UseMemoryLogger().debug().logLine("   at %s::%s:%u",
-                                                             location.file, location.function, location.line);
+            MemoryTracker::MemoryLog("   at %s::%s:%u", location.file, location.function, location.line);
       }
 
       // TODO Extends allocator concept
@@ -49,9 +40,16 @@ namespace ze
    }
 
    MemoryTracker::MemoryTracker()
-      : m_writer(memoryLoggerFileName), m_logger("MemoryTracker", &m_writer), m_totalAllocations{}, m_sizeAllocated{}
+      : m_totalAllocations{}, m_sizeAllocated{}
    {
-      useMemoryLogger().debug().logLine("------ Memory Tracker started ------");
+      FILE* logFile = fopen("memtrack.log", "w+");
+
+      if (logFile)
+         fclose(logFile);
+      else
+         LOG_TRACE("Fail to open memory log file : ", std::strerror(errno));
+
+      MemoryTracker::MemoryLog("------ Memory Tracker Started ------");
    }
 
    MemoryTracker& MemoryTracker::GetInstance()
@@ -92,11 +90,6 @@ namespace ze
       NextRelease({ nullptr, 0, nullptr });
    }
 
-   Logger& MemoryTracker::UseMemoryLogger()
-   {
-      return GetInstance().useMemoryLogger();
-   }
-
    size_t MemoryTracker::GetTotalAllocations() noexcept
    {
       return GetInstance().getTotalAllocations();
@@ -105,11 +98,6 @@ namespace ze
    size_t MemoryTracker::GetTotalMemoryAllocated() noexcept
    {
       return GetInstance().getTotalMemoryAllocated();
-   }
-
-   Logger& MemoryTracker::useMemoryLogger() noexcept
-   {
-      return m_logger;
    }
 
    void MemoryTracker::increaseMemoryStats(size_t size) noexcept
@@ -136,6 +124,6 @@ namespace ze
 
    MemoryTracker::~MemoryTracker()
    {
-      useMemoryLogger().debug().logLine("------ Memory Tracker Ended (%u allocations, %u bytes) ------", m_totalAllocations, m_sizeAllocated);
+      MemoryTracker::MemoryLog("------ Memory Tracker Ended (%u allocations, %u bytes) ------", m_totalAllocations, m_sizeAllocated);
    }
 }
