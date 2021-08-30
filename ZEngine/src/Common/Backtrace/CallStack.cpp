@@ -1,10 +1,15 @@
+#include "zepch.hpp"
+
 #include "zengine/Common/Backtrace/CallStack.hpp"
 
 #include <algorithm>
-#include <execinfo.h>
-#include <cxxabi.h>
 #include <cstdlib>
-#include <dlfcn.h>
+
+#if defined(__GNUC__) || defined(__APPLE__) || defined(__MACH__)
+   #include <execinfo.h>
+   #include <cxxabi.h>
+   #include <dlfcn.h>
+#endif
 
 #include "zengine/Memory/New.hpp"
 

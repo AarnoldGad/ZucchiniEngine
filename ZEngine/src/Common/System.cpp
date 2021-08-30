@@ -236,7 +236,7 @@ namespace ze
 
             return { physic, logic };
 
-         #elsif defined(__linux__)
+         #elif defined(__linux__)
 
             std::ifstream cpuinfo("/proc/cpuinfo");
             if (!cpuinfo) return {};

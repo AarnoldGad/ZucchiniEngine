@@ -1,5 +1,4 @@
 project "ZEngine"
-   kind "SharedLib"
    language "C++"
    cppdialect "C++17"
 
@@ -27,13 +26,15 @@ project "ZEngine"
    }
 
    filter "system:windows"
-      architecture "x86"
+      kind "StaticLib"
+      staticruntime "on"
       links {
          "version.lib"
       }
       systemversion "latest"
 
    filter "system:linux"
+      kind "SharedLib"
       sysincludedirs {
          "/usr/include",
          "/usr/local/include"
@@ -48,6 +49,7 @@ project "ZEngine"
       }
 
    filter { "system:macosx" }
+      kind "SharedLib"
       pchheader ""
       pchsource ""
       buildoptions {

@@ -42,7 +42,7 @@ namespace ze
    public:
       static void Seed(unsigned int seed);
 
-      static uint64_t GenerateInteger(uint64_t minimum = std::default_random_engine::min(), uint64_t maximum = std::default_random_engine::max());
+      static uint32_t GenerateInteger(uint32_t minimum = std::default_random_engine::min(), uint32_t maximum = std::default_random_engine::max());
       static double GenerateFloat(double minimum = 0., double maximum = 1.);
 
    private:

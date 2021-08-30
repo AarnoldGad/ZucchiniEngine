@@ -13,7 +13,7 @@ namespace ze
       s_engine.seed(seed);
    }
 
-   uint64_t Random::GenerateInteger(uint64_t minimum, uint64_t maximum)
+   uint32_t Random::GenerateInteger(uint32_t minimum, uint32_t maximum)
    {
       ZE_ASSERT(minimum < maximum, "Minimum value is greater than maximum !");
       ZE_ASSERT(maximum <= std::default_random_engine::max(), "Maximum value is too high !");

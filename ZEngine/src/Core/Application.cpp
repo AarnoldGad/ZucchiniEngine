@@ -1,3 +1,5 @@
+#include "zepch.hpp"
+
 #include "zengine/Core/Application.hpp"
 
 #include "zengine/Core/Core.hpp"

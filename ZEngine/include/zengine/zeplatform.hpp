@@ -35,15 +35,7 @@
 #endif // Platform detection
 
 // DLL/SO specifiers
-#if defined(ZE_PLATFORM_WINDOWS) // Windows __declspec
-
-   #if defined(_WINDLL)
-      #define ZE_API __declspec(dllexport)
-   #else
-      #define ZE_API __declspec(dllimport)
-   #endif
-
-#elif __GNUC__ >= 4 || defined(__clang__)// GNU GCC __attribute__
+#if __GNUC__ >= 4 || defined(__clang__)// GNU GCC __attribute__
 
    #define ZE_API __attribute__ ((__visibility__("default")))
 

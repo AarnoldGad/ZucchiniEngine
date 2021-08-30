@@ -1,3 +1,5 @@
+#include "zepch.hpp"
+
 #include "zengine/Exception/Exception.hpp"
 
 #include <sstream>

@@ -53,7 +53,7 @@ namespace ze
       fputs(line, file);
       fprintf(file, "\n");
 
-      std::cout << "[" << timeBuf << "] " << line << std::endl;
+      printf("[%s] %s\n", timeBuf, line);
 
       fclose(file);
    }
@@ -88,7 +88,7 @@ namespace ze
          #endif
          return pointer;
       }
-      catch (std::bad_alloc const& e)
+      catch (std::bad_alloc const&)
       {
          throw;
       }

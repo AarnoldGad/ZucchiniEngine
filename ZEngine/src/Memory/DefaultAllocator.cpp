@@ -1,3 +1,5 @@
+#include "zepch.hpp"
+
 #include "zengine/Memory/DefaultAllocator.hpp"
 
 #include "zengine/Memory/MemoryTracker.hpp"

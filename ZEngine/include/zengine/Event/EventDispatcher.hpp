@@ -30,6 +30,8 @@
 
 #include "zengine/Event/Event.hpp"
 
+#include <functional>
+
 namespace ze
 {
    class ZE_API EventDispatcher

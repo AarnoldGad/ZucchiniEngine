@@ -43,7 +43,7 @@
 #include <zengine/Log/DebugFileWriter.hpp>
 
 // Debug
-#include <zengine/Exception/Exception.hpp>
+//#include <zengine/Exception/Exception.hpp>
 #include <zengine/Debug/Assert.hpp>
 #include <zengine/Debug/Tee.hpp>
 #include <zengine/Memory/Memory.hpp>

@@ -33,7 +33,7 @@ typedef struct
    char const* function;
 } SourceLocation;
 
-#define CURRENT_SOURCE_LOCATION SourceLocation{__FILENAME__, __LINE__, __func__ }
+#define CURRENT_SOURCE_LOCATION SourceLocation{__FILENAME__, (unsigned) __LINE__, __func__ }
 
 ZE_API void PrintStacktrace();
 
