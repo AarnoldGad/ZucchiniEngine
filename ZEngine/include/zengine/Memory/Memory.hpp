@@ -30,10 +30,12 @@
 
 #include <cstdlib>
 
-ZE_API void* operator new(size_t size, SourceLocation const& location);
-ZE_API void* operator new[](size_t size, SourceLocation const& location);
+#if !defined(__APPLE__) && !defined(__clang__)
+   ZE_API void* operator new(size_t size, SourceLocation const& location);
+   ZE_API void* operator new[](size_t size, SourceLocation const& location);
 
-ZE_API void operator delete(void* pointer, SourceLocation const& location) noexcept;
-ZE_API void operator delete[](void* pointer, SourceLocation const& location) noexcept;
+   ZE_API void operator delete(void* pointer, SourceLocation const& location) noexcept;
+   ZE_API void operator delete[](void* pointer, SourceLocation const& location) noexcept;
+#endif
 
 #endif // ZE_MEMORY_HPP

@@ -77,5 +77,6 @@
 #include <zengine/Common/System.hpp>
 #include <zengine/Common/TypeTraits.hpp>
 #include <zengine/Util/StringUtils.hpp>
+#include <zengine/Util/FileUtils.hpp>
 
 #endif // ZENGINE_HPP

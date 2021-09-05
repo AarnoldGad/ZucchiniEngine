@@ -1,9 +1,9 @@
 /**
- * New.hpp
- * 26 Apr 2021
- * Gaétan "The Aarnold" Jalin
+ * FileUtils.hpp
+ * 5 Sep 2021
+ * Ga√©tan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Gaétan Jalin
+ * Copyright (C) 2020-2021 Ga√©tan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages
@@ -23,9 +23,19 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#include "zengine/Memory/Memory.hpp"
+#ifndef ZE_FILEUTILS_HPP
+#define ZE_FILEUTILS_HPP
 
-#if !defined(__APPLE__) && !defined(__clang__)
-   #define new new(CURRENT_SOURCE_LOCATION)
-   #define delete ze::MemoryTracker::NextRelease(CURRENT_SOURCE_LOCATION), delete
-#endif
+#include "zengine/zemacros.hpp"
+
+#include <optional>
+
+namespace ze
+{
+   namespace FileUtils
+   {
+      std::optional<std::string> GetFileContent(std::filesystem::path const& filename);
+   }
+}
+
+#endif /* ZE_FILEUTILS_HPP */
