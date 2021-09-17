@@ -20,6 +20,8 @@
 #define MACRO_TO_STRING(x) TO_STRING(x)
 #define TO_STRING(str) #str
 
+#define byte char
+
 #ifdef ZE_PLATFORM_WINDOWS
    #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
