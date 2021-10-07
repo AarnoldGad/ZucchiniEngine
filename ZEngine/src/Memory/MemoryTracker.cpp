@@ -143,6 +143,6 @@ namespace ze
 
    MemoryTracker::~MemoryTracker()
    {
-      MemoryTracker::MemoryLog("------ Memory Tracker Ended (%u allocations, %u bytes) ------", m_totalAllocations, m_sizeAllocated);
+      MemoryTracker::MemoryLog("------ Memory Tracker Ended (remaining %u allocations, %u bytes) ------", m_totalAllocations, m_sizeAllocated);
    }
 }

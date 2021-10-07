@@ -25,7 +25,7 @@
  **/
 #include "zengine/Memory/Memory.hpp"
 
-#if !defined(__APPLE__) && !defined(__clang__)
+#if !defined(__clang__)
    #define new new(CURRENT_SOURCE_LOCATION)
    #define delete ze::MemoryTracker::NextRelease(CURRENT_SOURCE_LOCATION), delete
 #endif

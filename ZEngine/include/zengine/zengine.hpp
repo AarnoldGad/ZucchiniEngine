@@ -67,6 +67,7 @@
 
 // Math
 #include <zengine/Math/RangedNumeric.hpp>
+#include <zengine/Math/Angle.hpp>
 
 // Utility
 #include <zengine/Common/Backtrace/CallStack.hpp>

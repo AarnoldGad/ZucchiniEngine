@@ -30,7 +30,7 @@
 
 #include <cstdlib>
 
-#if !defined(__APPLE__) && !defined(__clang__)
+#if !defined(__clang__)
    ZE_API void* operator new(size_t size, SourceLocation const& location);
    ZE_API void* operator new[](size_t size, SourceLocation const& location);
 
