@@ -6,7 +6,7 @@ workspace "ZucchiniEngine"
       sysincludedirs {
          "/usr/include",
          "/usr/local/include",
-         "ZAPI/include"
+         "ZEngineAPI/include"
       }
       syslibdirs {
          "/usr/lib",
@@ -25,4 +25,4 @@ workspace "ZucchiniEngine"
       optimize "on"
 
 include "ZEngine"
-include "ZAPI"
+include "ZEngineAPI"

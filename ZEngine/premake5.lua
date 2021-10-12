@@ -24,7 +24,7 @@ project "ZEngine"
    }
 
    links {
-      "ZAPI"
+      "ZEngineAPI"
    }
 
    filter "system:windows"
