@@ -1,17 +1,17 @@
 # Folders
 
-/.git/
+.git/
 
 # Projects
 
-/*/*.xcodeproj/
-/*/.kdev4/
-/.vs/
+*.xcodeproj/
+.kdev4/
+.vs/
 
 # Binaries
 
-/*/lib/
-/*/bin/
+lib/
+bin/
 
 # Files
 
