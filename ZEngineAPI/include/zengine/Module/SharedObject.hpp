@@ -48,7 +48,11 @@ namespace ze
 
    protected:
       std::filesystem::path m_path;
-      void* m_handle;
+      #if defined(_WIN32)
+         HMODULE m_handle;
+      #else
+         void* m_handle;
+      #endif
    };
 }
 

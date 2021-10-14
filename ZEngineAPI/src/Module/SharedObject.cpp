@@ -2,11 +2,13 @@
 
 #include "zengine/Module/SharedObject.hpp"
 
-#define dlcheck(x) \
-   char const* lastError = dlerror(); \
-   if (lastError) \
-      LOG_TRACE("Unhandled error : ", lastError); \
-   x;
+#if !defined(_WIN32)
+   #define dlcheck(x) \
+      char const* lastError = dlerror(); \
+      if (lastError) \
+         LOG_TRACE("Unhandled error : ", lastError); \
+      x;
+#endif
 
 namespace ze
 {
@@ -19,7 +21,22 @@ namespace ze
    bool SharedObject::load(std::filesystem::path const& filename)
    {
       #if defined(_WIN32)
-         // TODO
+         m_handle = LoadLibrary(filename.c_str());
+         if (!m_handle)
+         {
+            DWORD errorCode = GetLastError();
+            LPSTR errorMessage = nullptr;
+            size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                         NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&errorMessage, 0, NULL);
+
+            LOG_TRACE("Fail to load shared object ", filename, " : ", errorMessage);
+            m_path.clear();
+            LocalFree(errorMessage);
+            return false;
+         }
+
+         m_path = filename;
+         return true;
       #else
          dlcheck(m_handle = dlopen(filename.string().c_str(), RTLD_NOW));
          if (!m_handle)
@@ -37,7 +54,22 @@ namespace ze
    void* SharedObject::getSymbol(std::string const& id) const
    {
       #if defined(_WIN32)
-         // TODO
+         if (!isLoaded()) return nullptr;
+
+         void* symbol = GetProcAddress(m_handle, id.c_str());
+
+         if (!symbol)
+         {
+            DWORD errorCode = GetLastError();
+            LPSTR errorMessage = nullptr;
+            size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                         NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&errorMessage, 0, NULL);
+
+            LOG_TRACE("Fail to load shared object ", m_path, " : ", errorMessage);
+            LocalFree(errorMessage);
+         }
+
+         return symbol;
       #else
          if (!isLoaded()) return nullptr;
 
@@ -53,6 +85,10 @@ namespace ze
    SharedObject::~SharedObject()
    {
       if (isLoaded())
-         dlclose(m_handle);
+         #if defined(_WIN32)
+            FreeLibrary(m_handle);
+         #else
+            dlclose(m_handle);
+         #endif
    }
 }
