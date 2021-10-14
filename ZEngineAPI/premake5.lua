@@ -2,7 +2,7 @@ project "ZEngineAPI"
    kind "StaticLib"
    language "C++"
    cppdialect "C++20"
-   staticruntime "on"
+   staticruntime "off"
 
    targetname("zengine-api")
 
@@ -44,4 +44,3 @@ project "ZEngineAPI"
    filter "system:macosx"
       pchsource ""
       pchheader ""
-      

@@ -1,3 +1,5 @@
+#include "zepch.hpp"
+
 #include "zengine/defines.hpp"
 
 #include "zengine/Backtrace/CallStack.hpp"

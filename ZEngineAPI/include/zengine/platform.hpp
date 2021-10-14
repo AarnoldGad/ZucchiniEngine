@@ -44,9 +44,11 @@
 
 #elif defined(_WIN32)
 
-   #if defined(ZE_PLATFORM_WINDOWS)
+   #if defined(_WINDLL)
+      #define ZE_API
       #define ZE_APP_API __declspec(dllexport)
    #else
+      #define ZE_API
       #define ZE_APP_API __declspec(dllimport)
    #endif
 

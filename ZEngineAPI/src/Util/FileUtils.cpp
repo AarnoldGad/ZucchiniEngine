@@ -1,3 +1,5 @@
+#include "zepch.hpp"
+
 #include "zengine/Util/FileUtils.hpp"
 
 #include <sstream>
