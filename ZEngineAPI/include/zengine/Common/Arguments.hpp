@@ -37,14 +37,20 @@ namespace ze
    class ZE_API Arguments final
    {
    public:
+      struct Argument
+      {
+         std::string value;
+         Argument* next;
+      };
+
       static void Set(int argc, char* argv[]);
-      
-      static std::string Get(size_t index);
+
+      static Argument const* Get(size_t index);
       static size_t GetCount() noexcept;
-      static std::optional<std::string> Find(std::string const& value); // TODO Get index if found
+      static Argument const* Find(std::string const& value); // TODO Get index if found
 
    private:
-      static std::vector<std::string> s_arguments;
+      static std::vector<Argument> s_arguments;
    };
 }
 
