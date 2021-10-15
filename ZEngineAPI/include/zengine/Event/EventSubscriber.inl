@@ -40,7 +40,7 @@ ze::EventSubscriber<EventType>& ze::EventSubscriber<EventType>::operator=(EventS
    m_priority = other.m_priority;
    m_handler = other.m_handler;
    m_bus = other.m_bus;
-   
+
    subscribe();
 
    return *this;
@@ -103,7 +103,7 @@ inline ze::Priority ze::EventSubscriber<EventType>::getPriority() const noexcept
 }
 
 template<typename EventType>
-ze::EventSubscriber<EventType>::~EventSubscriber<EventType>()
+ze::EventSubscriber<EventType>::~EventSubscriber()
 {
    unsubscribe();
 }

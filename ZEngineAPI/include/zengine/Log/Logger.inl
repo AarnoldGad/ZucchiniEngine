@@ -46,7 +46,7 @@ inline void ze::Logger::write(std::string_view format, Args&&... args)
    int lineSize = std::snprintf(nullptr, 0, format.data(), std::forward<Args>(args)...);
    std::string line;
    line.reserve(static_cast<size_t>(lineSize) + 1);
-   
+
    int written = std::snprintf(line.data(), line.capacity(), format.data(), std::forward<Args>(args)...);
    if (written < 0)
       return LOG_TRACE("An error occured whilst logging");

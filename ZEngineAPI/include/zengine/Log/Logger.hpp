@@ -1,7 +1,7 @@
 /**
  * Logger.hpp
  * 1 Dec 2020
- * Gaétan "The Aarnold" Jalin
+ * GaÈtan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
  *
@@ -52,7 +52,7 @@ namespace ze
          Error = FLAG(3),
          Critical = FLAG(4)
       };
-      
+
       static char const* LevelToString(Level level) noexcept;
 
       template<typename Message>

@@ -15,7 +15,7 @@ namespace ze
    {
       ZE_ASSERT(minimum < maximum, "Minimum value is greater than maximum !");
       ZE_ASSERT(maximum <= std::default_random_engine::max(), "Maximum value is too high !");
-      
+
       return s_engine() % maximum + minimum;
    }
 

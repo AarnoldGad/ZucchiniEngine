@@ -257,7 +257,7 @@ namespace ze
 
             int physic = 0, logic = 0;
             size_t length = sizeof(int);
-         
+
             sysctlbyname("machdep.cpu.core_count", &physic, &length, nullptr, 0);
             sysctlbyname("machdep.cpu.thread_count", &logic, &length, nullptr, 0);
 

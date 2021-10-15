@@ -1,7 +1,7 @@
 /**
  * Application.hpp
  * 15 Jul 2021
- * Gaétan "The Aarnold" Jalin
+ * GaÈtan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
  *

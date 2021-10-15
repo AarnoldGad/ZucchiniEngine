@@ -39,7 +39,7 @@ namespace ze
    {
    public:
       virtual char const* description() const noexcept;
-      
+
       virtual char const* what() const noexcept override;
       virtual SourceLocation where() const noexcept;
 
@@ -48,7 +48,7 @@ namespace ze
 
    protected:
       std::string m_description;
-      
+
       std::string m_what;
       SourceLocation m_where;
       CallStack m_backtrace;

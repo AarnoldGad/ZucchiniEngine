@@ -36,7 +36,7 @@
 namespace ze
 {
    ZE_API StandardAllocator& GetStandardAllocator() noexcept;
-   
+
    ZE_API void* Allocate(size_t size, SourceLocation const& location);
    ZE_API void* Allocate(size_t size, Allocator* allocator, SourceLocation const& location);
    ZE_API void Release(void* pointer, SourceLocation const& location) noexcept;
