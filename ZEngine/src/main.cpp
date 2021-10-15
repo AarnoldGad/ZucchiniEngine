@@ -1,15 +1,17 @@
-#include <iostream>
 #include <zengine/zengine.hpp>
 
 int main(int argc, char* argv[])
 {
-   ze::DebugFileWriter coreWriter("zengine.log");
-   ze::Logger coreLogger("Core", &coreWriter);
+   ze::Arguments args(argc, argv);
 
-   coreLogger.debug().logLine("Hello Engine");
+   ZE_LOG_DEBUG("Hello Engine");
+
+   ze::Core::Initialise();
 
    ze::SharedObject app("../../App/bin/app-d.dll");
-   auto mainFn = (void (*)(void)) app.getSymbol("Main");
-   (*mainFn)();
+   auto mainFn = (void (*)(ze::Arguments const&)) app.getSymbol("Main");
+   (*mainFn)(args);
+
+   ze::Core::Terminate();
    return 0;
 }

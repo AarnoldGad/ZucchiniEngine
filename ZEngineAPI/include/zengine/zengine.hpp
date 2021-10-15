@@ -29,9 +29,8 @@
 #include <zengine/defines.hpp>
 
 // Core
-//#include <zengine/Core/Core.hpp>
+#include <zengine/Core/Core.hpp>
 #include <zengine/Core/Application.hpp>
-//#include <zengine/Core/State.hpp>
 #include <zengine/Core/Engine.hpp>
 
 // Logger
