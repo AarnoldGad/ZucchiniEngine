@@ -4,35 +4,33 @@
 
 namespace ze
 {
-   std::vector<Arguments::Argument> Arguments::s_arguments;
-
-   void Arguments::Set(int argc, char* argv[])
+   Arguments::Arguments(int argc, char* argv[])
+      : m_arguments(argc)
    {
-      s_arguments.reserve(argc);
-
       for (int i = 0; i < argc; ++i)
       {
-         auto next = s_arguments.begin() + i + 1;
-         if (next == s_arguments.end())
-            s_arguments.push_back({ argv[i], nullptr });
-         s_arguments.push_back({ argv[i], &*next });
+         auto next = m_arguments.begin() + i + 1;
+         if (next < m_arguments.end())
+            m_arguments[i] = { argv[i], &*next };
+         else
+            m_arguments[i] = { argv[i], nullptr };
       }
    }
 
-   size_t Arguments::GetCount() noexcept
+   size_t Arguments::getCount() const noexcept
    {
-      return s_arguments.size();
+      return m_arguments.size();
    }
 
-   Arguments::Argument const* Arguments::Get(size_t index)
+   Arguments::Argument const* Arguments::getArgument(size_t index) const
    {
-      return &s_arguments.at(index);
+      return &m_arguments.at(index);
    }
 
-   Arguments::Argument const* Arguments::Find(std::string const& value)
+   Arguments::Argument const* Arguments::find(std::string const& value) const
    {
-      auto found = std::find_if(s_arguments.begin(), s_arguments.end(),
+      auto found = std::find_if(m_arguments.begin(), m_arguments.end(),
                                 [&value](Argument const& argument) { return argument.value == value; });
-      return found != s_arguments.end() ? &*found : nullptr;
+      return found != m_arguments.end() ? &*found : nullptr;
    }
 }

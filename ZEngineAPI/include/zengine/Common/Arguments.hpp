@@ -30,11 +30,10 @@
 
 #include <string>
 #include <vector>
-#include <optional>
 
 namespace ze
 {
-   class ZE_API Arguments final
+   class ZE_API Arguments
    {
    public:
       struct Argument
@@ -43,14 +42,14 @@ namespace ze
          Argument* next;
       };
 
-      static void Set(int argc, char* argv[]);
+      Argument const* getArgument(size_t index) const;
+      size_t getCount() const noexcept;
+      Argument const* find(std::string const& value) const;
 
-      static Argument const* Get(size_t index);
-      static size_t GetCount() noexcept;
-      static Argument const* Find(std::string const& value); // TODO Get index if found
+      Arguments(int argc, char* argv[]);
 
    private:
-      static std::vector<Argument> s_arguments;
+      std::vector<Argument> m_arguments;
    };
 }
 
