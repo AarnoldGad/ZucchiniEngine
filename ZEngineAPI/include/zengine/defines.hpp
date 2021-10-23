@@ -8,10 +8,10 @@
 
 #define ZE_VERSION_MAJOR 0
 #define ZE_VERSION_MINOR 20
-#define ZE_VERSION_REV 0
+#define ZE_VERSION_REV 1
 #define ZE_VERSION_SPEC "alpha"
-#define ZE_VERSION_MONTH 10
-#define ZE_VERSION_DAY 9
+#define ZE_VERSION_MONTH 23
+#define ZE_VERSION_DAY 10
 #define ZE_VERSION_YEAR 21
 
 #define FLAG(shift) (1 << shift)

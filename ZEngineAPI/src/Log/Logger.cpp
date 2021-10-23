@@ -33,7 +33,7 @@ namespace ze
 
    Logger& Logger::info()
    {
-      return getLogLevel() != Level::Info && !m_lineStart ? startNewLineAs(Level::Info) : *this;
+      return getLogLevel() != Level::Info ? startNewLineAs(Level::Info) : *this;
    }
 
    Logger& Logger::info(Logger& logger)
@@ -43,7 +43,7 @@ namespace ze
 
    Logger& Logger::debug()
    {
-      return getLogLevel() != Level::Debug && !m_lineStart ? startNewLineAs(Level::Debug) : *this;
+      return getLogLevel() != Level::Debug ? startNewLineAs(Level::Debug) : *this;
    }
 
    Logger& Logger::debug(Logger& logger)
@@ -53,7 +53,7 @@ namespace ze
 
    Logger& Logger::warn()
    {
-      return getLogLevel() != Level::Warn && !m_lineStart ? startNewLineAs(Level::Warn) : *this;
+      return getLogLevel() != Level::Warn ? startNewLineAs(Level::Warn) : *this;
    }
 
    Logger& Logger::warn(Logger& logger)
@@ -63,7 +63,7 @@ namespace ze
 
    Logger& Logger::error()
    {
-      return getLogLevel() != Level::Error && !m_lineStart ? startNewLineAs(Level::Error) : *this;
+      return getLogLevel() != Level::Error ? startNewLineAs(Level::Error) : *this;
    }
 
    Logger& Logger::error(Logger& logger)
@@ -73,7 +73,7 @@ namespace ze
 
    Logger& Logger::critical()
    {
-      return getLogLevel() != Level::Critical && !m_lineStart ? startNewLineAs(Level::Critical) : *this;
+      return getLogLevel() != Level::Critical ? startNewLineAs(Level::Critical) : *this;
    }
 
    Logger& Logger::critical(Logger& logger)
@@ -136,7 +136,7 @@ namespace ze
    {
       setLogLevel(logLevel);
 
-      return newLine();
+      return !m_lineStart ? newLine() : *this;
    }
 
    char const* Logger::LevelToString(Level level) noexcept
