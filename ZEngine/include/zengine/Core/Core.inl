@@ -8,6 +8,16 @@ inline ze::EventBus& ze::Core::UseEventBus() noexcept
    return Instance().m_eventBus;
 }
 
+inline ze::Logger& ze::Core::UseCoreLogger() noexcept
+{
+   return Instance().m_coreLogger;
+}
+
+inline ze::Logger& ze::Core::UseAppLogger() noexcept
+{
+   return Instance().m_appLogger;
+}
+
 inline unsigned int ze::Core::GetTickRate() noexcept
 {
    return Instance().m_tickRate;

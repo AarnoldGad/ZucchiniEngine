@@ -40,21 +40,9 @@
 #if __GNUC__ >= 4 || defined(__clang__) // GNU GCC __attribute__
 
    #define ZE_API __attribute__ ((__visibility__("default")))
-   #define ZE_APP_API __attribute__ ((__visibility__("default")))
-
-#elif defined(_WIN32)
-
-   #if defined(_WINDLL)
-      #define ZE_API
-      #define ZE_APP_API __declspec(dllexport)
-   #else
-      #define ZE_API
-      #define ZE_APP_API __declspec(dllimport)
-   #endif
 
 #else // idk
 
    #define ZE_API
-   #define ZE_APP_API
 
 #endif // DLL/SO specifiers

@@ -7,7 +7,7 @@
 
 namespace ze
 {
-   std::optional<std::string> GetFileContent(std::filesystem::path const& path)
+   std::optional<std::string> FileUtils::GetFileContent(std::filesystem::path const& path)
    {
       std::ifstream file(path);
       if (!file)

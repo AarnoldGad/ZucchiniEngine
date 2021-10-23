@@ -95,14 +95,10 @@ namespace ze
       Instance().m_tickRate = rate;
    }
 
-   Logger& Core::UseCoreLogger() noexcept
-   {
-      return Instance().m_coreLogger;
-   }
-
    Core::Core()
       : m_app(nullptr), m_initialised(false),
         m_coreWriter(COREWRITER_FILENAME), m_coreLogger(CORELOGGER_NAME, &m_coreWriter),
+        m_appWriter("app.log"), m_appLogger("App", &m_appWriter),
         m_running(false), m_tickRate{} {}
 
    void Core::connectEngine(Engine& engine)
@@ -129,7 +125,7 @@ namespace ze
    {
       Application* oldApp = m_app;
       m_app = app;
-      oldApp->onDisconnection();
+      if (oldApp) oldApp->onDisconnection();
       m_app->onConnection();
       return oldApp;
    }

@@ -2,14 +2,6 @@ workspace "ZucchiniEngine"
    architecture "x86_64"
    configurations { "Debug", "Release" }
 
-   sysincludedirs {
-      "ZEngineAPI/include"
-   }
-
-   syslibdirs {
-      "lib"
-   }
-
    filter "system:linux or macosx"
       sysincludedirs {
          "/usr/include",
@@ -31,4 +23,3 @@ workspace "ZucchiniEngine"
       optimize "on"
 
 include "ZEngine"
-include "ZEngineAPI"

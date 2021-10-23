@@ -62,6 +62,7 @@ namespace ze
 
       static EventBus& UseEventBus() noexcept;
       static Logger& UseCoreLogger() noexcept;
+      static Logger& UseAppLogger() noexcept;
 
       static void SetTickRate(unsigned int rate) noexcept;
       static unsigned int GetTickRate() noexcept;
@@ -105,6 +106,8 @@ namespace ze
 
       DebugFileWriter m_coreWriter;
       Logger m_coreLogger;
+      DebugFileWriter m_appWriter;
+      Logger m_appLogger;
 
       bool m_running;
       Chrono m_runTime;

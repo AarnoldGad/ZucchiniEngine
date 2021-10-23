@@ -1,27 +1,38 @@
 project "ZEngine"
-   kind "ConsoleApp"
+   kind "StaticLib"
    language "C++"
    cppdialect "C++20"
    staticruntime "off"
 
-   targetdir("%{prj.location}/../bin")
+   targetname("zengine")
+
+   filter "configurations:Debug"
+      targetsuffix "-d"
+   filter {}
+
+   targetdir("%{prj.location}/../lib")
    objdir("%{prj.location}/obj/%{cfg.buildcfg}")
 
    files {
-      "src/**.cpp",
       "include/**.hpp",
-      "include/**.inl"
+      "include/**.inl",
+      "src/**.cpp"
    }
 
    includedirs {
       "include"
    }
 
-   links {
-      "ZEngineAPI"
-   }
+   pchsource "include/zepch.cpp"
+   pchheader "zepch.hpp"
 
    filter "system:windows"
+      files { "include/zepch.cpp" }
+
+   filter "system:windows"
+      links {
+         "version.lib"
+      }
       systemversion "latest"
 
    filter "system:linux"
@@ -29,7 +40,11 @@ project "ZEngine"
          "dl",
          "pthread"
       }
-      
+
+   filter "system:macosx"
+      pchsource ""
+      pchheader ""
+
    filter { "action:gmake*", "toolset:gcc" }
       buildoptions {
          "-Wall", "-Wextra", "-Wold-style-cast", "-Woverloaded-virtual", "-Wfloat-equal", "-Wwrite-strings",
