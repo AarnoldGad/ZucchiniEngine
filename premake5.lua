@@ -2,16 +2,22 @@ workspace "ZucchiniEngine"
    architecture "x86_64"
    configurations { "Debug", "Release" }
 
+   sysincludedirs {
+      "ZEngineAPI/include"
+   }
+
+   syslibdirs {
+      "lib"
+   }
+
    filter "system:linux or macosx"
       sysincludedirs {
          "/usr/include",
-         "/usr/local/include",
-         "ZEngineAPI/include"
+         "/usr/local/include"
       }
       syslibdirs {
          "/usr/lib",
-         "/usr/local/lib",
-         "lib"
+         "/usr/local/lib"
       }
 
    filter "configurations:Debug"

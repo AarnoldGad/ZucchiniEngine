@@ -4,14 +4,8 @@ project "ZEngine"
    cppdialect "C++20"
    staticruntime "off"
 
-   targetname("zengine")
-
-   filter "configurations:Debug"
-      targetsuffix "-d"
-   filter {}
-
    targetdir("%{prj.location}/../bin")
-   objdir("%{prj.location}/../bin/obj/%{cfg.buildcfg}")
+   objdir("%{prj.location}/obj/%{cfg.buildcfg}")
 
    files {
       "src/**.cpp",
@@ -34,4 +28,15 @@ project "ZEngine"
       links {
          "dl",
          "pthread"
+      }
+      
+   filter { "action:gmake*", "toolset:gcc" }
+      buildoptions {
+         "-Wall", "-Wextra", "-Wold-style-cast", "-Woverloaded-virtual", "-Wfloat-equal", "-Wwrite-strings",
+         "-Wpointer-arith", "-Wcast-qual", "-Wcast-align", "-Wconversion", "-Wshadow", "-Wredundant-decls",
+         "-Wdouble-promotion", "-Winit-self", "-Wswitch-default", "-Wswitch-enum", "-Wundef", "-Wlogical-op", "-Winline",
+         "-fPIC", "-m64", "-fexceptions", "-pedantic"
+      }
+      linkoptions {
+         "-fPIC", "-shared", "-lc", "-m64"
       }

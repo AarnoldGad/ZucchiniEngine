@@ -11,7 +11,7 @@ project "ZEngineAPI"
    filter {}
 
    targetdir("%{prj.location}/../lib")
-   objdir("%{prj.location}/../lib/obj/%{cfg.buildcfg}")
+   objdir("%{prj.location}/obj/%{cfg.buildcfg}")
 
    files {
       "include/**.hpp",
@@ -44,3 +44,14 @@ project "ZEngineAPI"
    filter "system:macosx"
       pchsource ""
       pchheader ""
+
+   filter { "action:gmake*", "toolset:gcc" }
+      buildoptions {
+         "-Wall", "-Wextra", "-Wold-style-cast", "-Woverloaded-virtual", "-Wfloat-equal", "-Wwrite-strings",
+         "-Wpointer-arith", "-Wcast-qual", "-Wcast-align", "-Wconversion", "-Wshadow", "-Wredundant-decls",
+         "-Wdouble-promotion", "-Winit-self", "-Wswitch-default", "-Wswitch-enum", "-Wundef", "-Wlogical-op", "-Winline",
+         "-fPIC", "-m64", "-fexceptions", "-pedantic"
+      }
+      linkoptions {
+         "-fPIC", "-shared", "-lc", "-m64"
+      }
