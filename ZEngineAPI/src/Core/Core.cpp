@@ -47,9 +47,14 @@ namespace ze
       Instance().disconnectEngine(engine);
    }
 
-   Application* Core::PlaceApplication(Application* app)
+   Application* Core::PlaceApplication(Application& app)
    {
-      return Instance().placeApplication(app);
+      return Instance().placeApplication(&app);
+   }
+
+   Application* Core::RemoveApplication()
+   {
+      return Instance().placeApplication(nullptr);
    }
 
    Application* Core::GetApplication() noexcept

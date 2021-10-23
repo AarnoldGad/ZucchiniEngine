@@ -52,8 +52,9 @@ namespace ze
       static void ConnectEngine(Engine& engine);
       static void DisconnectEngine(Engine& engine);
 
-      static Application* PlaceApplication(Application* app);
+      static Application* PlaceApplication(Application& app);
       static Application* GetApplication() noexcept;
+      static Application* RemoveApplication();
 
       static void Run();
       static bool IsRunning() noexcept;
