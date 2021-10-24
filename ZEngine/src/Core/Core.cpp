@@ -126,7 +126,7 @@ namespace ze
       Application* oldApp = m_app;
       m_app = app;
       if (oldApp) oldApp->onDisconnection();
-      m_app->onConnection();
+      if (m_app) m_app->onConnection();
       return oldApp;
    }
 
