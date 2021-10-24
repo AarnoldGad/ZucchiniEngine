@@ -1,5 +1,5 @@
-#ifndef ZE_MACROS_HPP
-#define ZE_MACROS_HPP
+#ifndef ZE_DEFINES_HPP
+#define ZE_DEFINES_HPP
 
 #include "platform.hpp"
 
@@ -57,4 +57,4 @@ inline void LOG_TRACE(Args... args)
 #include "zengine/Debug/Assert.hpp"
 #include "zengine/Debug/Tee.hpp"
 
-#endif // ZE_MACROS_HPP
+#endif // ZE_DEFINES_HPP
