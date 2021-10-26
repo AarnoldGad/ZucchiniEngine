@@ -47,8 +47,11 @@ namespace ze
       }
    }
 
+   Angle::Angle()
+      : m_degrees{} {}
+
    Angle::Angle(float deg)
-   : m_degrees(deg) {}
+      : m_degrees(deg) {}
 
    Angle Angle::operator-() const noexcept
    {

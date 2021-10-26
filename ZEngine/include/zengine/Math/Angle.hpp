@@ -83,6 +83,8 @@ namespace ze
       bool operator<(Angle const& other) const noexcept;
       bool operator>(Angle const& other) const noexcept;
 
+      Angle();
+
    private:
       explicit Angle(float deg);
 
