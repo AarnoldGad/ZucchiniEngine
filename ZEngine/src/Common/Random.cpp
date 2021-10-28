@@ -16,7 +16,7 @@ namespace ze
       ZE_ASSERT(minimum < maximum, "Minimum value is greater than maximum !");
       ZE_ASSERT(maximum <= std::default_random_engine::max(), "Maximum value is too high !");
 
-      return s_engine() % maximum + minimum;
+      return static_cast<unsigned int>(s_engine()) % maximum + minimum;
    }
 
    double Random::GenerateFloat(double minimum, double maximum)
