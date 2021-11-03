@@ -40,6 +40,9 @@ namespace ze
    Angle arcseconds(float seconds) noexcept;
    Angle arcminutes(float minutes) noexcept;
 
+   Angle normalise(Angle angle) noexcept;
+   Angle clamp(Angle angle, ze::Angle min, ze::Angle max) noexcept;
+
    namespace literals
    {
       Angle operator""_deg(long double deg) noexcept;
@@ -55,6 +58,9 @@ namespace ze
       float asRadians() const noexcept;
       float asArcSeconds() const noexcept;
       float asArcMinutes() const noexcept;
+
+      Angle& normalise() noexcept;
+      Angle& clamp(ze::Angle min, ze::Angle max) noexcept;
 
       Angle operator-() const noexcept;
 

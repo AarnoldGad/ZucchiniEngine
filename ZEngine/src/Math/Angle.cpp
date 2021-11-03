@@ -24,6 +24,16 @@ namespace ze
       return Angle(minutes / 60.f);
    }
 
+   Angle normalise(Angle angle) noexcept
+   {
+      return angle.normalise();
+   }
+
+   Angle clamp(Angle angle, ze::Angle min, ze::Angle max) noexcept
+   {
+      return angle.clamp(min, max);
+   }
+
    namespace literals
    {
       Angle operator""_deg(long double deg) noexcept
@@ -52,6 +62,26 @@ namespace ze
 
    Angle::Angle(float deg)
       : m_degrees(deg) {}
+
+   Angle& Angle::normalise() noexcept
+   {
+      m_degrees = std::fmod(m_degrees, 360.f);
+      if (m_degrees < 0.f)
+         m_degrees += 360.f;
+      return *this;
+   }
+
+   Angle& Angle::clamp(ze::Angle min, ze::Angle max) noexcept
+   {
+      ZE_ASSERT(min < max, "min should be smaller than max !");
+
+      if (m_degrees < min.m_degrees)
+         m_degrees = min.m_degrees;
+      if (m_degrees > max.m_degrees)
+         m_degrees = max.m_degrees;
+
+      return *this;
+   }
 
    Angle Angle::operator-() const noexcept
    {
