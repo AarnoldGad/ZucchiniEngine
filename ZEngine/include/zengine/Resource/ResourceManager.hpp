@@ -38,24 +38,16 @@ namespace ze
    class ResourceManager
    {
    public:
-      using ResourcePtr = std::shared_ptr<ResourceType>;
+      static std::shared_ptr<ResourceType> add(std::string const& id);
+      static std::shared_ptr<ResourceType> get(std::string const& id);
 
-      template<typename... Args>
-      static ResourcePtr load(std::string&& id, Args&&... args);
-      static ResourcePtr find(std::string const& id) noexcept;
-
-      static ResourcePtr release(std::string const& id) noexcept;
+      static void release(std::string const& id);
       static void releaseAll() noexcept;
 
       ResourceManager() = delete;
-      ResourceManager(ResourceManager const&) = delete;
-      ResourceManager(ResourceManager&&) = delete;
-
-      ResourceManager& operator=(ResourceManager const&) = delete;
-      ResourceManager& operator=(ResourceManager&&) = delete;
 
    private:
-      static std::unordered_map<std::string, ResourcePtr> m_resources;
+      static std::unordered_map<std::string, std::shared_ptr<ResourceType> > m_resources;
    };
 }
 
