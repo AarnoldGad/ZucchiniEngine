@@ -30,17 +30,29 @@
 
 #include "zengine/Memory/StandardAllocator.hpp"
 
-#define ALLOCATE(type, ...) ze::Allocate(sizeof(type) __VA_OPT__(,) __VA_ARGS__, CURRENT_SOURCE_LOCATION)
+#if __cplusplus >= 202002L && !defined(_MSC_VER)
+   #define ALLOCATE(type, ...) ze::Allocate<type>(sizeof(type), CURRENT_SOURCE_LOCATION __VA_OPT__(,) __VA_ARGS)
+#else
+   #define ALLOCATE_1(type) ze::Allocate<type>(sizeof(type), CURRENT_SOURCE_LOCATION)
+   #define ALLOCATE_2(type, allocator) ze::Allocate<type>(sizeof(type), CURRENT_SOURCE_LOCATION, &allocator)
+
+   #define FIND_ALLOCATE_FN(_1, _2, ALLOCATE_FN, ...) ALLOCATE_FN
+   #define ALLOCATE(...) FIND_ALLOCATE_FN(__VA_ARGS__, ALLOCATE_2, ALLOCATE_1)(__VA_ARGS__)
+#endif
+
 #define RELEASE(...) ze::Release(__VA_ARGS__, CURRENT_SOURCE_LOCATION)
 
 namespace ze
 {
-   ZE_API StandardAllocator& GetStandardAllocator() noexcept;
+   template<typename PtrType>
+   PtrType* Allocate(size_t size, SourceLocation const& location);
+   template<typename PtrType>
+   PtrType* Allocate(size_t size, SourceLocation const& location, Allocator* allocator);
 
-   ZE_API void* Allocate(size_t size, SourceLocation const& location);
-   ZE_API void* Allocate(size_t size, Allocator* allocator, SourceLocation const& location);
    ZE_API void Release(void* pointer, SourceLocation const& location) noexcept;
    ZE_API void Release(void* pointer, Allocator* allocator, SourceLocation const& location) noexcept;
 }
+
+#include "New.inl"
 
 #endif /* ZE_NEW_HPP */

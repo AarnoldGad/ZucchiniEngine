@@ -35,16 +35,18 @@ namespace ze
    class ZE_API StandardAllocator : public Allocator
    {
    public:
+      static StandardAllocator& GetStandardAllocator();
+
       void* allocate(size_t size, SourceLocation const& location) override;
       size_t release(void* pointer, SourceLocation const& location) noexcept override;
 
       size_t getTotalAllocations() const noexcept;
       size_t getTotalMemoryAllocated() const noexcept;
 
+   private:
       StandardAllocator();
       ~StandardAllocator();
 
-   private:
       struct Block
       {
          size_t size;

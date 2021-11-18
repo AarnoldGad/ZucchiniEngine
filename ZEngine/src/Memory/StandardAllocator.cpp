@@ -21,6 +21,13 @@ namespace ze
       }
    }
 
+   StandardAllocator& StandardAllocator::GetStandardAllocator()
+   {
+      static StandardAllocator allocator;
+
+      return allocator;
+   }
+
    StandardAllocator::StandardAllocator()
    : m_blockList{ 0, {nullptr, 0, nullptr}, 0, &m_blockList, &m_blockList } {}
 
