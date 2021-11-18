@@ -32,6 +32,7 @@
 #include <zengine/Core/Core.hpp>
 #include <zengine/Core/Application.hpp>
 #include <zengine/Core/Engine.hpp>
+#include <zengine/Layers/Layer.hpp>
 
 // Logger
 #include <zengine/Log/Logger.hpp>
