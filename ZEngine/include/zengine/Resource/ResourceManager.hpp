@@ -3,7 +3,7 @@
  * 8 Feb 2021
  * Gaétan "The Aarnold" Jalin
  *
- * Copyright (C) 2020-2021 Ga�tan Jalin
+ * Copyright (C) 2020-2021 Gaétan Jalin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will the authors be held liable for any damages

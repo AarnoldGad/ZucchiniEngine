@@ -7,4 +7,3 @@ inline size_t ze::StandardAllocator::getTotalMemoryAllocated() const noexcept
 {
    return m_totalMemoryAllocated;
 }
-
