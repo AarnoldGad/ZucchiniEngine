@@ -201,7 +201,7 @@ namespace ze
          ++memoryOrder;
       }
 
-      ZE_LOG_DEBUG("------  * ZEngine version %u-%u.%u%s (%u/%u/%u)", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_REV, ZE_VERSION_SPEC, ZE_VERSION_MONTH, ZE_VERSION_DAY, ZE_VERSION_YEAR);
+      ZE_LOG_DEBUG("------  * ZEngine version %u-%u.%u%s (%u/%u/%u)", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_REV, ZE_VERSION_STAGE, ZE_VERSION_MONTH, ZE_VERSION_DAY, ZE_VERSION_YEAR);
       ZE_LOG_DEBUG("------  * Running on %s %s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
       ZE_LOG_DEBUG("------      * %s", cpuInfo.model.c_str());
       ZE_LOG_DEBUG("------      * %s, %u cores %u thread, %s endian", ::ze::ArchToString(cpuInfo.arch).c_str(), cpuInfo.cores.physical, cpuInfo.cores.logical, cpuInfo.endian == Endianess::Little ? "little" : "big");

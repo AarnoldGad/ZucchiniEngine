@@ -1,15 +1,16 @@
 #ifndef ZE_DEFINES_HPP
 #define ZE_DEFINES_HPP
 
+#include "config.hpp"
 #include "platform.hpp"
 
 #include <cstring>
 #include <iostream>
 
-#define ZE_VERSION_MAJOR 0
-#define ZE_VERSION_MINOR 20
-#define ZE_VERSION_REV 1
-#define ZE_VERSION_SPEC "alpha"
+#define ZE_VERSION_MAJOR ZEngine_VERSION_MAJOR
+#define ZE_VERSION_MINOR ZEngine_VERSION_MAJOR
+#define ZE_VERSION_REV ZEngine_VERSION_PATCH
+#define ZE_VERSION_STAGE ZEngine_VERSION_STAGE
 #define ZE_VERSION_MONTH 23
 #define ZE_VERSION_DAY 10
 #define ZE_VERSION_YEAR 21

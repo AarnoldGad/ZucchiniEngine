@@ -1,0 +1,5 @@
+#define ZEngine_VERSION_MAJOR @ZEngine_VERSION_MAJOR@
+#define ZEngine_VERSION_MINOR @ZEngine_VERSION_MINOR@
+#define ZEngine_VERSION_PATCH @ZEngine_VERSION_PATCH@
+#define ZEngine_VERSION_STAGE "@ZEngine_VERSION_STAGE@"
+
