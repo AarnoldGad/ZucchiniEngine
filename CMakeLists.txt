@@ -6,6 +6,8 @@ PROJECT(ZucchiniEngine
         LANGUAGES C CXX
         )
 
+SET(CMAKE_CONFIGURATION_TYPES Release Debug)
+
 SET(ZucchiniEngine_VERSION_STAGE "a")
 SET(ZucchiniEngine_VERSION_DAY 23)
 SET(ZucchiniEngine_VERSION_MONTH 10)
