@@ -1,13 +1,21 @@
 ADD_LIBRARY(zengine SHARED)
 
+# Properties
+SET_TARGET_PROPERTIES(zengine PROPERTIES
+                      OUTPUT_NAME zengine
+                      VERSION ${ZucchiniEngine_VERSION_MAJOR}.${ZucchiniEngine_VERSION_MINOR}.${ZucchiniEngine_VERSION_PATCH}
+                      SOVERSION ${ZucchiniEngine_VERSION_MAJOR}
+                      POSITION_INDEPENDENT_CODE ON
+                      CXX_STANDARD 20
+                      CXX_STANDARD_REQUIRED ON
+                      CXX_EXTENSIONS OFF
+                      FOLDER "ZEngine"
+                      )
+
+# Precompiled Header
 TARGET_PRECOMPILE_HEADERS(zengine PRIVATE
                           "$<$<COMPILE_LANGUAGE:CXX>:zepch.hpp>"
                           )
-
-# Precompiled Header Source
-TARGET_SOURCES(zengine PRIVATE
-               include/zepch.cpp
-               )
 
 # src/Backtrace
 TARGET_SOURCES(zengine PRIVATE
@@ -83,18 +91,16 @@ TARGET_SOURCES(zengine PRIVATE
                src/defines.cpp
                )
 
-# Properties
-SET_TARGET_PROPERTIES(zengine PROPERTIES
-                      OUTPUT_NAME zengine
-                      POSITION_INDEPENDENT_CODE True
-                      )
-
 # Defines
-ADD_COMPILE_DEFINITIONS($<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Release>:NDEBUG>)
+TARGET_COMPILE_DEFINITIONS(zengine PRIVATE
+                           $<$<CONFIG:Debug>:_DEBUG>
+                           $<$<CONFIG:Release>:NDEBUG>
+                           )
 
 # Include Dirs
-TARGET_INCLUDE_DIRECTORIES(zengine
-                           PUBLIC "${PROJECT_SOURCE_DIR}/ZEngine/include" "${PROJECT_BINARY_DIR}"
+TARGET_INCLUDE_DIRECTORIES(zengine PUBLIC
+                           "${PROJECT_SOURCE_DIR}/ZEngine/include"
+                           "${PROJECT_BINARY_DIR}"
                            )
 
 # System Include Dirs
@@ -110,9 +116,9 @@ TARGET_LINK_DIRECTORIES(zengine PRIVATE
                         )
 
 # Linking
-TARGET_LINK_LIBRARIES(zengine
-                      -ldl
+TARGET_LINK_LIBRARIES(zengine PRIVATE
+                      Threads::Threads
+                      ${CMAKE_DL_LIBS}
                       $<$<PLATFORM_ID:Windows>:version>
-                      $<$<PLATFORM_ID:Linux>:pthread>
                       )
 

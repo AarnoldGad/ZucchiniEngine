@@ -1,19 +1,11 @@
 #ifndef ZE_DEFINES_HPP
 #define ZE_DEFINES_HPP
 
-#include "config.hpp"
+#include "zeconfig.hpp"
 #include "platform.hpp"
 
 #include <cstring>
 #include <iostream>
-
-#define ZE_VERSION_MAJOR ZEngine_VERSION_MAJOR
-#define ZE_VERSION_MINOR ZEngine_VERSION_MAJOR
-#define ZE_VERSION_REV ZEngine_VERSION_PATCH
-#define ZE_VERSION_STAGE ZEngine_VERSION_STAGE
-#define ZE_VERSION_MONTH 23
-#define ZE_VERSION_DAY 10
-#define ZE_VERSION_YEAR 21
 
 #define FLAG(shift) (1 << shift)
 #define MACRO_TO_STRING(x) TO_STRING(x)
