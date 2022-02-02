@@ -21,7 +21,7 @@ namespace ze
    bool SharedObject::load(std::filesystem::path const& filename)
    {
       #if defined(_WIN32)
-         m_handle = LoadLibrary(filename.c_str());
+         m_handle = LoadLibrary(filename.string().c_str());
          if (!m_handle)
          {
             DWORD errorCode = GetLastError();

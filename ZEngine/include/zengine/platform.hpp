@@ -35,7 +35,7 @@
 #endif // Platform detection
 
 // DLL/SO specifiers
-// ZE_API is for the ZEngine API build as static library
+// ZE_API is for the ZEngine API build as static library on windows
 // ZE_APP_API is for the app loaded by the engine as a dynamic library
 #if __GNUC__ >= 4 || defined(__clang__) // GNU GCC __attribute__
 

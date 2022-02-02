@@ -1,0 +1,9 @@
+#define ZE_VERSION_MAJOR @ZucchiniEngine_VERSION_MAJOR@
+#define ZE_VERSION_MINOR @ZucchiniEngine_VERSION_MINOR@
+#define ZE_VERSION_REV @ZucchiniEngine_VERSION_PATCH@
+#define ZE_VERSION_STAGE "@ZucchiniEngine_VERSION_STAGE@"
+
+#define ZE_VERSION_DAY @ZucchiniEngine_VERSION_DAY@
+#define ZE_VERSION_MONTH @ZucchiniEngine_VERSION_MONTH@
+#define ZE_VERSION_YEAR @ZucchiniEngine_VERSION_YEAR@
+
