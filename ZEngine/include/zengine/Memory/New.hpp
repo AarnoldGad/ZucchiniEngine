@@ -30,15 +30,11 @@
 
 #include "zengine/Memory/StandardAllocator.hpp"
 
-#if __cplusplus >= 202002L && !defined(_MSC_VER)
-   #define ALLOCATE(type, ...) ze::Allocate<type>(sizeof(type), CURRENT_SOURCE_LOCATION __VA_OPT__(,) __VA_ARGS)
-#else
-   #define ALLOCATE_1(type) ze::Allocate<type>(sizeof(type), CURRENT_SOURCE_LOCATION)
-   #define ALLOCATE_2(type, allocator) ze::Allocate<type>(sizeof(type), CURRENT_SOURCE_LOCATION, &allocator)
+#define ALLOCATE_1(count, type) ze::Allocate<type>(sizeof(type) * count, CURRENT_SOURCE_LOCATION)
+#define ALLOCATE_2(count, type, allocator) ze::Allocate<type>(sizeof(type) * count, CURRENT_SOURCE_LOCATION, &allocator)
 
-   #define FIND_ALLOCATE_FN(_1, _2, ALLOCATE_FN, ...) ALLOCATE_FN
-   #define ALLOCATE(...) FIND_ALLOCATE_FN(__VA_ARGS__, ALLOCATE_2, ALLOCATE_1)(__VA_ARGS__)
-#endif
+#define FIND_ALLOCATE_FN(_1, _2, _3, ALLOCATE_FN, ...) ALLOCATE_FN
+#define ALLOCATE(...) FIND_ALLOCATE_FN(__VA_ARGS__, ALLOCATE_2, ALLOCATE_1)(__VA_ARGS__)
 
 #define RELEASE(...) ze::Release(__VA_ARGS__, CURRENT_SOURCE_LOCATION)
 
