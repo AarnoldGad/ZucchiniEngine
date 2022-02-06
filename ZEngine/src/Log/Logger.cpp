@@ -110,10 +110,7 @@ namespace ze
 
    Logger& Logger::stacktrace()
    {
-      CallStack stack = Stacktrace(32, 1);
-      for (size_t i = 0; i < stack.getSize(); ++i)
-         logLine("\t%s", stack[i].toString().c_str());
-
+      // TODO
       return *this;
    }
 

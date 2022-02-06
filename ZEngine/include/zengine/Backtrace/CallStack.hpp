@@ -28,9 +28,9 @@
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Backtrace/StackFrame.hpp"
 #include "zengine/Math/RangedNumeric.hpp"
 
+#include <backward.hpp>
 #include <vector>
 
 namespace ze
@@ -38,19 +38,15 @@ namespace ze
    class ZE_API CallStack
    {
    public:
-      size_t getSize() const noexcept;
-      StackFrame const& getFrame(size_t index) const;
-      StackFrame const& operator[](size_t index) const;
+      void print() const;
 
-      CallStack(RangedInt<0, 32> size, int skip = 0);
+      CallStack(RangedInt<0, 32> size = 32, int skip = 3);
 
    private:
-      std::vector<StackFrame> m_frames;
+      backward::StackTrace m_stack;
    };
 
-   ZE_API CallStack Stacktrace(RangedInt<0, 32> size = 32, int skip = 0);
+   ZE_API CallStack Stacktrace(RangedInt<0, 32> size = 32, int skip = 3);
 }
-
-#include "CallStack.inl"
 
 #endif /* ZE_CALLSTACK_HPP */

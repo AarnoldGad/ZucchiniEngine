@@ -70,7 +70,6 @@
 
 // Utility
 #include <zengine/Backtrace/CallStack.hpp>
-#include <zengine/Backtrace/StackFrame.hpp>
 #include <zengine/Common/Arguments.hpp>
 #include <zengine/Common/Functor.hpp>
 #include <zengine/Common/Observer.hpp>
