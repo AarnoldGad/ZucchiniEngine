@@ -1,72 +1,74 @@
 template<typename Message>
-inline void ze::Logger::log(Message&& message)
+inline void ze::Logger::log(Message message)
 {
-   log(getLogLevel(), std::forward<Message>(message));
-}
-
-template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> >
-inline void ze::Logger::log(Level logLevel, Message message)
-{
-   std::stringstream ss;
-   ss << message;
-   log(logLevel, ss.str());
-}
-
-template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> >
-inline void ze::Logger::log(Level logLevel, Message message)
-{
-   setLogLevel(logLevel);
-   write(std::string_view(message));
-}
-
-template<typename... Args>
-inline void ze::Logger::logLine(std::string_view format, Args&&... args)
-{
-   logLine(getLogLevel(), format, std::forward<Args>(args)...);
-}
-
-template<typename... Args>
-inline void ze::Logger::logLine(Level logLevel, std::string_view format, Args&&... args)
-{
-   setLogLevel(logLevel);
-   write(format, std::forward<Args>(args)...);
-   newLine();
+   logFormatted("{}", message);
 }
 
 template<typename Message>
-inline ze::Logger& ze::Logger::operator<<(Message&& message)
+inline void ze::Logger::log(Level level, Message message)
+{
+   logFormatted(level, "{}", message);
+}
+
+template<typename... Args>
+inline void ze::Logger::logFormatted(std::string const& fmt, Args&&... args)
+{
+   write(fmt, std::forward<Args>(args)...);
+}
+
+template<typename... Args>
+inline void ze::Logger::logFormatted(Level level, std::string const& fmt, Args&&... args)
+{
+   setLogLevel(level);
+   write(fmt, std::forward<Args>(args)...);
+}
+
+template<typename... Args>
+inline void ze::Logger::logLine(std::string const& fmt, Args&&... args)
+{
+   write(fmt, std::forward<Args>(args)...);
+   endLine();
+}
+
+template<typename... Args>
+inline void ze::Logger::logLine(Level level, std::string const& fmt, Args&&... args)
+{
+   setLogLevel(level);
+   write(fmt, std::forward<Args>(args)...);
+   endLine();
+}
+
+template<typename Message>
+inline ze::Logger& ze::Logger::operator<<(Message message)
 {
    log(std::forward<Message>(message));
    return *this;
 }
 
 template<typename... Args>
-inline void ze::Logger::write(std::string_view format, Args&&... args)
+inline void ze::Logger::write(std::string_view fmt, Args&&... args)
 {
-   int lineSize = std::snprintf(nullptr, 0, format.data(), std::forward<Args>(args)...);
-   std::string line;
-   line.reserve(static_cast<size_t>(lineSize) + 1);
+   if (!canLog()) return;
 
-   int written = std::snprintf(line.data(), line.capacity(), format.data(), std::forward<Args>(args)...);
-   if (written < 0)
-      return LOG_TRACE("An error occured whilst logging");
+   char lineBuffer[MAX_LOGLINE_LENGTH + 1] = {}; // + Null-terminating character
 
-   write(std::string_view(line.data(), static_cast<size_t>(written)));
-}
+   auto result = fmt::format_to_n(&lineBuffer, MAX_LOGLINE_LENGTH - 3, fmt, std::forward<Args>(args)...);
+   
+   // Pretty suspension points when actual line is larger than printed line
+   if (result.size > MAX_LOGLINE_LENGTH)
+   {
+      lineBuffer[MAX_LOGLINE_LENGTH - 2] = '.';
+      lineBuffer[MAX_LOGLINE_LENGTH - 1] = '.';
+      lineBuffer[MAX_LOGLINE_LENGTH - 0] = '.';
+   }
 
-inline bool ze::Logger::canLog() const noexcept
-{
-   return (static_cast<unsigned int>(m_logLevel) & m_logMask) && m_writer;
+   for (auto& writer : m_writers)
+      writer->write(getName(), Date::CurrentDate(), getLogLevel(), std::string_view(lineBuffer, MAX_LOGLINE_LENGTH));
 }
 
 inline std::string ze::Logger::getName() const noexcept
 {
    return m_name;
-}
-
-inline ze::Writer* ze::Logger::getWriter() noexcept
-{
-   return m_writer;
 }
 
 inline uint8_t ze::Logger::getLogMask() const noexcept
@@ -78,3 +80,9 @@ inline ze::Logger::Level ze::Logger::getLogLevel() const noexcept
 {
    return m_logLevel;
 }
+
+inline bool ze::Logger::canLog() const noexcept
+{
+   return (static_cast<unsigned int>(m_logLevel) & m_logMask) && m_writers.size();
+}
+

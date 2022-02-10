@@ -35,16 +35,20 @@ namespace ze
    class ZE_API ConsoleWriter : virtual public Writer
    {
    public:
-      void write(std::string_view name, Logger::Level level, std::string_view line) override;
+      void write(std::string_view name, Date date, Logger::Level level, std::string_view line) override;
       void flush() override;
-      void newLine() override;
+      void endLine() override;
 
-      ConsoleWriter();
+      static ConsoleWriter& Get();
 
    private:
-      bool isAtLineBegin() const noexcept;
+      ConsoleWriter();
+      ConsoleWriter(ConsoleWriter const&) = delete;
+      ConsoleWriter(ConsoleWriter&&) = delete;
+      ConsoleWriter& operator=(ConsoleWriter const&) = delete;
+      ConsoleWriter& operator=(ConsoleWriter&&) = delete;
 
-      bool m_lineStart;
+      bool m_atLineStart;
    };
 }
 

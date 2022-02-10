@@ -7,9 +7,17 @@
 
 namespace ze
 {
+   Logger::Logger(std::string const& name, uint8_t logMask)
+      : m_name{}, m_logMask(logMask), m_logLevel(Level::Info)
+   {
+      setName(name);
+   }
 
    Logger::Logger(std::string const& name, Writer* writer, uint8_t logMask)
-      : m_name{}, m_writer(writer), m_logMask(logMask), m_logLevel(Level::Info), m_lineStart(true)
+      : Logger(name, {writer}, logMask) {}
+
+   Logger::Logger(std::string const& name, std::initializer_list<Writer*> writers, uint8_t logMask)
+      : m_name{}, m_writers(writers.begin(), writers.end()), m_logMask(logMask), m_logLevel(Level::Info)
    {
       setName(name);
    }
@@ -17,13 +25,32 @@ namespace ze
    void Logger::setName(std::string const& name)
    {
       m_name = name;
+      // Uppercase name
       std::transform(m_name.begin(), m_name.end(), m_name.begin(),
                      [](unsigned char c) { return std::toupper(c); });
    }
 
-   void Logger::setWriter(Writer* writer) noexcept
+   void Logger::addWriter(Writer* writer)
    {
-      m_writer = writer;
+      if (!writer) return;
+
+      auto writerExists = (std::find(m_writers.begin(), m_writers.end(), writer) != m_writers.end());
+      if (!writerExists)
+         m_writers.push_back(writer);
+   }
+
+   void Logger::removeWriter(Writer* writer)
+   {
+      if (!writer) return;
+
+      auto writerFound = std::find(m_writers.begin(), m_writers.end(), writer);
+      if (writerFound != m_writers.end())
+         m_writers.erase(writerFound);
+   }
+
+   void Logger::removeWriters()
+   {
+      m_writers.clear();
    }
 
    Logger& Logger::operator<<(Logger& (*manip)(Logger&))
@@ -81,31 +108,20 @@ namespace ze
       return logger.critical();
    }
 
-   Logger& Logger::newLine()
+   Logger& Logger::endLine()
    {
       if (canLog())
       {
-         m_lineStart = true;
-         getWriter()->newLine();
-         getWriter()->flush();
+         for (auto& writer : m_writers)
+            writer->endLine();
       }
-
+ 
       return *this;
    }
 
-   Logger& Logger::newLine(Logger& logger)
+   Logger& Logger::endLine(Logger& logger)
    {
-      return logger.newLine();
-   }
-
-   void Logger::write(std::string_view message)
-   {
-      if (canLog())
-      {
-         // TODO Treat \n and \r as newLine()
-         m_lineStart = false;
-         getWriter()->write(getName(), getLogLevel(), message);
-      }
+      return logger.endLine();
    }
 
    Logger& Logger::stacktrace()
@@ -135,8 +151,7 @@ namespace ze
    Logger& Logger::startNewLineAs(Level logLevel)
    {
       setLogLevel(logLevel);
-
-      return !m_lineStart ? newLine() : *this;
+      return endLine();
    }
 
    char const* Logger::LevelToString(Logger::Level level) noexcept

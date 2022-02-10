@@ -107,10 +107,9 @@ TARGET_SOURCES(zengine PRIVATE
 
  # src/Log
 TARGET_SOURCES(zengine PRIVATE
-               include/zengine/Log/ConsoleWriter.hpp
-               include/zengine/Log/ConsoleWriter.inl
                include/zengine/Log/Logger.hpp
                include/zengine/Log/Logger.inl
+               include/zengine/Log/ConsoleWriter.hpp
                include/zengine/Log/ConsoleWriter.inl
                include/zengine/Log/Writer.hpp
                src/Log/Logger.cpp

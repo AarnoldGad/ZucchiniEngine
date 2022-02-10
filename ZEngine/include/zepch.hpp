@@ -52,6 +52,7 @@
 #include <random>
 #include <type_traits>
 #include <chrono>
+#include <initializer_list>
 
 // C Legacy
 #include <cstdint>

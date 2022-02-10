@@ -1,42 +1,44 @@
 #include "zepch.hpp"
 
 #include "zengine/Log/ConsoleWriter.hpp"
-#include "zengine/Log/ConsoleColors.hpp"
-#include "zengine/Time/Date.hpp"
 
 #include "zengine/Common/Console.hpp"
 
+#include <fmt/format.h>
+#include <fmt/ostream.h>
+#include <fmt/chrono.h>
+
+#include <string_view>
 
 namespace ze
 {
    ConsoleWriter::ConsoleWriter()
-      : m_lineStart(true) {}
+      : m_atLineStart(true) {}
 
-   void ConsoleWriter::write(std::string_view name, Logger::Level level, std::string_view line)
+   void ConsoleWriter::write(std::string_view name, Date date, Logger::Level level, std::string_view message)
    {
-      if (isAtLineBegin())
       Console::SetColor(Logger::GetLevelColor(level));
       
+      if (m_atLineStart)
       {
-         Date date = Date::CurrentDate();
-         std::tm tm = date.getTm();
-         std::cout << "[" << std::put_time(&tm, "%H:%M:%S") << "] [" << Logger::LevelToString(level) << "] <" << name << "> ";
-         m_lineStart = false;
+         fmt::print(std::cout, "[{2}] [{1:%H:%M:%S}] <{0}> ", name, date.getTm(), Logger::LevelToString(level));
+         m_atLineStart = false;
       }
 
-      std::cout.write(line.data(), static_cast<std::streamsize>(line.size()));
+      fmt::print(std::cout, message);
 
       Console::ResetColor();
    }
-
+   
    void ConsoleWriter::flush()
    {
       std::cout.flush();
    }
 
-   void ConsoleWriter::newLine()
+   void ConsoleWriter::endLine()
    {
       std::cout.put('\n');
-      m_lineStart = true;
+      m_atLineStart = true;
    }
 }
+
