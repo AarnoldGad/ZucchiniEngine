@@ -4,6 +4,9 @@
 #include "zengine/Log/ConsoleColors.hpp"
 #include "zengine/Time/Date.hpp"
 
+#include "zengine/Common/Console.hpp"
+
+
 namespace ze
 {
    ConsoleWriter::ConsoleWriter()
@@ -11,9 +14,9 @@ namespace ze
 
    void ConsoleWriter::write(std::string_view name, Logger::Level level, std::string_view line)
    {
-      ze::SetConsoleColor(ze::GetLevelColor(level));
-
       if (isAtLineBegin())
+      Console::SetColor(Logger::GetLevelColor(level));
+      
       {
          Date date = Date::CurrentDate();
          std::tm tm = date.getTm();
@@ -23,7 +26,7 @@ namespace ze
 
       std::cout.write(line.data(), static_cast<std::streamsize>(line.size()));
 
-      ze::ResetConsoleColor();
+      Console::ResetColor();
    }
 
    void ConsoleWriter::flush()

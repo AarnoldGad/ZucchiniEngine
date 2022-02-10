@@ -53,7 +53,7 @@ namespace ze
 
    Logger& Logger::warn()
    {
-      return getLogLevel() != Level::Warn ? startNewLineAs(Level::Warn) : *this;
+      return getLogLevel() != Level::Warning ? startNewLineAs(Level::Warning) : *this;
    }
 
    Logger& Logger::warn(Logger& logger)
@@ -139,22 +139,42 @@ namespace ze
       return !m_lineStart ? newLine() : *this;
    }
 
-   char const* Logger::LevelToString(Level level) noexcept
+   char const* Logger::LevelToString(Logger::Level level) noexcept
    {
       switch (level)
       {
-         case Level::Info:
+         case Logger::Level::Info:
             return "Info";
-         case Level::Debug:
+         case Logger::Level::Debug:
             return "Debug";
-         case Level::Warn:
+         case Logger::Level::Warning:
             return "Warn";
-         case Level::Error:
+         case Logger::Level::Error:
             return "Error";
-         case Level::Critical:
+         case Logger::Level::Critical:
             return "Critical";
          default:
             return "None";
       }
    }
+
+   Console::Color GetLevelColor(Logger::Level level) noexcept
+   {
+      switch (level)
+      {
+         case Logger::Level::Info:
+            return Console::Color::White;
+         case Logger::Level::Debug:
+            return Console::Color::Aqua;
+         case Logger::Level::Warning:
+            return Console::Color::Yellow;
+         case Logger::Level::Error:
+            return Console::Color::Red;
+         case Logger::Level::Critical:
+            return Console::Color::LightRed;
+         default:
+            return Console::Color::White;
+      }
+   }
 }
+

@@ -32,6 +32,7 @@
 #include <string>
 #include <charconv>
 #include <sstream>
+#include "zengine/Common/Console.hpp"
 
 #ifdef ZE_PLATFORM_WINDOWS
    #include <Windows.h>
@@ -44,16 +45,17 @@ namespace ze
    class ZE_API Logger
    {
    public:
-      enum Level : uint8_t
+      enum class Level : uint8_t
       {
-         Info = FLAG(0),
-         Debug = FLAG(1),
-         Warn = FLAG(2),
-         Error = FLAG(3),
-         Critical = FLAG(4)
+         Info     = FLAG(0),
+         Debug    = FLAG(1),
+         Warning  = FLAG(2),
+         Error    = FLAG(3),
+         Critical = FLAG(4),
       };
 
       static char const* LevelToString(Level level) noexcept;
+      static Console::Color GetLevelColor(Logger::Level level) noexcept;
 
       template<typename Message>
       void log(Message&& message);

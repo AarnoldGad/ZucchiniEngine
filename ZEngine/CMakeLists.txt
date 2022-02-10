@@ -44,12 +44,15 @@ TARGET_SOURCES(zengine PRIVATE
 # src/Common
 TARGET_SOURCES(zengine PRIVATE
                include/zengine/Common/Arguments.hpp
+               include/zengine/Common/Console.hpp
+               include/zengine/Common/Console.inl
                include/zengine/Common/Functor.hpp
                include/zengine/Common/Observer.hpp
                include/zengine/Common/Priority.hpp
                include/zengine/Common/Random.hpp
                include/zengine/Common/System.hpp
                src/Common/Arguments.cpp
+               src/Common/Console.cpp
                src/Common/System.cpp
                src/Common/Random.cpp
                )
@@ -104,20 +107,14 @@ TARGET_SOURCES(zengine PRIVATE
 
  # src/Log
 TARGET_SOURCES(zengine PRIVATE
-               include/zengine/Log/ConsoleColors.hpp
                include/zengine/Log/ConsoleWriter.hpp
                include/zengine/Log/ConsoleWriter.inl
-               include/zengine/Log/DebugFileWriter.hpp
-               include/zengine/Log/FileWriter.hpp
-               include/zengine/Log/FileWriter.inl
                include/zengine/Log/Logger.hpp
                include/zengine/Log/Logger.inl
+               include/zengine/Log/ConsoleWriter.inl
                include/zengine/Log/Writer.hpp
                src/Log/Logger.cpp
-               src/Log/FileWriter.cpp
-               src/Log/DebugFileWriter.cpp
                src/Log/ConsoleWriter.cpp
-               src/Log/ConsoleColors.cpp
                )
 
 # src/Math
