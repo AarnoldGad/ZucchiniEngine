@@ -74,6 +74,7 @@ TARGET_SOURCES(zengine PRIVATE
                include/zengine/Debug/Assert.inl
                include/zengine/Debug/Tee.hpp
                include/zengine/Debug/Tee.inl
+               src/Debug/Assert.cpp
                )
 
 # src/Event

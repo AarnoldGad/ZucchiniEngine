@@ -179,7 +179,7 @@ namespace ze
       }
    }
 
-   Console::Color GetLevelColor(Logger::Level level) noexcept
+   Console::Color Logger::GetLevelColor(Logger::Level level) noexcept
    {
       switch (level)
       {
