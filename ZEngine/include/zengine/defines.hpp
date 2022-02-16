@@ -5,7 +5,6 @@
 #include "platform.hpp"
 
 #include <cstring>
-#include <iostream>
 
 #define FLAG(shift) (1 << shift)
 #define MACRO_TO_STRING(x) TO_STRING(x)
@@ -26,15 +25,6 @@ typedef struct
 
 #define CURRENT_SOURCE_LOCATION SourceLocation{__FILENAME__, static_cast<unsigned int>(__LINE__), __func__ }
 
-ZE_API void PrintStacktrace();
-
-template<typename... Args>
-inline void LOG_TRACE(Args... args)
-{
-   (std::cout << ... << args) << std::endl;
-   PrintStacktrace();
-}
-
 #define ZE_LOG_INFO(...)     ::ze::Core::UseCoreLogger().info().logLine(__VA_ARGS__)
 #define ZE_LOG_DEBUG(...)    ::ze::Core::UseCoreLogger().debug().logLine(__VA_ARGS__)
 #define ZE_LOG_WARN(...)     ::ze::Core::UseCoreLogger().warn().logLine(__VA_ARGS__)
@@ -48,6 +38,5 @@ inline void LOG_TRACE(Args... args)
 #define APP_LOG_CRITICAL(...) ::ze::Core::UseAppLogger().critical().logLine(__VA_ARGS__)
 
 #include "zengine/Debug/Assert.hpp"
-#include "zengine/Debug/Tee.hpp"
 
 #endif // ZE_DEFINES_HPP

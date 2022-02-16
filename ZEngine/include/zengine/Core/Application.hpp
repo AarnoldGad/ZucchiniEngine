@@ -28,9 +28,9 @@
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Log/DebugFileWriter.hpp"
-#include "zengine/Log/Logger.hpp"
 #include "zengine/Time/Time.hpp"
+
+#include <string>
 
 namespace ze
 {

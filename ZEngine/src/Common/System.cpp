@@ -4,7 +4,7 @@
 
 #include "zengine/Common/System.hpp"
 
-#include "zengine/Backtrace/CallStack.hpp"
+#include "zengine/Common/Console.hpp"
 
 #include <bitset>
 #include <csignal>
@@ -323,7 +323,7 @@ namespace ze
 
    [[noreturn]] void RaiseCritical(int code, char const* description) noexcept
    {
-      LOG_TRACE(description);
+      Console::Trace("[Unrecoverable error] ({}) : {} ", code, description);
       std::exit(code);
    }
 

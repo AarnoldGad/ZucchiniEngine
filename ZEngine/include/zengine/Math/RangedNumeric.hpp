@@ -28,6 +28,9 @@
 
 #include "zengine/defines.hpp"
 
+#include <type_traits>
+#include <cstdint>
+
 namespace ze
 {
    template<typename NumericType, std::intmax_t MinValue, std::intmax_t MaxValue>

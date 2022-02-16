@@ -30,6 +30,8 @@
 
 #include "zengine/Backtrace/CallStack.hpp"
 
+#include <iostream>
+#include <string>
 #include <fmt/format.h>
 
 namespace ze
