@@ -219,6 +219,7 @@ TARGET_LINK_DIRECTORIES(zengine PRIVATE
 
 # Linking
 TARGET_LINK_LIBRARIES(zengine PRIVATE
+                      fmt
                       Threads::Threads
                       ${CMAKE_DL_LIBS}
                       $<$<PLATFORM_ID:Windows>:version>
