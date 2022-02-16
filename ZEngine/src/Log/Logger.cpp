@@ -138,6 +138,12 @@ namespace ze
       return logger.stacktrace();
    }
 
+   void Logger::write(std::string_view line)
+   {
+      for (auto& writer : m_writers)
+         writer->write(getName(), Date::CurrentDate(), getLogLevel(), line);
+   }
+
    void Logger::setLogLevel(Level logLevel) noexcept
    {
       m_logLevel = logLevel;

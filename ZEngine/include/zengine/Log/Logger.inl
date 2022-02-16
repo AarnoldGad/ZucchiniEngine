@@ -52,7 +52,7 @@ inline void ze::Logger::write(std::string_view fmt, Args&&... args)
 
    char lineBuffer[MAX_LOGLINE_LENGTH + 1] = {}; // + Null-terminating character
 
-   auto result = fmt::format_to_n(&lineBuffer, MAX_LOGLINE_LENGTH - 3, fmt, std::forward<Args>(args)...);
+   auto result = fmt::format_to_n(std::begin(lineBuffer), MAX_LOGLINE_LENGTH - 3, fmt, std::forward<Args>(args)...);
    
    // Pretty suspension points when actual line is larger than printed line
    if (result.size > MAX_LOGLINE_LENGTH)
@@ -62,8 +62,7 @@ inline void ze::Logger::write(std::string_view fmt, Args&&... args)
       lineBuffer[MAX_LOGLINE_LENGTH - 0] = '.';
    }
 
-   for (auto& writer : m_writers)
-      writer->write(getName(), Date::CurrentDate(), getLogLevel(), std::string_view(lineBuffer, MAX_LOGLINE_LENGTH));
+   write(std::string_view(lineBuffer, MAX_LOGLINE_LENGTH));
 }
 
 inline std::string ze::Logger::getName() const noexcept

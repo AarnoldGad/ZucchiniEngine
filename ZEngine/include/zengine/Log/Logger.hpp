@@ -122,6 +122,7 @@ namespace ze
 
       template<typename... Args>
       void write(std::string_view fmt, Args&&... args);
+      void write(std::string_view line);
 
       void setLogLevel(Level level) noexcept;
       Level getLogLevel() const noexcept;
@@ -135,8 +136,6 @@ namespace ze
       Level m_logLevel;
    };
 }
-
-#include "zengine/Log/Writer.hpp"
 
 #include "Logger.inl"
 
