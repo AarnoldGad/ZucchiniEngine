@@ -2,6 +2,7 @@
 
 #include "zengine/Core/Core.hpp"
 
+#include "zengine/Log/ConsoleWriter.hpp"
 #include "zengine/Common/System.hpp"
 
 #define CORELOGGER_NAME "Core"
@@ -97,8 +98,8 @@ namespace ze
 
    Core::Core()
       : m_app(nullptr), m_initialised(false),
-        m_coreWriter(COREWRITER_FILENAME), m_coreLogger(CORELOGGER_NAME, &m_coreWriter),
-        m_appWriter("app.log"), m_appLogger("App", &m_appWriter),
+        m_coreWriter(COREWRITER_FILENAME), m_coreLogger(CORELOGGER_NAME, { &m_coreWriter, &ConsoleWriter::Get() }),
+        m_appWriter("app.log"), m_appLogger("App", { &m_appWriter, &ConsoleWriter::Get() }),
         m_running(false), m_tickRate{} {}
 
    void Core::connectEngine(Engine& engine)

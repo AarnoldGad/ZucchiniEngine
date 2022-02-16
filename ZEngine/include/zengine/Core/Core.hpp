@@ -30,7 +30,7 @@
 
 #include "zengine/Core/Application.hpp"
 #include "zengine/Log/Logger.hpp"
-#include "zengine/Log/DebugFileWriter.hpp"
+#include "zengine/Log/FileWriter.hpp"
 #include "zengine/Event/EventBus.hpp"
 #include "zengine/Time/Chrono.hpp"
 #include "zengine/Core/Engine.hpp"
@@ -104,9 +104,9 @@ namespace ze
 
       EventBus m_eventBus;
 
-      DebugFileWriter m_coreWriter;
+      FileWriter m_coreWriter;
       Logger m_coreLogger;
-      DebugFileWriter m_appWriter;
+      FileWriter m_appWriter;
       Logger m_appLogger;
 
       bool m_running;

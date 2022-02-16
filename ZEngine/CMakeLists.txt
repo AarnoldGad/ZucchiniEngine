@@ -109,10 +109,15 @@ TARGET_SOURCES(zengine PRIVATE
 TARGET_SOURCES(zengine PRIVATE
                include/zengine/Log/Logger.hpp
                include/zengine/Log/Logger.inl
+               include/zengine/Log/StreamWriter.hpp
+               include/zengine/Log/StreamWriter.inl
+               include/zengine/Log/FileWriter.hpp
                include/zengine/Log/ConsoleWriter.hpp
                include/zengine/Log/ConsoleWriter.inl
                include/zengine/Log/Writer.hpp
                src/Log/Logger.cpp
+               src/Log/StreamWriter.cpp
+               src/Log/FileWriter.cpp
                src/Log/ConsoleWriter.cpp
                )
 
@@ -157,6 +162,14 @@ TARGET_SOURCES(zengine PRIVATE
                include/zengine/Signal/Signal.inl
                )
 
+# src/Stream
+TARGET_SOURCES(zengine PRIVATE
+               include/zengine/Stream/OutputStream.hpp
+               include/zengine/Stream/FileOutputStream.hpp
+               include/zengine/Stream/FileOutputStream.inl
+               src/Stream/FileOutputStream.cpp
+               )
+
 # src/Time
 TARGET_SOURCES(zengine PRIVATE
                include/zengine/Time/Chrono.hpp
@@ -176,7 +189,6 @@ TARGET_SOURCES(zengine PRIVATE
                include/zengine/Util/StringUtils.hpp
                include/zengine/Util/StringUtils.inl
                src/Util/FileUtils.cpp
-               src/defines.cpp
                )
 
 # Defines

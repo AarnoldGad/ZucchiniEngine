@@ -2,7 +2,8 @@
 
 #include "zengine/Memory/StandardAllocator.hpp"
 #include "zengine/Log/Logger.hpp"
-#include "zengine/Log/DebugFileWriter.hpp"
+#include "zengine/Log/FileWriter.hpp"
+#include "zengine/Log/ConsoleWriter.hpp"
 
 namespace ze
 {
@@ -14,8 +15,8 @@ namespace ze
 
       Logger& MemoryLogger()
       {
-         static DebugFileWriter writer("memory.log");
-         static Logger logger("StandardAllocator", &writer);
+         static FileWriter writer("memory.log");
+         static Logger logger("StandardAllocator", { &writer, &ConsoleWriter::Get() });
 
          return logger;
       }
