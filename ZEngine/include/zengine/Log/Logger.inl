@@ -62,7 +62,7 @@ inline void ze::Logger::write(std::string_view fmt, Args&&... args)
       lineBuffer[MAX_LOGLINE_LENGTH - 0] = '.';
    }
 
-   write(std::string_view(lineBuffer, MAX_LOGLINE_LENGTH));
+   write(std::string_view(lineBuffer, result.size));
 }
 
 inline std::string ze::Logger::getName() const noexcept

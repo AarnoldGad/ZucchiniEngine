@@ -111,10 +111,8 @@ namespace ze
    Logger& Logger::endLine()
    {
       if (canLog())
-      {
          for (auto& writer : m_writers)
             writer->endLine();
-      }
  
       return *this;
    }

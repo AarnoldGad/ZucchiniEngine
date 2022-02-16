@@ -21,7 +21,7 @@ namespace ze
       
       if (m_atLineStart)
       {
-         fmt::print(std::cout, "[{2}] [{1:%H:%M:%S}] <{0}> ", name, date.getTm(), Logger::LevelToString(level));
+         fmt::print(std::cout, "[{1:%H:%M:%S}] [{2}] <{0}> ", name, date.getTm(), Logger::LevelToString(level));
          m_atLineStart = false;
       }
 
@@ -37,7 +37,10 @@ namespace ze
 
    void ConsoleWriter::endLine()
    {
+      if (m_atLineStart) return;
+
       std::cout.put('\n');
+      std::cout.flush();
       m_atLineStart = true;
    }
 }

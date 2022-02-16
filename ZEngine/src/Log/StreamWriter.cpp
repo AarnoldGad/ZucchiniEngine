@@ -24,8 +24,8 @@ namespace ze
 
       if (m_atLineStart)
       {
-         char dateBuffer[12] = {};
-         fmt::format_to_n(std::begin(dateBuffer), 11, "[{:%H:%M:%S}] ", date.getTm());
+         char dateBuffer[9] = {};
+         fmt::format_to_n(std::begin(dateBuffer), 8, "{:%H:%M:%S}", date.getTm());
          (*m_stream) << "[" << dateBuffer << "] [" << Logger::LevelToString(level) << "] <" << name << "> ";
          m_atLineStart = false;
       }
@@ -42,7 +42,7 @@ namespace ze
 
    void StreamWriter::endLine()
    {
-      if (!m_stream) return;
+      if (!m_stream || m_atLineStart) return;
 
       m_stream->put('\n');
       m_stream->flush();
