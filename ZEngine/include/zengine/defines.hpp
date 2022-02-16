@@ -37,6 +37,26 @@ typedef struct
 #define APP_LOG_ERROR(...)    ::ze::Core::UseAppLogger().error().logLine(__VA_ARGS__)
 #define APP_LOG_CRITICAL(...) ::ze::Core::UseAppLogger().critical().logLine(__VA_ARGS__)
 
+#include <fmt/format.h>
+#include <filesystem>
+
+template <>
+struct fmt::formatter<std::filesystem::path>
+{
+   constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin())
+   {
+      auto it = ctx.begin(), end = ctx.end();
+      if (it != end && *it != '}') throw format_error("invalid format");
+      return it;
+   }
+
+   template<typename FormatContext>
+   auto format(std::filesystem::path const& path, FormatContext& ctx) -> decltype(ctx.out())
+   {
+      return format_to(ctx.out(), path.string());
+   }
+};
+
 #include "zengine/Debug/Assert.hpp"
 
 #endif // ZE_DEFINES_HPP
