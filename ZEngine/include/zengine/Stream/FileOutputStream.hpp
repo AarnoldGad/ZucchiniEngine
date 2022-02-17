@@ -1,6 +1,6 @@
 /**
- * DebugFileWriter.hpp
- * 28 Apr 2021
+ * FileOutputStream.hpp
+ * 15 Feb 2022
  * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
@@ -23,26 +23,45 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_DEBUGFILEWRITER_HPP
-#define ZE_DEBUGFILEWRITER_HPP
+#ifndef ZE_FILEOUTPUTSTREAM_HPP
+#define ZE_FILEOUTPUTSTREAM_HPP
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Log/FileWriter.hpp"
-#include "zengine/Log/ConsoleWriter.hpp"
+#include "zengine/Stream/OutputStream.hpp"
+
+#include <filesystem>
+#include <fstream>
+#include <ios>
+#include <string_view>
 
 namespace ze
 {
-   // TODO Rework design to avoid this kind of class combination
-   class ZE_API DebugFileWriter : public FileWriter, public ConsoleWriter
+   class ZE_API FileOutputStream : public OutputStream
    {
    public:
-      void write(std::string_view name, Logger::Level level, std::string_view line) override;
-      void flush() override;
-      void newLine() override;
+      void open(std::filesystem::path const& file, std::ios_base::openmode mode = std::ios_base::out);
+      void close();
 
-      DebugFileWriter(std::string_view path);
+      bool isOpen() const;
+      explicit operator bool() const override;
+
+      OutputStream& put(char ch) override;
+      OutputStream& write(std::string_view str) override;
+      OutputStream& operator<<(std::string_view str) override;
+      OutputStream& flush() override;
+
+      ptrdiff_t tellp() override;
+      OutputStream& seekp(ptrdiff_t pos) override;
+
+      explicit FileOutputStream(std::filesystem::path const& file, std::ios_base::openmode mode = std::ios_base::out);
+      FileOutputStream() = default;
+
+   private:
+      std::ofstream m_file;
    };
 }
 
-#endif // ZE_DEBUGFILEWRITER_HPP
+#include "FileOutputStream.inl"
+
+#endif // ZE_FILEOUTPUTSTREAM_HPP

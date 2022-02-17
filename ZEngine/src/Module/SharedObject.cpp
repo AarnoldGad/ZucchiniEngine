@@ -2,11 +2,13 @@
 
 #include "zengine/Module/SharedObject.hpp"
 
+#include "zengine/Common/Console.hpp"
+
 #if !defined(_WIN32)
    #define dlcheck(x) \
       char const* lastError = dlerror(); \
       if (lastError) \
-         LOG_TRACE("Unhandled error : ", lastError); \
+         Console::Trace("Unhandled error : {}", lastError); \
       x;
 #endif
 
@@ -29,7 +31,7 @@ namespace ze
             size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                                          NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&errorMessage, 0, NULL);
 
-            LOG_TRACE("Fail to load shared object ", filename, " : ", errorMessage);
+            Console::Trace("Fail to load shared object {} : {}", filename, errorMessage);
             m_path.clear();
             LocalFree(errorMessage);
             return false;
@@ -41,7 +43,7 @@ namespace ze
          dlcheck(m_handle = dlopen(filename.string().c_str(), RTLD_NOW));
          if (!m_handle)
          {
-            LOG_TRACE("Fail to load shared object ", filename, " : ", dlerror());
+            Console::Trace("Fail to load shared object {} : {}", filename, dlerror());
             m_path.clear();
             return false;
          }
@@ -65,7 +67,7 @@ namespace ze
             size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                                          NULL, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&errorMessage, 0, NULL);
 
-            LOG_TRACE("Fail to load symbol \"", id, "\" at ", m_path, " : ", errorMessage);
+            Console::Trace("Fail to load symbol \"{}\" at {} : {}", id, m_path, errorMessage);
             LocalFree(errorMessage);
          }
 
@@ -76,7 +78,7 @@ namespace ze
          dlcheck(void* symbol = dlsym(m_handle, id.c_str()));
 
          if (!symbol)
-            LOG_TRACE("Fail to load symbol at ", m_path, " : ", dlerror());
+            Console::Trace("Fail to load symbol \"{}\" at {} : {}", id, m_path, dlerror());
 
          return symbol;
       #endif

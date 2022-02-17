@@ -31,7 +31,7 @@
 #include "zengine/Memory/StandardAllocator.hpp"
 
 #define ALLOCATE_1(count, type) ze::Allocate<type>(sizeof(type) * count, CURRENT_SOURCE_LOCATION)
-#define ALLOCATE_2(count, type, allocator) ze::Allocate<type>(sizeof(type) * count, CURRENT_SOURCE_LOCATION, &allocator)
+#define ALLOCATE_2(count, type, allocator) ze::Allocate<type>(sizeof(type) * count, &allocator, CURRENT_SOURCE_LOCATION)
 
 #define FIND_ALLOCATE_FN(_1, _2, _3, ALLOCATE_FN, ...) ALLOCATE_FN
 #define ALLOCATE(...) FIND_ALLOCATE_FN(__VA_ARGS__, ALLOCATE_2, ALLOCATE_1)(__VA_ARGS__)
@@ -43,7 +43,7 @@ namespace ze
    template<typename PtrType>
    PtrType* Allocate(size_t size, SourceLocation const& location);
    template<typename PtrType>
-   PtrType* Allocate(size_t size, SourceLocation const& location, Allocator* allocator);
+   PtrType* Allocate(size_t size, Allocator* allocator, SourceLocation const& location);
 
    ZE_API void Release(void* pointer, SourceLocation const& location) noexcept;
    ZE_API void Release(void* pointer, Allocator* allocator, SourceLocation const& location) noexcept;
@@ -52,3 +52,4 @@ namespace ze
 #include "New.inl"
 
 #endif /* ZE_NEW_HPP */
+

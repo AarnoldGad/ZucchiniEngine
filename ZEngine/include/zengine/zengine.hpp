@@ -34,13 +34,16 @@
 #include <zengine/Core/Engine.hpp>
 #include <zengine/Layer/Layer.hpp>
 
+// Backtrace
+#include <zengine/Backtrace/CallStack.hpp>
+#include <zengine/Backtrace/StackFrame.hpp>
+
 // Logger
 #include <zengine/Log/Logger.hpp>
 #include <zengine/Log/Writer.hpp>
-#include <zengine/Log/ConsoleColors.hpp>
 #include <zengine/Log/ConsoleWriter.hpp>
 #include <zengine/Log/FileWriter.hpp>
-#include <zengine/Log/DebugFileWriter.hpp>
+#include <zengine/Log/StreamWriter.hpp>
 
 // Debug
 #include <zengine/Exception/Exception.hpp>
@@ -68,10 +71,13 @@
 #include <zengine/Math/RangedNumeric.hpp>
 #include <zengine/Math/Angle.hpp>
 
+// Streams
+#include "zengine/Stream/OutputStream.hpp"
+#include "zengine/Stream/FileOutputStream.hpp"
+
 // Utility
-#include <zengine/Backtrace/CallStack.hpp>
-#include <zengine/Backtrace/StackFrame.hpp>
 #include <zengine/Common/Arguments.hpp>
+#include <zengine/Common/Console.hpp>
 #include <zengine/Common/Functor.hpp>
 #include <zengine/Common/Observer.hpp>
 #include <zengine/Common/Random.hpp>

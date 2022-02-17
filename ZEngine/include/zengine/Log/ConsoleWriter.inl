@@ -1,4 +1,6 @@
-inline bool ze::ConsoleWriter::isAtLineBegin() const noexcept
+inline ze::ConsoleWriter& ze::ConsoleWriter::Get()
 {
-   return m_lineStart;
+   static ConsoleWriter writer;
+   return writer;
 }
+

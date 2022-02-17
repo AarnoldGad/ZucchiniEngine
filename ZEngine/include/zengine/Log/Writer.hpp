@@ -29,18 +29,20 @@
 #include "zengine/defines.hpp"
 
 #include "zengine/Log/Logger.hpp"
+#include "zengine/Time/Date.hpp"
 
 namespace ze
 {
    class Writer
    {
    public:
-      virtual void write(std::string_view name, Logger::Level level, std::string_view line) = 0;
+      virtual void write(std::string_view name, Date date, Logger::Level level, std::string_view line) = 0;
       virtual void flush() = 0;
-      virtual void newLine() = 0;
+      virtual void endLine() = 0;
 
       virtual ~Writer() = default;
    };
 }
 
 #endif // ZE_WRITER_HPP
+

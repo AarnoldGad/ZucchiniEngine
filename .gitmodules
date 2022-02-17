@@ -1,0 +1,3 @@
+[submodule "ZEngine/deps/fmt"]
+	path = ZEngine/deps/fmt
+	url = https://github.com/fmtlib/fmt

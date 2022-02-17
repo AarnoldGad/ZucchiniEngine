@@ -44,12 +44,15 @@ TARGET_SOURCES(zengine PRIVATE
 # src/Common
 TARGET_SOURCES(zengine PRIVATE
                include/zengine/Common/Arguments.hpp
+               include/zengine/Common/Console.hpp
+               include/zengine/Common/Console.inl
                include/zengine/Common/Functor.hpp
                include/zengine/Common/Observer.hpp
                include/zengine/Common/Priority.hpp
                include/zengine/Common/Random.hpp
                include/zengine/Common/System.hpp
                src/Common/Arguments.cpp
+               src/Common/Console.cpp
                src/Common/System.cpp
                src/Common/Random.cpp
                )
@@ -71,6 +74,7 @@ TARGET_SOURCES(zengine PRIVATE
                include/zengine/Debug/Assert.inl
                include/zengine/Debug/Tee.hpp
                include/zengine/Debug/Tee.inl
+               src/Debug/Assert.cpp
                )
 
 # src/Event
@@ -104,20 +108,18 @@ TARGET_SOURCES(zengine PRIVATE
 
  # src/Log
 TARGET_SOURCES(zengine PRIVATE
-               include/zengine/Log/ConsoleColors.hpp
-               include/zengine/Log/ConsoleWriter.hpp
-               include/zengine/Log/ConsoleWriter.inl
-               include/zengine/Log/DebugFileWriter.hpp
-               include/zengine/Log/FileWriter.hpp
-               include/zengine/Log/FileWriter.inl
                include/zengine/Log/Logger.hpp
                include/zengine/Log/Logger.inl
+               include/zengine/Log/StreamWriter.hpp
+               include/zengine/Log/StreamWriter.inl
+               include/zengine/Log/FileWriter.hpp
+               include/zengine/Log/ConsoleWriter.hpp
+               include/zengine/Log/ConsoleWriter.inl
                include/zengine/Log/Writer.hpp
                src/Log/Logger.cpp
+               src/Log/StreamWriter.cpp
                src/Log/FileWriter.cpp
-               src/Log/DebugFileWriter.cpp
                src/Log/ConsoleWriter.cpp
-               src/Log/ConsoleColors.cpp
                )
 
 # src/Math
@@ -161,6 +163,14 @@ TARGET_SOURCES(zengine PRIVATE
                include/zengine/Signal/Signal.inl
                )
 
+# src/Stream
+TARGET_SOURCES(zengine PRIVATE
+               include/zengine/Stream/OutputStream.hpp
+               include/zengine/Stream/FileOutputStream.hpp
+               include/zengine/Stream/FileOutputStream.inl
+               src/Stream/FileOutputStream.cpp
+               )
+
 # src/Time
 TARGET_SOURCES(zengine PRIVATE
                include/zengine/Time/Chrono.hpp
@@ -180,7 +190,6 @@ TARGET_SOURCES(zengine PRIVATE
                include/zengine/Util/StringUtils.hpp
                include/zengine/Util/StringUtils.inl
                src/Util/FileUtils.cpp
-               src/defines.cpp
                )
 
 # Defines
@@ -192,6 +201,7 @@ TARGET_COMPILE_DEFINITIONS(zengine PRIVATE
 # Include Dirs
 TARGET_INCLUDE_DIRECTORIES(zengine PUBLIC
                            "${PROJECT_SOURCE_DIR}/ZEngine/include"
+                           "${PROJECT_SOURCE_DIR}/ZEngine/deps/fmt/include"
                            "${PROJECT_BINARY_DIR}"
                            )
 
@@ -209,6 +219,7 @@ TARGET_LINK_DIRECTORIES(zengine PRIVATE
 
 # Linking
 TARGET_LINK_LIBRARIES(zengine PRIVATE
+                      fmt
                       Threads::Threads
                       ${CMAKE_DL_LIBS}
                       $<$<PLATFORM_ID:Windows>:version>

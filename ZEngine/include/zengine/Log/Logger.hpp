@@ -28,14 +28,17 @@
 
 #include "zengine/defines.hpp"
 
-#include <iostream>
-#include <string>
-#include <charconv>
-#include <sstream>
+#include "zengine/Common/Console.hpp"
 
-#ifdef ZE_PLATFORM_WINDOWS
-   #include <Windows.h>
-#endif
+#include <fmt/format.h>
+
+#include <initializer_list>
+#include <string_view>
+#include <type_traits>
+#include <vector>
+#include <initializer_list>
+
+#define MAX_LOGLINE_LENGTH 150
 
 namespace ze
 {
@@ -44,35 +47,39 @@ namespace ze
    class ZE_API Logger
    {
    public:
-      enum Level : uint8_t
+      enum class Level : uint8_t
       {
-         Info = FLAG(0),
-         Debug = FLAG(1),
-         Warn = FLAG(2),
-         Error = FLAG(3),
-         Critical = FLAG(4)
+         Info     = FLAG(0),
+         Debug    = FLAG(1),
+         Warning  = FLAG(2),
+         Error    = FLAG(3),
+         Critical = FLAG(4),
       };
 
       static char const* LevelToString(Level level) noexcept;
+      static Console::Color GetLevelColor(Logger::Level level) noexcept;
 
       template<typename Message>
-      void log(Message&& message);
-
-      template<typename Message, typename std::enable_if_t<std::is_arithmetic_v<Message>, int> = 0>
-      void log(Level logLevel, Message message);
-
-      template<typename Message, typename std::enable_if_t<std::is_convertible_v<Message, std::string_view>, int> = 0>
-      void log(Level logLevel, Message message);
-
-      template<typename... Args>
-      void logLine(std::string_view format, Args&&... args);
-
-      template<typename... Args>
-      void logLine(Level logLevel, std::string_view format, Args&&... args);
+      void log(Message message);
 
       template<typename Message>
-      Logger& operator<<(Message&& message);
-      //Logger& operator<<(std::ostream& (*manip)(std::ostream&));
+      void log(Level level, Message message);
+
+      template<typename... Args>
+      void logFormatted(std::string const& fmt, Args&&... args);
+
+      template<typename... Args>
+      void logFormatted(Level level, std::string const& fmt, Args&&... args);
+
+      template<typename... Args>
+      void logLine(std::string const& fmt, Args&&... args);
+      
+      template<typename... Args>
+      void logLine(Level level, std::string const& fmt, Args&&... args);
+
+      template<typename Message>
+      Logger& operator<<(Message message);
+      
       Logger& operator<<(Logger& (*manip)(Logger&));
 
       Logger& info();
@@ -90,42 +97,43 @@ namespace ze
       Logger& critical();
       static Logger& critical(Logger& logger);
 
-      Logger& newLine();
-      static Logger& newLine(Logger& logger);
-
       Logger& stacktrace();
       static Logger& stacktrace(Logger& logger);
+
+      Logger& endLine();
+      static Logger& endLine(Logger& logger);
 
       void setName(std::string const& name);
       std::string getName() const noexcept;
 
-      void setWriter(Writer* writer) noexcept;
-      Writer* getWriter() noexcept;
+      void addWriter(Writer* writer);
+      void removeWriter(Writer* writer);
+      void removeWriters();
 
       void setLogMask(uint8_t mask) noexcept;
       uint8_t getLogMask() const noexcept;
 
-      bool canLog() const noexcept;
-
-      explicit Logger(std::string const& name = "UNDEFINED", Writer* = nullptr, uint8_t logMask = 0xFF);
+      explicit Logger(std::string const& name = "UNDEFINED", uint8_t logMask = 0xFF);
+      Logger(std::string const& name, Writer* writer, uint8_t logMask = 0xFF);
+      Logger(std::string const& name, std::initializer_list<Writer*> writers, uint8_t logMask = 0xFF);
 
    private:
+      bool canLog() const noexcept;
+
       template<typename... Args>
-      void write(std::string_view format, Args&&... args);
+      void write(std::string_view fmt, Args&&... args);
+      void write(std::string_view line);
 
-      void write(std::string_view message);
-
-      void setLogLevel(Level logLevel) noexcept;
+      void setLogLevel(Level level) noexcept;
       Level getLogLevel() const noexcept;
 
-      Logger& startNewLineAs(Level logLevel);
+      Logger& startNewLineAs(Level level);
 
       std::string m_name;
-      Writer* m_writer;
+      std::vector<Writer*> m_writers;
 
       uint8_t m_logMask; //<- Members of Level enum to be OR-ed together
       Level m_logLevel;
-      bool m_lineStart;
    };
 }
 

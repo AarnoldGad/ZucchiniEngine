@@ -1,6 +1,6 @@
 /**
  * FileWriter.hpp
- * 27 Apr 2021
+ * 16 Feb 2022
  * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
@@ -28,33 +28,26 @@
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Log/Writer.hpp"
+#include "zengine/Log/StreamWriter.hpp"
+#include "zengine/Stream/FileOutputStream.hpp"
 
 namespace ze
 {
-   class ZE_API FileWriter : virtual public Writer
+   class ZE_API FileWriter : public StreamWriter
    {
    public:
-      void write(std::string_view name, Logger::Level level, std::string_view line) override;
+      void write(std::string_view name, Date date, Logger::Level level, std::string_view msg) override;
       void flush() override;
-      void newLine() override;
+      void endLine() override;
 
-      std::filesystem::path getFilePath() const noexcept;
-
-      FileWriter(std::filesystem::path const& path);
+      explicit FileWriter(std::filesystem::path const& file);
+      FileWriter() = default;
 
    private:
-      bool isAtLineBegin() const noexcept;
-
-      [[nodiscard]]
-      FILE* openFile(char const* mode);
-      void printDate(FILE* file, std::string_view name, Logger::Level level);
-
-      std::filesystem::path m_path;
-      bool m_lineStart;
+      std::filesystem::path m_filepath;
+      FileOutputStream m_file;
    };
 }
 
-#include "FileWriter.inl"
+#endif //  ZE_FILEWRITER_HPP
 
-#endif // ZE_FILEWRITER_HPP

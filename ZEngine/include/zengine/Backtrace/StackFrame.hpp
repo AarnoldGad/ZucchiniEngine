@@ -28,6 +28,8 @@
 
 #include "zengine/defines.hpp"
 
+#include <string>
+
 namespace ze
 {
    class ZE_API StackFrame

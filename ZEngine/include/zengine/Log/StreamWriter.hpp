@@ -1,6 +1,6 @@
 /**
- * ConsoleColors.hpp
- * 27 Apr 2021
+ * StreamWriter.hpp
+ * 9 Feb 2022
  * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
@@ -23,34 +23,37 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CONSOLECOLORS_HPP
-#define ZE_CONSOLECOLORS_HPP
+#ifndef ZE_STREAMWRITER_HPP
+#define ZE_STREAMWRITER_HPP
 
 #include "zengine/defines.hpp"
 
 #include "zengine/Log/Logger.hpp"
+#include "zengine/Log/Writer.hpp"
+#include "zengine/Time/Date.hpp"
 
 namespace ze
 {
-   #if defined(_WIN32)
-      enum class Color : uint8_t
-      {
-         Black = 0, Blue, Green, Aqua,
-         Red, Purple, Yellow, White,
-         Gray, LightBlue, LightGreen, LightAqua,
-         LightRed, LightPurple, LightYellow, BrightWhite
-      };
-   #else
-      enum class Color : uint8_t // Actual ANSI colors are limited due to compatibility of interface between platforms
-      {
-         Black = 0, Red = 0b001, Green = 0b010, Yellow = 0b011, Blue = 0b100, LightPurple = 0b101, LightAqua = 0b110, White = 0b111,
-         LightRed = 0b10001, LightGreen = 0b10010, LightYellow = 0b10011, LightBlue = 0b10100, Purple = 0b10101, Aqua = 0b10110, Gray = 0b100000, BrightWhite = 0b100111
-      };
-   #endif
+   class OutputStream;
 
-   ZE_API void ResetConsoleColor();
-   ZE_API void SetConsoleColor(Color color);
-   ZE_API Color GetLevelColor(Logger::Level level) noexcept;
+   class ZE_API StreamWriter : virtual public Writer
+   {
+   public:
+      void write(std::string_view name, Date date, Logger::Level level, std::string_view message) override;
+      void flush() override;
+      void endLine() override;
+
+      void setStream(OutputStream* stream);
+      OutputStream const* getStream() const noexcept;
+
+      explicit StreamWriter(OutputStream* stream = nullptr);
+
+   private:
+      OutputStream* m_stream;
+      bool m_atLineStart;
+   };
 }
 
-#endif // ZE_CONSOLECOLORS_HPP
+#include "StreamWriter.inl"
+
+#endif // ZE_STREAMWRITER_HPP

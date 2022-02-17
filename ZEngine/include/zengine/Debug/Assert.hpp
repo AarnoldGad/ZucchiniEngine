@@ -28,12 +28,15 @@
 
 #include "zengine/defines.hpp"
 
+#include <type_traits>
+#include <cstdlib>
+
 namespace ze
 {
-   class AssertHandler
+   class ZE_API AssertHandler
    {
    public:
-      #ifdef NDEBUG
+      #if defined(NDEBUG)
          static constexpr const bool enabled = false;
       #else
          static constexpr const bool enabled = true;
@@ -52,7 +55,7 @@ namespace ze
 }
 
 #define ASSERT(expr, ...)  ze::Assert([&](void) -> bool { return (expr); }, CURRENT_SOURCE_LOCATION, #expr, __VA_ARGS__)
-#define ZE_ASSERT(expr, message) ze::Assert([&](void) -> bool { return (expr); }, CURRENT_SOURCE_LOCATION, #expr, ze::AssertHandler{}, message)
+#define ZE_ASSERT(expr, message) ASSERT(expr, ze::AssertHandler{}, message)
 
 #include "Assert.inl"
 

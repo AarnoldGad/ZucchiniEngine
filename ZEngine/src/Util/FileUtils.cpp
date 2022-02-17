@@ -2,6 +2,8 @@
 
 #include "zengine/Util/FileUtils.hpp"
 
+#include "zengine/Common/Console.hpp"
+
 #include <sstream>
 #include <fstream>
 
@@ -12,7 +14,7 @@ namespace ze
       std::ifstream file(path);
       if (!file)
       {
-         LOG_TRACE("Fail to open file ", path.string());
+         Console::Trace("Fail to open file {}", path);
          return std::nullopt;
       }
 

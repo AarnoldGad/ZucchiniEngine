@@ -1,6 +1,6 @@
 /**
- * ConsoleWriter.hpp
- * 27 Apr 2021
+ * OutputStream.hpp
+ * 10 Feb 2022
  * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
@@ -23,35 +23,29 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CONSOLEWRITER_HPP
-#define ZE_CONSOLEWRITER_HPP
+#ifndef ZE_OUTPUTSTREAM_HPP
+#define ZE_OUTPUTSTREAM_HPP
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Log/Writer.hpp"
-
 namespace ze
 {
-   class ZE_API ConsoleWriter : virtual public Writer
+   class ZE_API OutputStream
    {
    public:
-      void write(std::string_view name, Date date, Logger::Level level, std::string_view line) override;
-      void flush() override;
-      void endLine() override;
+      virtual OutputStream& put(char ch) = 0;
+      virtual OutputStream& write(std::string_view str) = 0;
+      virtual OutputStream& flush() = 0;
 
-      static ConsoleWriter& Get();
+      virtual ptrdiff_t tellp() = 0;
+      virtual OutputStream& seekp(ptrdiff_t pos) = 0;
 
-   private:
-      ConsoleWriter();
-      ConsoleWriter(ConsoleWriter const&) = delete;
-      ConsoleWriter(ConsoleWriter&&) = delete;
-      ConsoleWriter& operator=(ConsoleWriter const&) = delete;
-      ConsoleWriter& operator=(ConsoleWriter&&) = delete;
+      virtual OutputStream& operator<<(std::string_view str) = 0;
+      virtual explicit operator bool() const = 0;
 
-      bool m_atLineStart;
+      virtual ~OutputStream() = default;
    };
 }
 
-#include "ConsoleWriter.inl"
+#endif // ZE_OUTPUTSTREAM_HPP
 
-#endif // ZE_CONSOLEWRITER_HPP

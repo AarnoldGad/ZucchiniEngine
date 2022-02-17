@@ -1,66 +1,40 @@
 #include "zepch.hpp"
 
 #include "zengine/Log/FileWriter.hpp"
-#include "zengine/Time/Date.hpp"
 
 namespace ze
 {
-   FileWriter::FileWriter(std::filesystem::path const& path)
-      : m_path(path), m_lineStart(true)
+   FileWriter::FileWriter(std::filesystem::path const& filepath)
+      : m_filepath(filepath)
    {
-      // Empty potential existing file before use
-      FILE* file = openFile("w+");
+      setStream(&m_file);
 
-      if (file)
-         fclose(file);
-      else
-         LOG_TRACE("Unable to initialise log file ", m_path, " : ", std::strerror(errno));
+      // Clear any existent file
+      m_file.open(m_filepath, std::ios_base::out | std::ios_base::trunc);
+      m_file.close();
    }
 
-   void FileWriter::write(std::string_view name, Logger::Level level, std::string_view line)
+   void FileWriter::write(std::string_view name, Date date, Logger::Level level, std::string_view message)
    {
-      FILE* file = openFile("a");
-      if (!file) return LOG_TRACE("Unable to open log file ", m_path, " : ", std::strerror(errno));
+      m_file.open(m_filepath, std::ios_base::app);
 
-      if (isAtLineBegin())
-      {
-         printDate(file, name, level);
-
-         m_lineStart = false;
-      }
-
-      fputs(line.data(), file);
-
-      fclose(file);
+      StreamWriter::write(name, date, level, message);
+      
+      m_file.close();
    }
 
-   void FileWriter::flush() {}
-
-   void FileWriter::newLine()
+   void FileWriter::flush()
    {
-      FILE* file = openFile("a");
-      if (!file) return LOG_TRACE("Unable to open log file ", m_path, " : ", std::strerror(errno));
-
-      fputc('\n', file);
-      fclose(file);
-
-      m_lineStart = true;
+      StreamWriter::flush();
    }
 
-   [[nodiscard]]
-   FILE* FileWriter::openFile(char const* mode)
+   void FileWriter::endLine()
    {
-      FILE* file = fopen(m_path.string().c_str(), mode);
+      m_file.open(m_filepath, std::ios_base::app);
+      
+      StreamWriter::endLine();
 
-      return file;
-   }
-
-   void FileWriter::printDate(FILE* file, std::string_view name, Logger::Level level)
-   {
-      Date date = Date::CurrentDate();
-      std::tm tm = date.getTm();
-      char timeString[9];
-      strftime(timeString, 9, "%H:%M:%S", &tm);
-      fprintf(file, "[%s] [%s] <%s> ", timeString, Logger::LevelToString(level), name.data());
+      m_file.close();
    }
 }
+
