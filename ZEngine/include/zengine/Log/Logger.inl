@@ -1,3 +1,4 @@
+#include "fmt/core.h"
 template<typename Message>
 inline void ze::Logger::log(Message message)
 {
@@ -52,7 +53,7 @@ inline void ze::Logger::write(std::string_view fmt, Args&&... args)
 
    char lineBuffer[MAX_LOGLINE_LENGTH + 1] = {}; // + Null-terminating character
 
-   auto result = fmt::format_to_n(std::begin(lineBuffer), MAX_LOGLINE_LENGTH - 3, fmt, std::forward<Args>(args)...);
+   auto result = fmt::vformat_to_n(std::begin(lineBuffer), MAX_LOGLINE_LENGTH - 3, fmt, fmt::make_format_args(std::forward<Args>(args)...));
    
    // Pretty suspension points when actual line is larger than printed line
    if (result.size > MAX_LOGLINE_LENGTH)

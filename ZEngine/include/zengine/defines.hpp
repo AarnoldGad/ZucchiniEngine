@@ -53,10 +53,11 @@ struct fmt::formatter<std::filesystem::path>
    template<typename FormatContext>
    auto format(std::filesystem::path const& path, FormatContext& ctx) -> decltype(ctx.out())
    {
-      return format_to(ctx.out(), path.string());
+      return format_to(ctx.out(), "{}", path.string());
    }
 };
 
 #include "zengine/Debug/Assert.hpp"
+#include "zengine/Debug/Tee.hpp"
 
 #endif // ZE_DEFINES_HPP

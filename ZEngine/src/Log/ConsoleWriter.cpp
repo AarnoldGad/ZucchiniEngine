@@ -25,7 +25,7 @@ namespace ze
          m_atLineStart = false;
       }
 
-      fmt::print(std::cout, message);
+      fmt::print(std::cout, "{}", message);
 
       Console::ResetColor();
    }
