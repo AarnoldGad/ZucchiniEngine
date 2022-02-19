@@ -66,16 +66,16 @@ namespace ze
       void log(Level level, Message message);
 
       template<typename... Args>
-      void logFormatted(std::string const& fmt, Args&&... args);
+      void logFormatted(fmt::format_string<Args...> fmt, Args&&... args);
 
       template<typename... Args>
-      void logFormatted(Level level, std::string const& fmt, Args&&... args);
+      void logFormatted(Level level, fmt::format_string<Args...> fmt, Args&&... args);
 
       template<typename... Args>
-      void logLine(std::string const& fmt, Args&&... args);
+      void logLine(fmt::format_string<Args...> fmt, Args&&... args);
       
       template<typename... Args>
-      void logLine(Level level, std::string const& fmt, Args&&... args);
+      void logLine(Level level, fmt::format_string<Args...> fmt, Args&&... args);
 
       template<typename Message>
       Logger& operator<<(Message message);
@@ -121,7 +121,7 @@ namespace ze
       bool canLog() const noexcept;
 
       template<typename... Args>
-      void write(std::string_view fmt, Args&&... args);
+      void write(fmt::format_string<Args...> fmt, Args&&... args);
       void write(std::string_view line);
 
       void setLogLevel(Level level) noexcept;

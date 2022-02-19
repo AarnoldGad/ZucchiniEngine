@@ -50,12 +50,14 @@ namespace ze
 
       if (!isBlockDeletable(allocatedBlock))
       {
-         MemoryLogger().logLine(allocatedBlock->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion");
+         MemoryLogger().log(Logger::Level::Error, (allocatedBlock->guardHash == s_releaseHash ? "Double deletion" : "Undefined deletion"));
+
          if (location.file)
-            MemoryLogger().logLine("   at %s::%s:%u",
-                                   location.file, location.function, location.line);
+            MemoryLogger().logFormatted("\n\tat {}::{}:{}", location.file, location.function, location.line);
          else
-            MemoryLogger().logLine("   at undefined position");
+            MemoryLogger().log("\n\tat undefined position");
+
+         MemoryLogger().endLine();
          return 0;
       }
 
@@ -75,14 +77,14 @@ namespace ze
 
       if (block == nullptr)
       {
-         MemoryLogger().logLine("Unable to allocate %u bytes", size);
+         MemoryLogger().logFormatted(Logger::Level::Error, "Unable to allocate {} bytes", size);
 
          if (location.file)
-            MemoryLogger().logLine("   at %s::%s:%u",
-                                   location.file, location.function, location.line);
+            MemoryLogger().logFormatted("\n\tat {}::{}:{}", location.file, location.function, location.line);
          else
-            MemoryLogger().logLine("   at undefined position");
+            MemoryLogger().log("\n\tat undefined position");
 
+         MemoryLogger().endLine();
          throw std::bad_alloc{};
       }
 
@@ -148,10 +150,10 @@ namespace ze
       {
          if (leakedPointer->location.file)
          {
-            MemoryLogger().logLine("--- %u bytes", leakedPointer->size);
-            MemoryLogger().logLine("---    at 0x%x %s::%s:%u",
-                                   reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)),
-                                   leakedPointer->location.file, leakedPointer->location.function, leakedPointer->location.line);
+            MemoryLogger().logLine(Logger::Level::Error, "{} bytes", leakedPointer->size);
+            MemoryLogger().logLine("\tat {:x} {}::{}:{}",
+                                        reinterpret_cast<uintptr_t>(reinterpret_cast<uint8_t*>(leakedPointer) + sizeof(Block)),
+                                        leakedPointer->location.file, leakedPointer->location.function, leakedPointer->location.line);
          }
 
          void* handledLeak = leakedPointer;
@@ -165,8 +167,8 @@ namespace ze
    {
       if (getTotalAllocations() != 0)
       {
-         MemoryLogger().logLine("--- Standard Allocator registered %u leaks ! ------", getTotalAllocations());
-         MemoryLogger().logLine("--- %u bytes leaked", getTotalMemoryAllocated());
+         MemoryLogger().logLine(Logger::Level::Debug, "--- Standard Allocator registered {} leaks ! ------", getTotalAllocations());
+         MemoryLogger().logLine("--- {} bytes leaked", getTotalMemoryAllocated());
 
          traceLeaks();
       }

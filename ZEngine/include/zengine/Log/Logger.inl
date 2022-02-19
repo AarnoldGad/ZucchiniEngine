@@ -12,27 +12,27 @@ inline void ze::Logger::log(Level level, Message message)
 }
 
 template<typename... Args>
-inline void ze::Logger::logFormatted(std::string const& fmt, Args&&... args)
+inline void ze::Logger::logFormatted(fmt::format_string<Args...> fmt, Args&&... args)
 {
    write(fmt, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
-inline void ze::Logger::logFormatted(Level level, std::string const& fmt, Args&&... args)
+inline void ze::Logger::logFormatted(Level level, fmt::format_string<Args...> fmt, Args&&... args)
 {
    setLogLevel(level);
    write(fmt, std::forward<Args>(args)...);
 }
 
 template<typename... Args>
-inline void ze::Logger::logLine(std::string const& fmt, Args&&... args)
+inline void ze::Logger::logLine(fmt::format_string<Args...> fmt, Args&&... args)
 {
    write(fmt, std::forward<Args>(args)...);
    endLine();
 }
 
 template<typename... Args>
-inline void ze::Logger::logLine(Level level, std::string const& fmt, Args&&... args)
+inline void ze::Logger::logLine(Level level, fmt::format_string<Args...> fmt, Args&&... args)
 {
    setLogLevel(level);
    write(fmt, std::forward<Args>(args)...);
@@ -47,13 +47,13 @@ inline ze::Logger& ze::Logger::operator<<(Message message)
 }
 
 template<typename... Args>
-inline void ze::Logger::write(std::string_view fmt, Args&&... args)
+inline void ze::Logger::write(fmt::format_string<Args...> fmt, Args&&... args)
 {
    if (!canLog()) return;
 
    char lineBuffer[MAX_LOGLINE_LENGTH + 1] = {}; // + Null-terminating character
 
-   auto result = fmt::vformat_to_n(std::begin(lineBuffer), MAX_LOGLINE_LENGTH - 3, fmt, fmt::make_format_args(std::forward<Args>(args)...));
+   auto result = fmt::format_to_n(std::begin(lineBuffer), MAX_LOGLINE_LENGTH - 3, fmt, std::forward<Args>(args)...);
    
    // Pretty suspension points when actual line is larger than printed line
    if (result.size > MAX_LOGLINE_LENGTH)
