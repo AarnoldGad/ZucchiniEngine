@@ -124,9 +124,10 @@ namespace ze
 
    Logger& Logger::stacktrace()
    {
-      CallStack stack = Stacktrace(32, 1);
-      for (size_t i = 0; i < stack.getSize(); ++i)
-         logLine("\t%s", stack[i].toString().c_str());
+      std::stringstream ss;
+      ze::Stacktrace().print(ss);
+      for (std::string line; std::getline(ss, line);)
+         logFormatted("\t {}\n", line);
 
       return *this;
    }

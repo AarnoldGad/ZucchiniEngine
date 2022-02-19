@@ -1,3 +1,7 @@
 [submodule "ZEngine/deps/fmt"]
 	path = ZEngine/deps/fmt
 	url = https://github.com/fmtlib/fmt
+[submodule "ZEngine/deps/backward-cpp"]
+	path = ZEngine/deps/backward-cpp
+	url = https://github.com/bombela/backward-cpp
+

@@ -36,7 +36,6 @@
 
 // Backtrace
 #include <zengine/Backtrace/CallStack.hpp>
-#include <zengine/Backtrace/StackFrame.hpp>
 
 // Logger
 #include <zengine/Log/Logger.hpp>
