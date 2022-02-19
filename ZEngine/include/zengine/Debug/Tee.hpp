@@ -119,7 +119,7 @@ template<typename Value, typename TeeType>
 decltype(auto) operator|(Value&& value, Tee<TeeType> tee);
 
 // Default tee
-inline Tee<std::ostream> tee = make_tee(std::cout);
+inline Tee<std::ostream> ztee = make_tee(std::cout);
 
 //
 // Low Level Functions
