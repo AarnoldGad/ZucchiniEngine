@@ -48,13 +48,19 @@
 #include <zengine/Exception/Exception.hpp>
 #include <zengine/Debug/Assert.hpp>
 #include <zengine/Debug/Tee.hpp>
+
+// Memory
 #include <zengine/Memory/New.hpp>
+#include <zengine/Memory/Allocator.hpp>
+#include <zengine/Memory/StandardAllocator.hpp>
 
 // Event System
 #include <zengine/Event/Event.hpp>
 #include <zengine/Event/EventDispatcher.hpp>
 #include <zengine/Event/EventBus.hpp>
 #include <zengine/Event/EventSubscriber.hpp>
+
+// Signal System
 #include <zengine/Signal/Signal.hpp>
 #include <zengine/Signal/Listener.hpp>
 
@@ -74,7 +80,7 @@
 #include "zengine/Stream/OutputStream.hpp"
 #include "zengine/Stream/FileOutputStream.hpp"
 
-// Utility
+// Common
 #include <zengine/Common/Arguments.hpp>
 #include <zengine/Common/Console.hpp>
 #include <zengine/Common/Functor.hpp>

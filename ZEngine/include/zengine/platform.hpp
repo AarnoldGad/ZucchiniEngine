@@ -1,14 +1,14 @@
 // Platform detection
 #if defined(_WIN32) // Windows
 
-   //#if defined(_WIN64)
+   #if defined(_WIN64)
       #define ZE_PLATFORM_WINDOWS
-   //#else
-      //#error "32-bit platforms not supported !"
-   //#endif
 
-   #ifdef _MSC_VER
-      #pragma warning(disable: 4251)
+      #ifdef _MSC_VER
+         #pragma warning(disable: 4251)
+      #endif
+   #else
+      #error "32-bit platforms not supported !"
    #endif
 
 #elif defined(__ANDROID__) // Android
@@ -26,7 +26,16 @@
 
 #elif defined(__APPLE__) || defined(__MACH__) // MacOS
 
-   #define ZE_PLATFORM_APPLE
+   #include <TargetConditionals.h>
+
+   #if TARGET_OS_IPHONE == 1
+      #define ZE_PLATFORM_IOS
+      #error "iOS platform not supported !"
+   #elif TARGET_OS_MAC == 1
+      #define ZE_PLATFORM_MACOS
+   #else
+      #error "Unsupported Apple platform"
+   #endif
 
 #else
 
@@ -36,7 +45,6 @@
 
 // DLL/SO specifiers
 // ZE_API is for the ZEngine API build as static library on windows
-// ZE_APP_API is for the app loaded by the engine as a dynamic library
 #if __GNUC__ >= 4 || defined(__clang__) // GNU GCC __attribute__
 
    #define ZE_API __attribute__ ((__visibility__("default")))
