@@ -29,7 +29,9 @@ SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 CONFIGURE_FILE(config.hpp.in zeconfig.hpp @ONLY NEWLINE_STYLE LF)
 
+# Deps
 ADD_SUBDIRECTORY(ZEngine/deps/fmt)
 ADD_SUBDIRECTORY(ZEngine/deps/backward-cpp)
+
 ADD_SUBDIRECTORY(ZEngine)
 
