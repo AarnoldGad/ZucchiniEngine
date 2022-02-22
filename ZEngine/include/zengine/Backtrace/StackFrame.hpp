@@ -1,6 +1,6 @@
 /**
- * CallStack.hpp
- * 18 Aug 2021
+ * StackFrame.hpp
+ * 22 Feb 2022
  * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2021 Gaétan Jalin
@@ -23,39 +23,33 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_CALLSTACK_HPP
-#define ZE_CALLSTACK_HPP
+#ifndef ZE_STACKFRAME_HPP
+#define ZE_STACKFRAME_HPP
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Math/RangedNumeric.hpp"
-#include "zengine/Backtrace/StackFrame.hpp"
-
-#include <vector>
-
 namespace ze
 {
-   class ZE_API CallStack
+   class ZE_API StackFrame
    {
    public:
-      void print(std::ostream& os) const;
+      size_t getIndex() const noexcept;
+      std::string const& getFile() const noexcept;
+      std::string const& getFunction() const noexcept;
+      size_t getLine() const noexcept;
+      size_t getColumn() const noexcept;
 
-      StackFrame const& getFrame(size_t index) const;
-      StackFrame const& operator[](size_t index) const;
-
-      size_t getSize() const noexcept;
-      size_t getThreadID() const noexcept;
-
-      CallStack(RangedInt<0, 32> size = 32, int skip = 3);
+      StackFrame(size_t index, std::string const& file, std::string const& func, size_t line, size_t col);
 
    private:
-      size_t m_threadID;
-      std::vector<StackFrame> m_frames;
+      size_t m_index;
+      std::string m_file;
+      std::string m_function;
+      size_t m_line;
+      size_t m_column;
    };
-
-   ZE_API CallStack Stacktrace(RangedInt<0, 32> size = 32, int skip = 3);
 }
 
-#include "CallStack.inl"
+#include "StackFrame.inl"
 
-#endif /* ZE_CALLSTACK_HPP */
+#endif // ZE_STACKFRAME_HPP

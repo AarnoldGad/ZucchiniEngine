@@ -34,7 +34,10 @@ TARGET_SOURCES(zengine PRIVATE
 # src/Backtrace
 TARGET_SOURCES(zengine PRIVATE
                include/zengine/Backtrace/CallStack.hpp
+               include/zengine/Backtrace/StackFrame.hpp
+               include/zengine/Backtrace/StackFrame.inl
                src/Backtrace/CallStack.cpp
+               src/Backtrace/StackFrame.cpp
                )
 
 # src/Common
@@ -198,8 +201,11 @@ TARGET_COMPILE_DEFINITIONS(zengine PRIVATE
 TARGET_INCLUDE_DIRECTORIES(zengine PUBLIC
                            "${PROJECT_SOURCE_DIR}/ZEngine/include"
                            "${PROJECT_SOURCE_DIR}/ZEngine/deps/fmt/include"
-                           "${PROJECT_SOURCE_DIR}/ZEngine/deps/backward-cpp"
                            "${PROJECT_BINARY_DIR}"
+                           )
+
+TARGET_INCLUDE_DIRECTORIES(zengine PRIVATE
+                           "${PROJECT_SOURCE_DIR}/ZEngine/deps/backward-cpp"
                            )
 
 # System Include Dirs
@@ -216,7 +222,7 @@ TARGET_LINK_DIRECTORIES(zengine PRIVATE
 
 # Add backward-cpp to search paths
 LIST(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/ZEngine/deps/backward-cpp)
-FIND_PACKAGE(Backward)
+FIND_PACKAGE(Backward REQUIRED)
 
 # Linking
 TARGET_LINK_LIBRARIES(zengine PRIVATE
