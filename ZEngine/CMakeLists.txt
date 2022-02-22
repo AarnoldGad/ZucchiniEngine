@@ -197,11 +197,11 @@ TARGET_COMPILE_DEFINITIONS(zengine PRIVATE
 # Include Dirs
 TARGET_INCLUDE_DIRECTORIES(zengine PUBLIC
                            "${PROJECT_SOURCE_DIR}/ZEngine/include"
+                           "${PROJECT_SOURCE_DIR}/ZEngine/deps/fmt/include"
                            "${PROJECT_BINARY_DIR}"
                            )
 
 TARGET_INCLUDE_DIRECTORIES(zengine PRIVATE
-                           "${PROJECT_SOURCE_DIR}/ZEngine/deps/fmt/include"
                            "${PROJECT_SOURCE_DIR}/ZEngine/deps/backward-cpp"
                            )
 
