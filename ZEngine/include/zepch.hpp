@@ -68,7 +68,7 @@
 
    #undef min
    #undef max
-#elif defined(ZE_PLATFORM_LINUX) || defined(ZE_PLATFORM_APPLE)
+#elif defined(ZE_PLATFORM_LINUX) || defined(ZE_PLATFORM_MACOS)
    #include <sys/utsname.h>
    #include <dlfcn.h>
 #endif
