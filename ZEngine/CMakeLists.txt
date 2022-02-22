@@ -197,9 +197,12 @@ TARGET_COMPILE_DEFINITIONS(zengine PRIVATE
 # Include Dirs
 TARGET_INCLUDE_DIRECTORIES(zengine PUBLIC
                            "${PROJECT_SOURCE_DIR}/ZEngine/include"
+                           "${PROJECT_BINARY_DIR}"
+                           )
+
+TARGET_INCLUDE_DIRECTORIES(zengine PRIVATE
                            "${PROJECT_SOURCE_DIR}/ZEngine/deps/fmt/include"
                            "${PROJECT_SOURCE_DIR}/ZEngine/deps/backward-cpp"
-                           "${PROJECT_BINARY_DIR}"
                            )
 
 # System Include Dirs
@@ -216,7 +219,7 @@ TARGET_LINK_DIRECTORIES(zengine PRIVATE
 
 # Add backward-cpp to search paths
 LIST(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/ZEngine/deps/backward-cpp)
-FIND_PACKAGE(Backward)
+FIND_PACKAGE(Backward REQUIRED)
 
 # Linking
 TARGET_LINK_LIBRARIES(zengine PRIVATE
