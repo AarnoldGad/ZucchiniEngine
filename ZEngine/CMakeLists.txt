@@ -34,7 +34,10 @@ TARGET_SOURCES(zengine PRIVATE
 # src/Backtrace
 TARGET_SOURCES(zengine PRIVATE
                include/zengine/Backtrace/CallStack.hpp
+               include/zengine/Backtrace/StackFrame.hpp
+               include/zengine/Backtrace/StackFrame.inl
                src/Backtrace/CallStack.cpp
+               src/Backtrace/StackFrame.cpp
                )
 
 # src/Common
