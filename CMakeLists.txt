@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20 FATAL_ERROR)
 
 PROJECT(ZucchiniEngine
-        VERSION 0.20.1
+        VERSION 0.22.0
         HOMEPAGE_URL https://github.com/AarnoldGad/ZucchiniEngine.git
         LANGUAGES C CXX
         )
@@ -10,8 +10,8 @@ SET(CMAKE_CONFIGURATION_TYPES Release Debug)
 
 SET(ZucchiniEngine_VERSION_STAGE "a")
 SET(ZucchiniEngine_VERSION_DAY 23)
-SET(ZucchiniEngine_VERSION_MONTH 10)
-SET(ZucchiniEngine_VERSION_YEAR 21)
+SET(ZucchiniEngine_VERSION_MONTH 02)
+SET(ZucchiniEngine_VERSION_YEAR 22)
 
 MESSAGE(STATUS "Configuring ZucchiniEngine ${ZucchiniEngine_VERSION_MAJOR}-${ZucchiniEngine_VERSION_MINOR}.${ZucchiniEngine_VERSION_PATCH}${ZucchiniEngine_VERSION_STAGE} of ${ZucchiniEngine_VERSION_DAY}/${ZucchiniEngine_VERSION_MONTH}/${ZucchiniEngine_VERSION_YEAR}")
 

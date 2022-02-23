@@ -5,7 +5,7 @@ inline float ze::Angle::asDegrees() const noexcept
 
 inline float ze::Angle::asRadians() const noexcept
 {
-   return m_degrees * static_cast<float>(std::numbers::pi) / 180.f;
+   return m_degrees * static_cast<float>(ze::pi()) / 180.f;
 }
 
 inline float ze::Angle::asArcSeconds() const noexcept

@@ -12,7 +12,7 @@ SET_TARGET_PROPERTIES(zengine PROPERTIES
                       VERSION ${ZucchiniEngine_VERSION_MAJOR}.${ZucchiniEngine_VERSION_MINOR}.${ZucchiniEngine_VERSION_PATCH}
                       SOVERSION ${ZucchiniEngine_VERSION_MAJOR}
                       POSITION_INDEPENDENT_CODE ON
-                      CXX_STANDARD 20
+                      CXX_STANDARD 17
                       CXX_STANDARD_REQUIRED ON
                       CXX_EXTENSIONS OFF
                       FOLDER "ZEngine"

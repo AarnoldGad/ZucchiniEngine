@@ -2,6 +2,8 @@
 
 #include "zengine/Math/Angle.hpp"
 
+#include "zengine/Math/Math.hpp"
+
 namespace ze
 {
    Angle degrees(float deg) noexcept
@@ -11,7 +13,7 @@ namespace ze
 
    Angle radians(float rad) noexcept
    {
-      return Angle(rad * 180.f / static_cast<float>(std::numbers::pi));
+      return Angle(rad * 180.f / static_cast<float>(ze::pi()));
    }
 
    Angle arcseconds(float seconds) noexcept

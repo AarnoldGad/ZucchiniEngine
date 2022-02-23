@@ -28,8 +28,7 @@
 
 #include "zengine/defines.hpp"
 
-#include <cmath>
-#include <numbers>
+#include "zengine/Math/Math.hpp"
 
 namespace ze
 {
