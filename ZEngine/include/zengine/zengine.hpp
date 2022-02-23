@@ -73,6 +73,7 @@
 #include <zengine/Time/Time.hpp>
 
 // Math
+#include <zengine/Math/Math.hpp>
 #include <zengine/Math/RangedNumeric.hpp>
 #include <zengine/Math/Angle.hpp>
 
