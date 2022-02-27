@@ -1,18 +1,18 @@
 template<typename ResourceType>
-std::unordered_map<std::string, std::shared_ptr<ResourceType> > ze::ResourceManager<ResourceType>::m_resources{};
+std::unordered_map<std::string, std::unique_ptr<ResourceType> > ze::ResourceManager<ResourceType>::m_resources{};
 
 template<typename ResourceType>
-std::shared_ptr<ResourceType> ze::ResourceManager<ResourceType>::add(std::string const& id)
+ResourceType* ze::ResourceManager<ResourceType>::add(std::string const& id)
 {
-   auto result = ResourceManager<ResourceType>::m_resources.try_emplace(id, std::make_shared<ResourceType>());
-   return result.first->second;
+   auto result = ResourceManager<ResourceType>::m_resources.try_emplace(id, std::make_unique<ResourceType>());
+   return result.first->second.get();
 }
 
 template<typename ResourceType>
-std::shared_ptr<ResourceType> ze::ResourceManager<ResourceType>::get(std::string const& id)
+ResourceType* ze::ResourceManager<ResourceType>::get(std::string const& id)
 {
    auto resource = m_resources.find(id);
-   return resource != m_resources.end() ? resource->second : nullptr;
+   return resource != m_resources.end() ? resource->second.get() : nullptr;
 }
 
 template<typename ResourceType>

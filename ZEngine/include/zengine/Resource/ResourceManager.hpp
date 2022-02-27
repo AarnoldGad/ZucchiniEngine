@@ -38,8 +38,9 @@ namespace ze
    class ResourceManager
    {
    public:
-      static std::shared_ptr<ResourceType> add(std::string const& id);
-      static std::shared_ptr<ResourceType> get(std::string const& id);
+      // TODO Should use unique+raw pointers or shared+weak pointers ?
+      static ResourceType* add(std::string const& id);
+      static ResourceType* get(std::string const& id);
 
       static void release(std::string const& id);
       static void releaseAll() noexcept;
@@ -47,7 +48,7 @@ namespace ze
       ResourceManager() = delete;
 
    private:
-      static std::unordered_map<std::string, std::shared_ptr<ResourceType> > m_resources;
+      static std::unordered_map<std::string, std::unique_ptr<ResourceType> > m_resources;
    };
 }
 
