@@ -76,7 +76,7 @@ namespace ze
       }
       catch (std::exception const& e)
       {
-         ZE_LOG_CRITICAL("Unhandled exception : %s", e.what());
+         ZE_LOG_CRITICAL("Unhandled exception : {}", e.what());
          std::exit(-1);
       }
    }
@@ -142,7 +142,7 @@ namespace ze
 
       m_runTime.restart();
 
-      ZE_LOG_INFO("------ Initialised in %d ms !", initTime.elapsed().asMicroseconds());
+      ZE_LOG_INFO("------ Initialised in {} ms !", initTime.elapsed().asMicroseconds());
    }
 
    void Core::run()
@@ -202,10 +202,10 @@ namespace ze
          ++memoryOrder;
       }
 
-      ZE_LOG_DEBUG("------  * ZEngine version %u-%u.%u%s (%u/%u/%u)", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_REV, ZE_VERSION_STAGE, ZE_VERSION_MONTH, ZE_VERSION_DAY, ZE_VERSION_YEAR);
-      ZE_LOG_DEBUG("------  * Running on %s %s", sysInfo.os.name.c_str(), sysInfo.os.versionString.c_str());
-      ZE_LOG_DEBUG("------      * %s", cpuInfo.model.c_str());
-      ZE_LOG_DEBUG("------      * %s, %u cores %u thread, %s endian", ::ze::ArchToString(cpuInfo.arch).c_str(), cpuInfo.cores.physical, cpuInfo.cores.logical, cpuInfo.endian == Endianess::Little ? "little" : "big");
-      ZE_LOG_DEBUG("------      * %.1f%s physical memory installed", totalMemory, (memoryOrder == 0 ? "B" : (memoryOrder == 1 ? "KB" : "GB")));
+      ZE_LOG_DEBUG("------  * ZEngine version {}-{}.{}{} ({}/{}/{})", ZE_VERSION_MAJOR, ZE_VERSION_MINOR, ZE_VERSION_REV, ZE_VERSION_STAGE, ZE_VERSION_MONTH, ZE_VERSION_DAY, ZE_VERSION_YEAR);
+      ZE_LOG_DEBUG("------  * Running on {} {}", sysInfo.os.name, sysInfo.os.versionString);
+      ZE_LOG_DEBUG("------      * {}", cpuInfo.model);
+      ZE_LOG_DEBUG("------      * {}, {} cores {} thread, {} endian", ::ze::ArchToString(cpuInfo.arch), cpuInfo.cores.physical, cpuInfo.cores.logical, cpuInfo.endian == Endianess::Little ? "little" : "big");
+      ZE_LOG_DEBUG("------      * {:.1f}{} physical memory installed", totalMemory, (memoryOrder == 0 ? "B" : (memoryOrder == 1 ? "KB" : "GB")));
    }
 }
