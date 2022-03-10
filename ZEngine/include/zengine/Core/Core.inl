@@ -23,7 +23,7 @@ inline unsigned int ze::Core::GetTickRate() noexcept
    return Instance().m_tickRate;
 }
 
-inline ze::Time ze::Core::GetRunTime() noexcept
+inline ze::Time ze::Core::GetTime() noexcept
 {
    return IsInitialised() ? Instance().m_runTime.elapsed() : Time::Zero;
 }

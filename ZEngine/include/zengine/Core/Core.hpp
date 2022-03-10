@@ -66,7 +66,7 @@ namespace ze
 
       static void SetTickRate(unsigned int rate) noexcept;
       static unsigned int GetTickRate() noexcept;
-      static Time GetRunTime() noexcept;
+      static Time GetTime() noexcept;
 
       static Core& Instance();
 

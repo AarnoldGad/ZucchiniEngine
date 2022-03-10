@@ -28,7 +28,7 @@
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Time/Date.hpp"
+#include "zengine/Time/Time.hpp"
 
 #include <string>
 #include <sstream>
@@ -43,7 +43,7 @@ namespace ze
       void setCanceled(bool cancel) noexcept;
       bool isCanceled() const noexcept;
 
-      ze::Date getTimestamp() const noexcept;
+      ze::Time getTimestamp() const noexcept;
 
       virtual std::string toString() const = 0;
 
@@ -52,7 +52,7 @@ namespace ze
 
    private:
       bool m_canceled;
-      Date const m_timestamp;
+      Time const m_timestamp;
    };
 }
 

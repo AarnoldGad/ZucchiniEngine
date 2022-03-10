@@ -2,10 +2,12 @@
 
 #include "zengine/Event/Event.hpp"
 
+#include "zengine/Core/Core.hpp"
+
 namespace ze
 {
    Event::Event()
-      : m_canceled(false), m_timestamp(Date::CurrentDate()) {}
+      : m_canceled(false), m_timestamp(Core::GetTime()) {}
 
    void Event::cancel() noexcept
    {
