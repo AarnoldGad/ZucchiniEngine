@@ -125,7 +125,7 @@ namespace ze
    Logger& Logger::stacktrace()
    {
       std::stringstream ss;
-      ze::Stacktrace().print(ss);
+      ze::Stacktrace(32, 4).print(ss);
       for (std::string line; std::getline(ss, line);)
          logFormatted("\t {}\n", line);
 

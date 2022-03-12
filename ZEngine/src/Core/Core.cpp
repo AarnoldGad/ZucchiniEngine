@@ -65,8 +65,8 @@ namespace ze
 
    void Core::Run()
    {
-      if (!IsInitialised()) return ZE_LOG_ERROR("Unable to run terminated engine !");
-      if (IsRunning()) return ZE_LOG_ERROR("Engine is already running !");
+      if (!IsInitialised()) return (void) ZE_LOG_ERROR("Unable to run terminated engine !");
+      if (IsRunning()) return (void) ZE_LOG_ERROR("Engine is already running !");
 
       Instance().m_running = true;
 

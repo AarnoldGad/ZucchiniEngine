@@ -60,22 +60,22 @@ namespace ze
       static Console::Color GetLevelColor(Logger::Level level) noexcept;
 
       template<typename Message>
-      void log(Message message);
+      Logger& log(Message message);
 
       template<typename Message>
-      void log(Level level, Message message);
+      Logger& log(Level level, Message message);
 
       template<typename... Args>
-      void logFormatted(fmt::format_string<Args...> fmt, Args&&... args);
+      Logger& logFormatted(fmt::format_string<Args...> fmt, Args&&... args);
 
       template<typename... Args>
-      void logFormatted(Level level, fmt::format_string<Args...> fmt, Args&&... args);
+      Logger& logFormatted(Level level, fmt::format_string<Args...> fmt, Args&&... args);
 
       template<typename... Args>
-      void logLine(fmt::format_string<Args...> fmt, Args&&... args);
+      Logger& logLine(fmt::format_string<Args...> fmt, Args&&... args);
       
       template<typename... Args>
-      void logLine(Level level, fmt::format_string<Args...> fmt, Args&&... args);
+      Logger& logLine(Level level, fmt::format_string<Args...> fmt, Args&&... args);
 
       template<typename Message>
       Logger& operator<<(Message message);
