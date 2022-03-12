@@ -128,6 +128,7 @@ TARGET_SOURCES(zengine PRIVATE
                include/zengine/Math/RangedNumeric.hpp
                include/zengine/Math/RangedNumeric.inl
                src/Math/Angle.cpp
+               src/Math/Math.cpp
                )
 
 # src/Memory

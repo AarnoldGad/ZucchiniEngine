@@ -30,7 +30,7 @@
 
 namespace ze
 {
-   double pi();
+   ZE_API double pi();
 }
 
 #endif // ZE_MATH_HPP
