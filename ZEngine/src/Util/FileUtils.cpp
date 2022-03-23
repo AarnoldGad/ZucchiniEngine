@@ -9,6 +9,7 @@
 
 namespace ze
 {
+   [[nodiscard]]
    std::optional<std::string> FileUtils::GetFileContent(std::filesystem::path const& path)
    {
       std::ifstream file(path);
@@ -22,5 +23,21 @@ namespace ze
       content << file.rdbuf();
       file.close();
       return content.str();
+   }
+
+   [[nodiscard]]
+   std::optional<std::filesystem::path> FileUtils::Search(std::unordered_set<std::string> const& inDirectories,
+                                                          std::filesystem::path const& forFile)
+   {
+      for (auto& dir : inDirectories)
+      {
+         std::filesystem::path hypotheticFile = std::filesystem::absolute(dir);
+         hypotheticFile /= std::filesystem::relative(forFile);
+
+         if (std::filesystem::exists(hypotheticFile))
+            return hypotheticFile;
+      }
+
+      return std::nullopt;
    }
 }

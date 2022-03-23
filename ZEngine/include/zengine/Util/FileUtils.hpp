@@ -28,6 +28,8 @@
 
 #include "zengine/defines.hpp"
 
+#include <unordered_set>
+#include <filesystem>
 #include <optional>
 
 namespace ze
@@ -35,7 +37,12 @@ namespace ze
    class ZE_API FileUtils final
    {
    public:
+      [[nodiscard]]
       static std::optional<std::string> GetFileContent(std::filesystem::path const& filename);
+
+      [[nodiscard]]
+      static std::optional<std::filesystem::path> Search(std::unordered_set<std::string> const& inDirectories,
+                                                         std::filesystem::path const& forFile);
 
    private:
       FileUtils() = delete;
