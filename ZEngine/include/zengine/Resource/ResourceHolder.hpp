@@ -1,6 +1,6 @@
 /**
- * ResourceManager.hpp
- * 8 Feb 2021
+ * ResourceHolder.hpp
+ * 22 Mars 2022
  * Gaétan "The Aarnold" Jalin
  *
  * Copyright (C) 2020-2022 Gaétan Jalin
@@ -23,47 +23,39 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_RESOURCEMANAGER_HPP
-#define ZE_RESOURCEMANAGER_HPP
+#ifndef ZE_RESOURCEHOLDER_HPP
+#define ZE_RESOURCEHOLDER_HPP
 
 #include "zengine/defines.hpp"
-
-#include "zengine/Resource/ResourceHolder.hpp"
-
-#include <unordered_map>
-#include <unordered_set>
-#include <string>
-#include <memory>
-#include <type_traits>
 
 namespace ze
 {
    template<typename ResourceType>
-   class ResourceManager
+   class ResourceLoader;
+
+   template<typename ResourceType>
+   class ResourceHolder
    {
+      static_assert(std::is_class_v<ResourceType>, "Resource should be class type!");
+      static_assert(not std::is_const_v<ResourceType>, "Resource can not be const!");
    public:
-      using Resource = std::unique_ptr<ResourceHolder<ResourceType> >;
-
-      static void AddSearchPath(std::filesystem::path const& dir);
-      static std::unordered_set<std::string> const& GetSearchPaths() noexcept;
-      static void RemoveSearchPath(std::filesystem::path const& dir);
-      static void ClearSearchPaths();
-
-      static ResourceLoader<ResourceType>* Add(std::string const& id);
-      static ResourceHolder<ResourceType>* Get(std::string const& id);
-
-      static void Release(std::string const& id);
-      static void ReleaseAll() noexcept;
+      ResourceType* resource() noexcept;
+      ResourceLoader<ResourceType>* loader() noexcept;
+      
+      ResourceHolder();
 
    private:
-      ResourceManager() = delete;
+      ResourceHolder(ResourceHolder const&) = delete;
+      ResourceHolder(ResourceHolder&&) = delete;
+      ResourceHolder& operator=(ResourceHolder const&) = delete;
+      ResourceHolder& operator=(ResourceHolder&&) = delete;
 
-      static std::unordered_set<std::string> s_searchPaths;
-      static std::unordered_map<std::string, Resource> s_resources;
+      ResourceType m_resource;
+      ResourceLoader<ResourceType> m_loader;
    };
 }
 
-#include "ResourceManager.inl"
+#include "ResourceHolder.inl"
 
-#endif // ZE_RESOURCEMANAGER_HPP
+#endif // ZE_RESOURCEHOLDER_HPP
 
