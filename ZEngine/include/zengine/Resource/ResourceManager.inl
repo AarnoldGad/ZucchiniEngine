@@ -26,7 +26,7 @@ inline void ze::ResourceManager<ResourceType>::RemoveSearchPath(std::filesystem:
 }
 
 template<typename ResourceType>
-inline void ze::ResourceManager<ResourceType>::ClearSearchPaths()
+inline void ze::ResourceManager<ResourceType>::ClearSearchPaths() noexcept
 {
    s_searchPaths.clear();
 }

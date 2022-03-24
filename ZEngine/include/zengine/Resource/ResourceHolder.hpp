@@ -37,7 +37,8 @@ namespace ze
    class ResourceHolder
    {
       static_assert(std::is_class_v<ResourceType>, "Resource should be class type!");
-      static_assert(not std::is_const_v<ResourceType>, "Resource can not be const!");
+      static_assert(!std::is_const_v<ResourceType>, "Resource can not be const!");
+      static_assert((sizeof(ResourceLoader<ResourceType>), true), "Resource must specialise ResourceLoader");
    public:
       ResourceType* resource() noexcept;
       ResourceLoader<ResourceType>* loader() noexcept;

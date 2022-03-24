@@ -41,13 +41,12 @@ namespace ze
    template<typename ResourceType>
    class ResourceManager
    {
+      static_assert((sizeof(ResourceHolder<ResourceType>), true), "Resource can not be held");
    public:
-      using Resource = std::unique_ptr<ResourceHolder<ResourceType> >;
-
       static void AddSearchPath(std::filesystem::path const& dir);
       static std::unordered_set<std::string> const& GetSearchPaths() noexcept;
       static void RemoveSearchPath(std::filesystem::path const& dir);
-      static void ClearSearchPaths();
+      static void ClearSearchPaths() noexcept;
 
       static ResourceLoader<ResourceType>* Add(std::string const& id);
       static ResourceHolder<ResourceType>* Get(std::string const& id);
@@ -59,7 +58,7 @@ namespace ze
       ResourceManager() = delete;
 
       static std::unordered_set<std::string> s_searchPaths;
-      static std::unordered_map<std::string, Resource> s_resources;
+      static std::unordered_map<std::string, std::unique_ptr<ResourceHolder<ResourceType> > > s_resources;
    };
 }
 
