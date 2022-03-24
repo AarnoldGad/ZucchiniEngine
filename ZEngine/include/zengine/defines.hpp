@@ -2,7 +2,8 @@
 #define ZE_DEFINES_HPP
 
 #include "zeconfig.hpp"
-#include "platform.hpp"
+#include "zengine/platform.hpp"
+#include "zengine/types.hpp"
 
 #include <cstring>
 
@@ -15,13 +16,6 @@
 #else
    #define __FILENAME__ (strrchr(__FILE__, '/' ) ? strrchr(__FILE__, '/' ) + 1 : __FILE__)
 #endif
-
-typedef struct
-{
-   char const* file;
-   unsigned int line;
-   char const* function;
-} SourceLocation;
 
 #define CURRENT_SOURCE_LOCATION SourceLocation{__FILENAME__, static_cast<unsigned int>(__LINE__), __func__ }
 
@@ -48,26 +42,6 @@ typedef struct
 #define APP_LOG_WARN(...)     ::ze::Core::UseAppLogger().warn().logLine(__VA_ARGS__)
 #define APP_LOG_ERROR(...)    ::ze::Core::UseAppLogger().error().logLine(__VA_ARGS__)
 #define APP_LOG_CRITICAL(...) ::ze::Core::UseAppLogger().critical().logLine(__VA_ARGS__)
-
-#include <fmt/format.h>
-#include <filesystem>
-
-template <>
-struct fmt::formatter<std::filesystem::path>
-{
-   constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin())
-   {
-      auto it = ctx.begin(), end = ctx.end();
-      if (it != end && *it != '}') throw format_error("invalid format");
-      return it;
-   }
-
-   template<typename FormatContext>
-   auto format(std::filesystem::path const& path, FormatContext& ctx) -> decltype(ctx.out())
-   {
-      return format_to(ctx.out(), "{}", path.string());
-   }
-};
 
 #include "zengine/Debug/Assert.hpp"
 #include "zengine/Debug/Tee.hpp"
