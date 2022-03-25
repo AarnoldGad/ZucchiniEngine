@@ -151,6 +151,8 @@ TARGET_SOURCES(zengine PRIVATE
 
 # include/zengine/Resource
 TARGET_SOURCES(zengine PRIVATE
+               include/zengine/Resource/ResourceHolder.hpp
+               include/zengine/Resource/ResourceHolder.inl
                include/zengine/Resource/ResourceManager.hpp
                include/zengine/Resource/ResourceManager.inl
                )
