@@ -28,6 +28,7 @@ TARGET_SOURCES(zengine PRIVATE
                include/zepch.hpp
                include/zengine/defines.hpp
                include/zengine/platform.hpp
+               include/zengine/types.hpp
                include/zengine/zengine.hpp
                )
 
@@ -151,8 +152,6 @@ TARGET_SOURCES(zengine PRIVATE
 
 # include/zengine/Resource
 TARGET_SOURCES(zengine PRIVATE
-               include/zengine/Resource/ResourceHolder.hpp
-               include/zengine/Resource/ResourceHolder.inl
                include/zengine/Resource/ResourceManager.hpp
                include/zengine/Resource/ResourceManager.inl
                )

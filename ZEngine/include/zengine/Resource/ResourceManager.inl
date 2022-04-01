@@ -3,7 +3,15 @@ std::unordered_set<std::string> ze::ResourceManager<ResourceType>::s_searchPaths
    { std::filesystem::current_path().lexically_normal().string() };
 
 template<typename ResourceType>
-std::unordered_map<std::string, std::unique_ptr<ze::ResourceHolder<ResourceType> > > ze::ResourceManager<ResourceType>::s_resources{};
+inline void ze::ResourceDeleter<ResourceType>::operator()(ResourceType* resource) const
+{
+   ResourceLoader<ResourceType>::Unload(resource);
+   delete resource;
+}
+
+template<typename ResourceType>
+std::unordered_map<std::string, std::unique_ptr<ResourceType, ze::ResourceDeleter<ResourceType> > >
+ze::ResourceManager<ResourceType>::s_resources{};
 
 template<typename ResourceType>
 inline void ze::ResourceManager<ResourceType>::AddSearchPath(std::filesystem::path const& dir)
@@ -32,27 +40,48 @@ inline void ze::ResourceManager<ResourceType>::ClearSearchPaths() noexcept
 }
 
 template<typename ResourceType>
-inline ze::ResourceLoader<ResourceType>* ze::ResourceManager<ResourceType>::Add(std::string const& id)
+inline std::optional<std::filesystem::path> ze::ResourceManager<ResourceType>::FindFile(std::filesystem::path const& file)
 {
-   auto result = ResourceManager<ResourceType>::s_resources.try_emplace(id, std::make_unique<ResourceHolder<ResourceType> >());
-   return result.first->second->loader();
+   auto const& searchPaths = GetSearchPaths();
+   return ze::FileUtils::Search(searchPaths, file);
 }
 
 template<typename ResourceType>
-inline ze::ResourceHolder<ResourceType>* ze::ResourceManager<ResourceType>::Get(std::string const& id)
+template<typename... Args>
+inline ResourceType* ze::ResourceManager<ResourceType>::Load(std::string const& id, Args&&... args)
+{
+   auto result = ResourceManager<ResourceType>::s_resources.try_emplace(id, nullptr);
+   result.first->second.reset(ResourceLoader<ResourceType>::Load(std::forward<Args>(args)...));
+
+   return result.first->second.get();
+}
+
+template<typename ResourceType>
+template<typename... Args>
+inline ResourceType* ze::ResourceManager<ResourceType>::Reload(std::string const& id, Args&&... args)
+{
+   ResourceType* resource = Get(id);
+   if (!resource) return nullptr;
+
+   ResourceLoader<ResourceType>::Reload(resource, std::forward<Args>(args)...);
+   return resource;
+}
+
+template<typename ResourceType>
+inline ResourceType* ze::ResourceManager<ResourceType>::Get(std::string const& id)
 {
    auto resource = s_resources.find(id);
    return resource != s_resources.end() ? resource->second.get() : nullptr;
 }
 
 template<typename ResourceType>
-inline void ze::ResourceManager<ResourceType>::Release(std::string const& id)
+inline void ze::ResourceManager<ResourceType>::Unload(std::string const& id)
 {
    s_resources.erase(id);
 }
 
 template<typename ResourceType>
-inline void ze::ResourceManager<ResourceType>::ReleaseAll() noexcept
+inline void ze::ResourceManager<ResourceType>::UnloadAll() noexcept
 {
    s_resources.clear();
 }

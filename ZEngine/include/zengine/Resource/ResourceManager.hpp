@@ -28,7 +28,7 @@
 
 #include "zengine/defines.hpp"
 
-#include "zengine/Resource/ResourceHolder.hpp"
+#include "zengine/Util/FileUtils.hpp"
 
 #include <unordered_map>
 #include <unordered_set>
@@ -39,26 +39,43 @@
 namespace ze
 {
    template<typename ResourceType>
+   class ResourceLoader;
+
+   template<typename ResourceType>
+   class ResourceDeleter
+   {
+   public:
+      void operator()(ResourceType* resource) const;
+   };
+
+   template<typename ResourceType>
    class ResourceManager
    {
-      static_assert((sizeof(ResourceHolder<ResourceType>), true), "Resource can not be held");
+      static_assert((sizeof(ResourceLoader<ResourceType>), true), "Resource do not have any loader !");
+      static_assert(std::is_class_v<ResourceType>, "Resource should be class type !");
+      static_assert(!std::is_const_v<ResourceType>, "Resource can not be const !");
+
    public:
       static void AddSearchPath(std::filesystem::path const& dir);
       static std::unordered_set<std::string> const& GetSearchPaths() noexcept;
       static void RemoveSearchPath(std::filesystem::path const& dir);
       static void ClearSearchPaths() noexcept;
+      static std::optional<std::filesystem::path> FindFile(std::filesystem::path const& file);
 
-      static ResourceLoader<ResourceType>* Add(std::string const& id);
-      static ResourceHolder<ResourceType>* Get(std::string const& id);
+      template<typename... Args>
+      static ResourceType* Load(std::string const& id, Args&&... args);
+      template<typename... Args>
+      static ResourceType* Reload(std::string const& id, Args&&... args);
+      static ResourceType* Get(std::string const& id);
 
-      static void Release(std::string const& id);
-      static void ReleaseAll() noexcept;
+      static void Unload(std::string const& id);
+      static void UnloadAll() noexcept;
 
    private:
       ResourceManager() = delete;
 
       static std::unordered_set<std::string> s_searchPaths;
-      static std::unordered_map<std::string, std::unique_ptr<ResourceHolder<ResourceType> > > s_resources;
+      static std::unordered_map<std::string, std::unique_ptr<ResourceType, ResourceDeleter<ResourceType> > > s_resources;
    };
 }
 
