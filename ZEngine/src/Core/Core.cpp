@@ -142,7 +142,7 @@ namespace ze
 
       m_runTime.restart();
 
-      ZE_LOG_INFO("------ Initialised in {} ms !", initTime.elapsed().asMicroseconds());
+      ZE_LOG_INFO("------ Initialised in {} us !", initTime.elapsed().asMicroseconds());
    }
 
    void Core::run()
