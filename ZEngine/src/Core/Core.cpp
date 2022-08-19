@@ -1,9 +1,4 @@
-#include "zepch.hpp"
-
 #include "zengine/Core/Core.hpp"
-
-#include "zengine/Log/ConsoleWriter.hpp"
-#include "zengine/Common/System.hpp"
 
 #define CORELOGGER_NAME "Core"
 #define COREWRITER_FILENAME "zengine.log"

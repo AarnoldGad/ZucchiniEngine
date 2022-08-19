@@ -1,3 +1,24 @@
+#ifndef ZE_ENGINE_HPP
+#define ZE_ENGINE_HPP
+
+#include "zengine/defines.hpp"
+
+#include <zucchini/zucchini.hpp>
+
+namespace ze
+{
+   class ZE_API Engine
+   {
+   public:
+      virtual void initialise() = 0;
+      virtual void tick(Time deltaTime) = 0;
+      virtual void terminate() = 0;
+
+      virtual ~Engine() = default;
+   };
+}
+
+#endif // ZE_ENGINE_HPP
 /**
  * Engine.hpp
  * 11 Mar 2021
@@ -23,24 +44,4 @@
  *
  *    3. This notice may not be removed or altered from any source distribution.
  **/
-#ifndef ZE_ENGINE_HPP
-#define ZE_ENGINE_HPP
 
-#include "zengine/defines.hpp"
-
-#include "zengine/Time/Time.hpp"
-
-namespace ze
-{
-   class ZE_API Engine
-   {
-   public:
-      virtual void initialise() = 0;
-      virtual void tick(Time deltaTime) = 0;
-      virtual void terminate() = 0;
-
-      virtual ~Engine() = default;
-   };
-}
-
-#endif // ZE_ENGINE_HPP

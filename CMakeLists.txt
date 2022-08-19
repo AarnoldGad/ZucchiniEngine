@@ -1,16 +1,16 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20 FATAL_ERROR)
 
 PROJECT(ZucchiniEngine
-        VERSION 0.22.2
+        VERSION 0.3.0
         HOMEPAGE_URL https://github.com/AarnoldGad/ZucchiniEngine.git
         LANGUAGES C CXX
         )
 
 SET(CMAKE_CONFIGURATION_TYPES Release Debug)
 
-SET(ZucchiniEngine_VERSION_STAGE "a")
-SET(ZucchiniEngine_VERSION_DAY 24)
-SET(ZucchiniEngine_VERSION_MONTH 03)
+SET(ZucchiniEngine_VERSION_STAGE "dev")
+SET(ZucchiniEngine_VERSION_DAY 19)
+SET(ZucchiniEngine_VERSION_MONTH 08)
 SET(ZucchiniEngine_VERSION_YEAR 22)
 
 MESSAGE(STATUS "Configuring ZucchiniEngine ${ZucchiniEngine_VERSION_MAJOR}-${ZucchiniEngine_VERSION_MINOR}.${ZucchiniEngine_VERSION_PATCH}${ZucchiniEngine_VERSION_STAGE} of ${ZucchiniEngine_VERSION_DAY}/${ZucchiniEngine_VERSION_MONTH}/${ZucchiniEngine_VERSION_YEAR}")
@@ -30,8 +30,7 @@ SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 CONFIGURE_FILE(config.hpp.in zeconfig.hpp @ONLY NEWLINE_STYLE LF)
 
 # Deps
-ADD_SUBDIRECTORY(ZEngine/deps/fmt)
-ADD_SUBDIRECTORY(ZEngine/deps/backward-cpp)
+ADD_SUBDIRECTORY(ZEngine/deps/ZucchiniLib)
 
 ADD_SUBDIRECTORY(ZEngine)
 

@@ -1,5 +1,3 @@
-#include "zepch.hpp"
-
 #include "zengine/Layer/Layer.hpp"
 
 namespace ze
